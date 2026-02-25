@@ -1,0 +1,13 @@
+{
+  "name": "devlingo-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace=@devlingo/backend",
+    "dev:frontend": "npm run dev --workspace=@devlingo/frontend",
+    "dev": "npm run dev:backend & npm run dev:frontend"
+  }
+}
