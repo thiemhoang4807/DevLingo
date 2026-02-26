@@ -1,33 +1,35 @@
-import express, { Request, Response } from 'express';
-import { User, ApiResponse } from '@devlingo/shared';
+import express, { Request, Response } from "express";
+import { AppDataSource } from "./db/dataSource";
+// Import interfaces from the shared folder
+import { ApiResponse, User as SharedUser } from "@devlingo/shared";
 
 const app = express();
 const PORT = 5000;
 
-// Middleware parse JSON
+// Middleware to parse JSON body
 app.use(express.json());
 
-// API test thử hệ thống
-app.get('/api/health', (req: Request, res: Response) => {
-  const mockUser: User = {
-    id: "dev-001",
-    username: "backendLead",
-    fullName: "DevLingo PM",
-    role: "admin",
-    xp: 9999,
-    level: 100
-  };
-
-  const response: ApiResponse<User> = {
+// Health check API
+app.get("/api/health", (req: Request, res: Response) => {
+  const response: ApiResponse<null> = {
     success: true,
-    message: "Backend is running perfectly!",
-    data: mockUser
+    message: "🚀 Backend and TypeORM Database are connected and running!",
   };
 
   res.status(200).json(response);
 });
 
-// Chạy server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Initialize the database connection, THEN start the Express server
+AppDataSource.initialize()
+  .then(() => {
+    console.log("✅ PostgreSQL Database connected successfully!");
+    console.log("✅ TypeORM has synchronized the entities into tables!");
+    
+    // Start listening for requests only after DB is connected
+    app.listen(PORT, () => {
+      console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("❌ Error during Data Source initialization:", error);
+  });
