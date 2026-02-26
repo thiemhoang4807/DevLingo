@@ -97,3 +97,53 @@ Ví dụ Payload cho API Cập nhật Tiến độ (`POST /api/progress`):
   }
 }
 ```
+# 4. Leaderboard APIs (Bảng xếp hạng)
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| **GET** | `/api/leaderboard` | Get the top users ranked by XP (e.g., top 10 or 20). |
+
+**Example Payload (`GET /api/leaderboard`):**
+```json
+// Success Response (200 OK)
+{
+  "success": true,
+  "data": [
+    {
+      "rank": 1,
+      "username": "pro_coder",
+      "xp": 1500,
+      "level": 5
+    },
+    {
+      "rank": 2,
+      "username": "johndoe",
+      "xp": 1200,
+      "level": 4
+    }
+  ]
+}
+```
+
+# 5. User Profile Management (Quản lí hồ sơ người dùng)
+|Method|Endpoint|Description|
+|------|--------|-----------|
+|PUT|	`/api/users/me`|	Update user profile (e.g., fullName).|
+|PUT|	`/api/users/me/password`|	Change user password.|
+
+# 6. Admin / Content Management APIs
+## Lesson Management
+|Method|Endpoint|Description|
+|------|--------|-----------|
+|POST|`/api/admin/lessons`|Create a new lesson.|
+|PUT|`/api/admin/lessons/:id`|Update an existing lesson (e.g., publish it).|
+|DELETE|`/api/admin/lessons/:id`|Delete a lesson.|
+## Term & Question Management
+|Method|Endpoint|Description|
+|------|--------|-----------|
+|POST|`/api/admin/lessons/:id/terms`|Add a new vocabulary term to a specific lesson.|
+|POST|`/api/admin/lessons/:id/questions`|Add a new quiz question to a specific lesson.|
+## Badge Management
+|Method|Endpoint|Description|
+|------|--------|-----------|
+|POST|`/api/admin/badges`|Create a new badge in the system.|
