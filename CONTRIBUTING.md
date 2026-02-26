@@ -4,7 +4,6 @@
 
 - Node.js >= 18
 - npm >= 9
-- PostgreSQL
 - Git
 
 ## Local Setup
