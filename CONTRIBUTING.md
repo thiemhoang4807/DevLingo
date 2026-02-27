@@ -41,7 +41,7 @@ hotfix/*          ← Urgent fixes for production
 ```bash
 # 1. Clone repo (lần đầu)
 git clone <repo-url>
-cd uit-volunteer-map
+cd devLingo
 npm install
 
 # 2. Luôn bắt đầu từ develop mới nhất
