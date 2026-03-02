@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { AppDataSource } from "./db/dataSource";
 // Import interfaces from the shared folder
 import { ApiResponse, User as SharedUser } from "@devlingo/shared";
+import { Lesson } from "./entities/Lesson";
 
 const app = express();
 const PORT = 5000;
@@ -17,6 +18,33 @@ app.get("/api/health", (req: Request, res: Response) => {
   };
 
   res.status(200).json(response);
+});
+// ================= ADMIN LESSON APIs =================
+
+// CREATE LESSON
+app.post("/api/admin/lessons", async (req: Request, res: Response) => {
+  try {
+    const { title } = req.body;
+
+    const lessonRepo = AppDataSource.getRepository(Lesson);
+
+    const lesson = lessonRepo.create({
+      title,
+      isPublished: false,
+    });
+
+    await lessonRepo.save(lesson);
+
+    res.status(201).json({
+      success: true,
+      data: lesson,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
 });
 
 // Initialize the database connection, THEN start the Express server
