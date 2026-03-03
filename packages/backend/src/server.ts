@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { AppDataSource } from "./db/dataSource";
-import authRoutes from "./auth/auth.routes";
-import userRoutes from "./users/user.routes";
+import authRoutes from "./auth/authRoutes";
+import userRoutes from "./users/userRoutes";
 // Import interfaces from the shared folder
 import { ApiResponse, User as SharedUser } from "@devlingo/shared";
 import dotenv from "dotenv";
