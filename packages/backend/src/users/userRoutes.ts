@@ -1,7 +1,6 @@
 import { Router } from "express";
-import { verifyToken } from "../middlewares/authMiddleware";
+import { verifyToken, requireAdmin } from "../middlewares/authMiddleware";
 import { UserController } from "./userController";
-import { requireAdmin } from "../middlewares/authMiddleware";
 
 const router = Router();
 

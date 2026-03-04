@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET as string;
+const JWT_SECRET = process.env.JWT_SECRET || "devlingo_secret";
 
 export interface AuthRequest extends Request {
   user?: any;
@@ -14,21 +14,17 @@ export const verifyToken = (
 ) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       success: false,
-      message: "No token provided"
+      message: "No token provided or invalid token format"
     });
   }
 
   const token = authHeader.split(" ")[1];
 
   try {
-<<<<<<< HEAD
     const decoded = jwt.verify(token, JWT_SECRET);
-=======
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
->>>>>>> 8518f3c (Fix name, test regiter-login-get, add env)
     req.user = decoded;
     next();
   } catch (error) {
@@ -44,7 +40,7 @@ export const requireAdmin = (
   res: Response,
   next: NextFunction
 ) => {
-  if (req.user.role !== "admin") {
+  if (req.user?.role !== "admin") {
     return res.status(403).json({
       success: false,
       message: "Admin only"

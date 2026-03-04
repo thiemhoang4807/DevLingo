@@ -5,11 +5,8 @@ import { User } from "../entities/User";
 
 const userRepo = AppDataSource.getRepository(User);
 
-<<<<<<< HEAD
-const JWT_SECRET = "devlingo_secret"; // tạm thời hardcode, sau sẽ đưa vào .env
-=======
-const JWT_SECRET = process.env.JWT_SECRET as string;
->>>>>>> 8518f3c (Fix name, test regiter-login-get, add env)
+// Lấy secret từ biến môi trường, nếu chưa có thì dùng chuỗi mặc định
+const JWT_SECRET = process.env.JWT_SECRET || "devlingo_secret";
 
 export class AuthService {
 

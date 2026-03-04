@@ -10,8 +10,9 @@ export class UserController {
       const user = await UserService.getMe(userId);
 
       return res.json({ success: true, data: user });
-    } catch (error: any) {
-      return res.status(400).json({ success: false, message: error.message });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res.status(400).json({ success: false, message });
     }
   }
 
@@ -23,8 +24,9 @@ export class UserController {
       const user = await UserService.updateProfile(userId, fullName);
 
       return res.json({ success: true, data: user });
-    } catch (error: any) {
-      return res.status(400).json({ success: false, message: error.message });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res.status(400).json({ success: false, message });
     }
   }
 
@@ -35,18 +37,20 @@ export class UserController {
 
       await UserService.changePassword(userId, newPassword);
 
-      return res.json({ success: true, message: "Password changed" });
-    } catch (error: any) {
-      return res.status(400).json({ success: false, message: error.message });
+      return res.json({ success: true, message: "Password changed successfully" });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res.status(400).json({ success: false, message });
     }
   }
+
   static async getAll(req: AuthRequest, res: Response) {
-  try {
-    const users = await UserService.getAllUsers();
-    return res.json({ success: true, data: users });
-  } catch (error: any) {
-    return res.status(400).json({ success: false, message: error.message });
-  }
+    try {
+      const users = await UserService.getAllUsers();
+      return res.json({ success: true, data: users });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res.status(400).json({ success: false, message });
+    }
   }
 }
-

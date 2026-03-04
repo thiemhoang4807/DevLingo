@@ -15,10 +15,12 @@ export class AuthController {
         data
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Ép kiểu lỗi chuẩn TypeScript thay vì dùng 'any'
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
       return res.status(400).json({
         success: false,
-        message: error.message
+        message
       });
     }
   }
@@ -34,10 +36,11 @@ export class AuthController {
         data
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
       return res.status(400).json({
         success: false,
-        message: error.message
+        message
       });
     }
   }
