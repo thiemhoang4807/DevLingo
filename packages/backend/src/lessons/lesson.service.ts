@@ -18,15 +18,33 @@ export class LessonService {
 
   static async getLessonDetailById(id: number) {
     const lesson = await lessonRepo.findOne({
-      where: { id: id, isPublished: true },
+      where: { id: id },
       relations: ["terms", "questions"] 
     });
 
     if (!lesson) {
-      throw new Error("Lesson not found or not published");
+      throw new Error("Lesson not found");
     }
 
-    return lesson;
+    return {
+      id: lesson.id,
+      title: lesson.title,
+      terms: lesson.terms.map(term => ({
+        id: term.id,
+        termName: term.termName,
+        definition: term.definition
+      })),
+      questions: lesson.questions.map(q => ({
+        id: q.id,
+        questionText: q.questionText,
+        optionA: q.optionA,
+        optionB: q.optionB,
+        optionC: q.optionC,
+        optionD: q.optionD,
+        correctOption: q.correctOption,
+        xpReward: q.xpReward
+      }))
+    };
   }
 
   static async createLesson(title: string) {
