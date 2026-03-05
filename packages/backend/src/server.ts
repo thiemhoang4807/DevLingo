@@ -1,7 +1,5 @@
 import express, { Request, Response } from "express";
 import { AppDataSource } from "./db/dataSource";
-import authRoutes from "./auth/auth.routes";
-import userRoutes from "./users/user.routes";
 import lessonRoutes from "./lessons/lesson.routes";
 import questionRoutes from "./questions/question.routes";
 // Import interfaces from the shared folder
@@ -14,8 +12,6 @@ const PORT = 5000;
 
 // Middleware to parse JSON body
 app.use(express.json());
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
 
