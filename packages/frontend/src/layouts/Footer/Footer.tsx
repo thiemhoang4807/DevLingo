@@ -19,7 +19,7 @@ export default function Footer() {
 
     return (
         <div className="inter footer h-[293px] py-[48px] px-[32px] text-[#fff]
-                        flex flex-col gap-[32px] border-t border-[#1F2937] bg-[#1F2937]">
+                        flex flex-col gap-[32px] border-t border-[#1F2937] bg-[#27272A]">
 
             <div className="footer__info flex justify-between gap-[32px]">
 
@@ -64,7 +64,7 @@ export default function Footer() {
 
             <div className="footer__copyright border-t border-[#374151] pt-[32px] text-center">
                 <p className="font-[400] font-regular text-[14px] leading-[20px] text-[#9CA3AF]">
-                    Hoàng đẹp trai vãi cả đái
+                    ©2026 DevLingo
                 </p>
             </div>
 

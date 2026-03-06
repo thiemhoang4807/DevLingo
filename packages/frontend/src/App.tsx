@@ -3,7 +3,7 @@ import Header from "./layouts/Header";
 import Footer from "./layouts/Footer";
 import "./App.css";
 
-import TermPage from "./pages/TermPage";
+import { TermPageCategory, TermPageCategorySpecializedLetter } from "./pages/TermPage";
 
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
     <>
       <Header />
       <Body />
-      <TermPage />
+      {/* <TermPageCategorySpecializedLetter /> */}
       <Footer />
     </>
   );

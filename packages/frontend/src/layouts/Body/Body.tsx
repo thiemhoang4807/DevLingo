@@ -10,7 +10,7 @@ function load_menu(title: string, list_menu: JSX.Element[]) {
             <h3 className="border-b border-[#374151] pb-[12px] w-[344px] font-[700] font-bold text-[18px] leading-[28px] text-[#FFFFFF] text-left cursor-default"> 
                 {title}
             </h3>
-            <div className="text-left pb-">
+            <div className="text-left">
                 <ol className="list-decimal list-inside">
                     {list_menu}
                 </ol>

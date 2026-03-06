@@ -1,16 +1,16 @@
 import "./Header.css";
 import logo from "../../assets/images/icon_user.png";
-import { Sun, GraduationCap, User, Search } from "lucide-react";
+import { Sun, GraduationCap, Search } from "lucide-react";
 
 export default function Header() {
 
     const tabs: string[] = ["Terms", "Quizzes", "Contribution"]; // Create list tabs
     // Create <li></li> for each tabs
     const tabs_li = tabs.map(el => (
-        <li key={el} className="list-none cursor-pointer font-[500] font-medium text-[16px] leading-[24px] text-[#D1D5DB]
-                                h-[64px] w-[70px] flex flex-col items-center justify-center ease-in-out">
+        <li key={el} className="li list-none cursor-pointer font-[500] font-medium text-[16px] leading-[24px] text-[#D1D5DB]
+                                h-[64px] w-[70px] flex flex-col items-center justify-center">
             <a href="#"> {el} </a>
-            <div className="relative w-[100px] h-[5px] rounded-[5px] bg-[#3B82F6] top-[17.55px] hidden"></div>
+            <div className="line-effect relative w-[100px] h-[5px] rounded-[5px] bg-[#3B82F6] top-[17.55px]"></div>
         </li>
     )); 
 

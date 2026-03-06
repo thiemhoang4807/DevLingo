@@ -2,7 +2,7 @@ import { createPortal } from "react-dom";
 import { useState, useEffect } from "react";
 import "./TermPage.css";
 
-export default function TermPage() {
+export default function TermPageCategory() {
     // Set up bodyRender is null initally
     const [bodyRender, setBodyRender] = useState<Element | null>(null);
 
