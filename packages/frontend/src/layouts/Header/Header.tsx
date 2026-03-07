@@ -16,7 +16,7 @@ export default function Header() {
     )); 
 
     return (
-        <div className="inter header flex justify-between h-[65px] border border-[#374151] border-b-[1px] pr-8 pl-8 bg-[#001F83]">
+        <div className="inter header flex justify-between h-[65px] border border-[#374151] border-b-[1px] pr-8 pl-8 bg-[#001F83] dark:bg-[#1E1E1E]">
             <div className="flex flex-row items-center">
                 <div className="header__logo flex h-[65px] w-[141.54px] text-[#fff] t-[18px] cursor-pointer" title="DevLingo">
                     <div className="header__logo__icon flex justify-center items-center w-[35.54px] pr-[8px]">
@@ -31,10 +31,10 @@ export default function Header() {
                 <div className="header__search flex flex-row">
                     <input id="search" placeholder="Search" className="inter w-[306px] border border-[#626262] rounded-[10px] h-[40px]
                                                                         bg-[#E1E1E1] pl-[11.77px] pt-[.58px] text-[#3E3E3E] font-[500]
-                                                                        text-[15px] leading-[24px]"></input>
+                                                                        text-[15px] leading-[24px] dark:text-[#B2B2B2] dark:bg-[#4A4A4AA6]"></input>
                     <div className="relative header__search__logo flex flex-row items-center justify-center bottom-[-.5px] right-[31.25px]">
                         <button className="flex items-center justify-center cursor-pointer w-[17.65px] h-[17.39px]" id="">
-                            <Search className="text-[#4B4949]"/>
+                            <Search className="text-[#4B4949] dark:text-[#A9A9A9]"/>
                         </button>
                     </div>
                 </div>
