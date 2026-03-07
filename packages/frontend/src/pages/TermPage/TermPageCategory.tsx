@@ -41,7 +41,7 @@ export default function TermPageCategory() {
         <div className="inter container flex flex-col items-center justify-start gap-[50px]">
 
             <div className="container__categories flex flex-col gap-[16px] w-full">
-                <h2 className="font-[700] text-[24px] leading-[24px] text-[#E5E7EB] text-left">
+                <h2 className="font-[700] text-[24px] leading-[24px] text-[#3B82F6] text-left">
                     Categories
                 </h2>
                 <div className="w-full inline-grid grid-cols-4 gap-[10px]">
@@ -50,7 +50,7 @@ export default function TermPageCategory() {
             </div>
 
             <div className="container__alphabet flex flex-col gap-[16px] w-full">
-                <h2 className="font-[700] text-[24px] leading-[24px] text-[#E5E7EB] text-left">
+                <h2 className="font-[700] text-[24px] leading-[24px] text-[#3B82F6] text-left">
                     Alphabet
                 </h2>
                 <div className="w-full inline-grid grid-cols-9 gap-[10px]">

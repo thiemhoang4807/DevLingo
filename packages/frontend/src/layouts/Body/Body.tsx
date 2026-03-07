@@ -7,7 +7,7 @@ function load_menu(title: string, list_menu: JSX.Element[]) {
 
     return (
         <div className="inter h-[265px] p-[20px]">
-            <h3 className="border-b border-[#374151] pb-[12px] w-[344px] font-[700] font-bold text-[18px] leading-[28px] text-[#FFFFFF] text-left cursor-default"> 
+            <h3 className="border-b border-[#374151] pb-[12px] w-[344px] font-[700] font-bold text-[18px] leading-[28px] text-[#000000] text-left cursor-default"> 
                 {title}
             </h3>
             <div className="text-left">
@@ -52,7 +52,7 @@ export default function Body() {
     ));
 
     return (
-        <div className="skeleton-body py-[40px] px-[32px] bg-[#212121]">
+        <div className="skeleton-body py-[40px] px-[32px] bg-[#FFFFFF]">
             <div className="body flex flex-row justify-between gap-[32px]">
 
                 <div id="body-render" className="flex flex-1"></div>
