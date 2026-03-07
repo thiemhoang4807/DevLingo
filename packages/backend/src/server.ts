@@ -2,12 +2,14 @@ import express, { Request, Response } from "express";
 import { AppDataSource } from "./db/dataSource";
 // Import interfaces from the shared folder
 import { ApiResponse, User as SharedUser } from "@devlingo/shared";
+import { register } from './controllers/authController';
 
 const app = express();
 const PORT = 5000;
 
 // Middleware to parse JSON body
 app.use(express.json());
+app.post('/api/auth/register', register);
 
 // Health check API
 app.get("/api/health", (req: Request, res: Response) => {
