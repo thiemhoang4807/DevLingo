@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import SignUpPage from './pages/SignUpPage';
+import LoginPage from './pages/loginPage';
+import SignUpPage from './pages/signUpPage';
 
 function App() {
   return (
@@ -8,7 +8,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        {/* Để mặc định vào trang login khi mở web */}
+        {/* Default route redirects to login page */}
         <Route path="/" element={<LoginPage />} />
       </Routes>
     </Router>

@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { registerUser } from '../services/authService';
 
 const SignUpPage: React.FC = () => {
   const [formData, setFormData] = useState({
     username: '',
+    fullName: '', // Added missing field
     password: '',
-    confirmPassword: '',
-    fullName: ''
+    confirmPassword: ''
   });
+  
   const isFormValid =
     formData.username.trim() !== '' &&
+    formData.fullName.trim() !== '' &&
     formData.password.trim() !== '' &&
     formData.confirmPassword.trim() !== '' &&
     formData.password === formData.confirmPassword;
+    
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
@@ -27,48 +31,35 @@ const SignUpPage: React.FC = () => {
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Mật khẩu xác nhận không khớp!');
+      setError('Passwords do not match!');
       return;
     }
 
     try {
-      // Backend của ông đang dùng SQLite
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password, // Frontend gửi 'password'
-          fullName: formData.username
-        }),
-      });
+      const result = await registerUser(formData.username, formData.password, formData.fullName);
 
-      if (response.ok) {
-        alert('Đăng ký thành công! Đang chuyển đến trang Login.');
+      if (result.success) {
+        alert('Registration successful! Redirecting to Login page.');
         navigate('/login');
       } else {
-        const data = await response.json();
-        setError(data.message || 'Đăng ký thất bại.');
+        setError(result.message || 'Registration failed.');
       }
-    } catch (err) {
-      setError('Không thể kết nối đến server.');
+    } catch (err: unknown) {
+      const errorMessage = (err as { message?: string })?.message || 'Cannot connect to server.';
+      setError(errorMessage);
     }
   };
 
   return (
-    // Nền xanh đậm toàn trang (#000A26)
     <div className="flex w-full min-h-screen flex-col items-center justify-center bg-[#000A26] font-sans">
-
-      {/* Devlingo Logo */}
+      {/* Logo Section */}
       <div className="flex items-center py-[25px]">
         <img src="src/assets/logo.svg" alt="DevLingo" className="w-[87px] h-[71px]" />
         <h1 className="text-5xl font-bold text-[#E5E7EB] tracking-wide pl-[34px]">DevLingo</h1>
       </div>
 
-      {/* Khung trắng bo góc chứa form */}
+      {/* Form Container */}
       <div className="bg-white p-12 rounded-lg shadow-2xl w-[460px] flex flex-col items-center">
-
-        {/* "Sign up" */}
         <h2 className="text-[#3B82F6] text-5xl font-bold text-center pb-[20px]">Sign up</h2>
 
         {error && (
@@ -78,8 +69,7 @@ const SignUpPage: React.FC = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6 w-full">
-
-          {/* Input Username - p-3 bg-[#E5E7EB] rounded-md */}
+          {/* Username Input */}
           <div>
             <label className="block text-left text-sm font-medium mb-1">Username</label>
             <input
@@ -90,40 +80,48 @@ const SignUpPage: React.FC = () => {
             />
           </div>
 
-          {/* Input Password - p-3 bg-[#E5E7EB] rounded-md */}
+          {/* Full Name Input - Added to match Backend requirements */}
+          <div>
+            <label className="block text-left text-sm font-medium mb-1">Full Name</label>
+            <input
+              type="text" name="fullName"
+              className="w-full p-3 bg-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.fullName} onChange={handleChange} required
+              placeholder="John Doe"
+            />
+          </div>
+
+          {/* Password Input */}
           <div className="relative">
             <label className="block text-left text-sm font-medium mb-1">Password</label>
             <div className="relative">
               <input
-                type="password" name="password"
+                type={showPassword ? 'text' : 'password'} name="password"
                 className="w-full p-3 bg-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.password} onChange={handleChange} required
                 placeholder="**********"
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 transfrom -translate-y-1/2 text-gray-500"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {/* Eye/Eye-off Icon */}
                 <img src={showPassword ? "src/assets/eye.svg" : "src/assets/eye-off.svg"} alt="toggle password" />
               </button>
             </div>
           </div>
 
-          {/* Ô Input Confirm Password - p-3 bg-[#E5E7EB] rounded-md */}
+          {/* Confirm Password Input */}
           <div className="relative">
             <label className="block text-left text-sm font-medium mb-1">Confirm Password</label>
             <div className="relative">
               <input
-                type="password" name="confirmPassword"
+                type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword"
                 className="w-full p-3 bg-[#E5E7EB] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.confirmPassword} onChange={handleChange} required
                 placeholder="**********"
               />
-
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
-                {/* Check Icon */}
                 {formData.confirmPassword.length > 0 && formData.confirmPassword === formData.password && (
                   <img
                     src="src/assets/check.svg"
@@ -136,7 +134,6 @@ const SignUpPage: React.FC = () => {
                   className="flex items-center justify-center focus:outline-none text-gray-500"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  {/* Eye/Eye-off Icon */}
                   <img
                     src={showConfirmPassword ? "src/assets/eye.svg" : "src/assets/eye-off.svg"}
                     alt="toggle password"
@@ -147,19 +144,18 @@ const SignUpPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Nút Sign up màu xám, bo góc (#9ca3af) */}
+          {/* Submit Button */}
           <button
             type="submit"
-            disabled={!isFormValid} // Khóa nút nếu form chưa hợp lệ
+            disabled={!isFormValid}
             className={`w-full py-3 font-bold rounded-md transition-all mt-6 ${isFormValid
-              ? "bg-[#3B82F6] hover:bg-[#0040CD] text-white cursor-pointer" // Khi sáng (xanh)
-              : "bg-[#8F8E8E] cursor-not-allowed" // Khi tối (xám)
-              }`}
+              ? "bg-[#3B82F6] hover:bg-[#0040CD] text-white cursor-pointer"
+              : "bg-[#8F8E8E] cursor-not-allowed"
+            }`}
           >
             Sign up
           </button>
 
-          {/* Dòng Log in ở dưới (#3B82F6 link) */}
           <p className="text-center text-sm mt-6">
             Already have an account? <Link to="/login" className="text-[#3B82F6] font-semibold hover:underline">Log in</Link>
           </p>

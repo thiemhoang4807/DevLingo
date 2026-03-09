@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
-// Đổi thành link tuyệt đối để tránh lỗi lệch Port giữa 5173 và 5000
+// Absolute path to avoid Port mismatch between Vite (5173) and Express (5000)
 const API_URL = 'http://localhost:5000/api/auth';
 
 export const loginUser = async (username: string, password: string) => {
@@ -9,10 +9,27 @@ export const loginUser = async (username: string, password: string) => {
       username,
       password,
     });
-    // Axios tự động parse JSON nên return luôn data
     return response.data; 
-  } catch (error: any) {
-    // Trả về error message từ server nếu có, không thì báo lỗi kết nối
-    throw error.response?.data || { success: false, message: 'Không thể kết nối đến server' };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data || { success: false, message: 'Cannot connect to the server' };
+    }
+    throw { success: false, message: 'An unknown error occurred' };
+  }
+};
+
+export const registerUser = async (username: string, password: string, fullName: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/register`, {
+      username,
+      password,
+      fullName
+    });
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data || { success: false, message: 'Cannot connect to the server' };
+    }
+    throw { success: false, message: 'An unknown error occurred' };
   }
 };

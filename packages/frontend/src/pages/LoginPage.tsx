@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser } from '../services/authService.ts'; // Giả định service kết nối API
-import './Auth.css'; // Dùng chung CSS với trang Login cho đồng bộ
+import { loginUser } from '../services/authService';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -16,7 +15,6 @@ const LoginPage = () => {
     setError('');
 
     try {
-      // Gọi hàm loginUser từ authService thay vì fetch
       const result = await loginUser(username, password);
 
       if (result.success) {
@@ -25,8 +23,9 @@ const LoginPage = () => {
       } else {
         setError(result.message || 'Wrong username or password.');
       }
-    } catch (err: any) {
-      setError(err.message || 'Internal server error. Please try again.');
+    } catch (err: unknown) {
+      const errorMessage = (err as { message?: string })?.message || 'Internal server error. Please try again.';
+      setError(errorMessage);
     }
   };
 
@@ -76,10 +75,9 @@ const LoginPage = () => {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 transfrom -translate-y-1/2 text-gray-500"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {/* Dùng icon Eye/Eye-off từ assets */}
                   <img src={showPassword ? "src/assets/eye.svg" : "src/assets/eye-off.svg"} alt="toggle password" />
                 </button>
               </div>
@@ -93,7 +91,7 @@ const LoginPage = () => {
               type="submit"
               disabled={!isFormValid}
               className={`w-full text-white py-3 rounded-lg font-bold text-lg shadow-md transition-all active:scale-[0.98]
-                                ${isFormValid
+                ${isFormValid
                   ? 'bg-[#2563EB] border-1 border-[#639EFF] cursor-pointer'
                   : 'bg-gray-400 cursor-not-allowed'
                 }`}
