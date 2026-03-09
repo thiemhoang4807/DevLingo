@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { AppDataSource } from "./db/dataSource";
 import authRoutes from "./auth/authRoutes";
-import userRoutes from "./users/userRoutes";
+import userRoutes from "./users/userRoutes"; 
 import { ApiResponse, User as SharedUser } from "@devlingo/shared";
 import dotenv from "dotenv";
 dotenv.config();
@@ -28,10 +28,13 @@ app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json(response);
 });
 
+// Initialize the database connection, THEN start the Express server
 AppDataSource.initialize()
   .then(() => {
     console.log("✅ SQLite Database connected successfully!");
     console.log("✅ TypeORM has synchronized the entities into tables!");
+    
+    // Start listening for requests only after DB is connected
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on http://localhost:${PORT}`);
     });
