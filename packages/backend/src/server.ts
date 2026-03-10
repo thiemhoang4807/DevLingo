@@ -1,13 +1,22 @@
 import express, { Request, Response } from "express";
+import cors from "cors";
 import { AppDataSource } from "./db/dataSource";
-// Import interfaces from the shared folder
+import authRoutes from "./auth/authRoutes";
+import userRoutes from "./users/userRoutes"; 
 import { ApiResponse, User as SharedUser } from "@devlingo/shared";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const PORT = 5000;
 
-// Middleware to parse JSON body
+// Middleware
+app.use(cors());
 app.use(express.json());
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // Health check API
 app.get("/api/health", (req: Request, res: Response) => {
@@ -22,7 +31,7 @@ app.get("/api/health", (req: Request, res: Response) => {
 // Initialize the database connection, THEN start the Express server
 AppDataSource.initialize()
   .then(() => {
-    console.log("✅ PostgreSQL Database connected successfully!");
+    console.log("✅ SQLite Database connected successfully!");
     console.log("✅ TypeORM has synchronized the entities into tables!");
     
     // Start listening for requests only after DB is connected
