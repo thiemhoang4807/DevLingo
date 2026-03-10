@@ -9,5 +9,12 @@
     "dev:backend": "npm run dev --workspace=@devlingo/backend",
     "dev:frontend": "npm run dev --workspace=@devlingo/frontend",
     "dev": "npm run dev:backend & npm run dev:frontend"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "lucide-react": "^0.577.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19"
   }
 }

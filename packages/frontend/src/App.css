@@ -1,42 +1,83 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+/* App.css - Global styles for DevLingo */
+
+/* Reset & Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #1A1C23;
+  color: #ffffff;
+}
+
+/* App Container */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Layout Styles */
+.main-layout {
+  flex: 1;
+  display: flex;
+  min-height: calc(100vh - 64px); /* Adjust based on header height */
+}
+
+.content {
+  flex: 1;
   padding: 2rem;
-  text-align: center;
+  overflow-y: auto;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .main-layout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    display: none; /* Hidden on mobile by default */
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Utility Classes */
+.hidden {
+  display: none !important;
 }
 
-.card {
-  padding: 2em;
+.visible {
+  display: block !important;
 }
 
-.read-the-docs {
-  color: #888;
+/* Focus styles for accessibility */
+button:focus, a:focus {
+  outline: 2px solid #1A73E8;
+  outline-offset: 2px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1A1C23;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
