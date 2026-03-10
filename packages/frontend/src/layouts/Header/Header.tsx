@@ -1,54 +1,59 @@
-import "./Header.css";
+import { Sun, GraduationCap, Search } from "lucide-react";
 import logo from "../../assets/images/icon_user.png";
-import { Sun, GraduationCap, User, Search } from "lucide-react";
+
+// Move static tabs outside
+const TABS = ["Terms", "Quizzes", "Contribution"];
 
 export default function Header() {
-
-    const tabs: string[] = ["Terms", "Quizzes", "Contribution"]; // Create list tabs
-    // Create <li></li> for each tabs
-    const tabs_li = tabs.map(el => (
-        <li key={el} className="list-none cursor-pointer font-[500] font-medium text-[16px] leading-[24px] text-[#D1D5DB]
-                                h-[64px] w-[70px] flex flex-col items-center justify-center ease-in-out">
-            <a href="#"> {el} </a>
-            <div className="relative w-[100px] h-[5px] rounded-[5px] bg-[#3B82F6] top-[17.55px] hidden"></div>
-        </li>
-    )); 
-
     return (
-        <div className="inter header flex justify-between h-[65px] border border-[#374151] border-b-[1px] pr-8 pl-8 bg-[#1E1E1E]">
-            <div className="flex flex-row items-center">
-                <div className="header__logo flex h-[65px] w-[141.54px] text-[#fff] t-[18px] cursor-pointer" title="DevLingo">
-                    <div className="header__logo__icon flex justify-center items-center w-[35.54px] pr-[8px]">
+        <div className="font-['Inter'] flex justify-between h-[65px] border-b border-[#374151] pr-8 pl-8 bg-[#1E1E1E]">
+            <div className="flex flex-row items-center gap-[40px]">
+                
+                {/* Logo */}
+                <div className="flex items-center text-[#fff] cursor-pointer" title="DevLingo">
+                    <div className="flex justify-center items-center pr-[8px]">
                         <GraduationCap className="w-[27.54px] h-[22.5px]" color="#3B82F6"/>
                     </div>
-                    <div className="header__logo__name flex justify-start items-center w-[151.73px] h-28px font-[700] font-bold text-[20px]
-                                    leading-[28px] tracking-[-.5px] text-[#E5E7EB]">
-                        <p> DevLingo </p>
+                    <div className="flex justify-start items-center font-bold text-[20px] leading-[28px] tracking-tight text-[#E5E7EB]">
+                        <p>DevLingo</p>
                     </div>
                 </div>
 
-                <div className="header__search flex flex-row">
-                    <input id="search" placeholder="Search" className="inter w-[306px] border border-[#626262] rounded-[10px] h-[40px]
-                                                                        bg-[#4A4A4AA6] pl-[11.77px] pt-[.58px] text-[#B2B2B2] font-[500]
-                                                                        text-[15px] leading-[24px]"></input>
-                    <div className="relative header__search__logo flex flex-row items-center justify-center bottom-[-.5px] right-[31.25px]">
-                        <button className="flex items-center justify-center cursor-pointer w-[17.65px] h-[17.39px]" id="">
-                            <Search className="text-[#A9A9A9]"/>
-                        </button>
-                    </div>
+                {/* Search Bar - Wrapped in relative for better icon positioning */}
+                <div className="relative flex items-center">
+                    <input 
+                        id="search" 
+                        placeholder="Search" 
+                        className="w-[306px] border border-[#626262] rounded-[10px] h-[40px] bg-[#4A4A4AA6] pl-[12px] pr-[40px] text-[#B2B2B2] font-medium text-[15px] focus:outline-none focus:border-[#3B82F6] transition-colors"
+                    />
+                    <button className="absolute right-[12px] flex items-center justify-center cursor-pointer">
+                        <Search className="w-[18px] h-[18px] text-[#A9A9A9] hover:text-white transition-colors"/>
+                    </button>
                 </div>
             </div>
 
-            <div className="header__menubar w-[442.43px] flex text-[#fff] justify-end items-center">
-                <div className="header__menubar__tabs flex gap-[32px]">
-                    {tabs_li}
+            {/* Right Menu */}
+            <div className="flex text-[#fff] justify-end items-center gap-[32px]">
+                {/* Navigation Tabs */}
+                <ul className="flex gap-[32px]">
+                    {TABS.map(el => (
+                        <li key={el} className="list-none cursor-pointer font-medium text-[16px] leading-[24px] text-[#D1D5DB] h-[64px] flex flex-col items-center justify-center hover:text-white transition-colors relative group">
+                            <a href="#">{el}</a>
+                            {/* Hover effect indicator */}
+                            <div className="absolute bottom-0 w-full h-[3px] rounded-t-[5px] bg-[#3B82F6] hidden group-hover:block"></div>
+                        </li>
+                    ))}
+                </ul>
+
+                {/* Theme Toggle */}
+                <div className="p-[8px]">
+                    <Sun className="text-[#D1D5DB] hover:text-white cursor-pointer transition-colors"/>
                 </div>
-                <div className="header__menubar__icon pt-[8px] pr-[8px] pb-[8px] pl-[40px]">
-                    <Sun fill="#D1D5DB" color="#D1D5DB" className="cursor-pointer"/>
-                </div>
-                <div className="header__menu__login w-[73px] h-[40px] pl-[32px] flex justify-end items-center">
-                    <div className="w-[41px] h-[41px] rounded-full bg-[#fafafa] flex items-center justify-center cursor-pointer" title="User">
-                        <img src={logo} className="rounded-full"></img>
+
+                {/* User Avatar */}
+                <div className="pl-[8px] flex justify-end items-center">
+                    <div className="w-[41px] h-[41px] rounded-full bg-[#fafafa] flex items-center justify-center cursor-pointer overflow-hidden border-2 border-transparent hover:border-[#3B82F6] transition-all" title="User">
+                        <img src={logo} alt="User Avatar" className="w-full h-full object-cover" />
                     </div>
                 </div>
             </div>
