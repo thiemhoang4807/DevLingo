@@ -1,7 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import QuizManager from './pages/QuizManager';
+import LandingPage from './pages/LandingPage'; // <-- Import Landing Page của Quân
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 
@@ -22,13 +23,23 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Auth Routes without Header/Footer */}
+        {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         
-        {/* Dashboard Route wrapped with Header, Footer, and QuizManager */}
+        {/* Dashboard Route (Trang chủ sau khi đăng nhập) -> Hiện Landing Page */}
         <Route 
           path="/dashboard" 
+          element={
+            <MainLayout>
+              <LandingPage />
+            </MainLayout>
+          } 
+        />
+
+        {/* Quizzes Route -> Hiện trang chọn Topic và làm bài */}
+        <Route 
+          path="/quizzes" 
           element={
             <MainLayout>
               <QuizManager />
@@ -36,8 +47,8 @@ function App() {
           } 
         />
         
-        {/* Default Route redirects to login */}
-        <Route path="/" element={<LoginPage />} />
+        {/* Mặc định mở web lên sẽ vào trang Login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );

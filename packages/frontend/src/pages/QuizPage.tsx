@@ -7,12 +7,19 @@ interface QuizPageProps {
   onStart: (topic: TopicData) => void;
 }
 
-// Mock topics data
 const topics: TopicData[] = [
   { id: 1, name: 'Topic 1', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
+  { id: 2, name: 'Topic 2', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
+  { id: 3, name: 'Topic 3', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
   { id: 4, name: 'Topic 4', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
+  { id: 5, name: 'Topic 5', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
+  { id: 6, name: 'Topic 6', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
   { id: 7, name: 'Topic 7', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
+  { id: 8, name: 'Topic 8', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
+  { id: 9, name: 'Topic 9', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
   { id: 10, name: 'Topic 10', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
+  { id: 11, name: 'Topic 11', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
+  { id: 12, name: 'Topic 12', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
 ];
 
 const QuizPage: React.FC<QuizPageProps> = ({ onStart }) => {
@@ -38,16 +45,15 @@ const QuizPage: React.FC<QuizPageProps> = ({ onStart }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#212121] text-white pt-[40px] pb-12 font-['Inter'] flex flex-col items-center">
+    <div className="min-h-screen bg-[#212121] text-white pt-[40px] pb-[100px] font-['Inter'] flex flex-col items-center">
       <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-start text-left">
         
         {/* --- SECTION 1: RANDOM QUESTION --- */}
         <section className="w-full mb-[48px] flex flex-col gap-[24px]">
-          <h2 className="text-[24px] font-bold leading-[32px] text-[#E5E7EB] font-['Inter']">
+          <h2 className="text-[24px] font-[700] leading-[32px] text-[#E5E7EB] font-['Inter']">
             Random Quiz Question
           </h2>
           
-          {/* Reusing QuestionCard component */}
           <QuestionCard 
             question={randomQuestion.question}
             options={randomQuestion.options}
@@ -57,7 +63,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ onStart }) => {
             onSelect={handleSelect}
           />
 
-          <div className="flex justify-start items-center w-full pt-[8px] pl-[24px]">
+          <div className="flex justify-start items-center w-full pt-[8px] pl-[24px] min-h-[24px]">
             {isAnswered && (
               <span className="text-[14px] text-[#E5E7EB] font-['Inter']">
                 View the <span className="text-[#3B82F6] font-[500] hover:underline cursor-pointer transition-colors">API definition.</span>
@@ -68,7 +74,7 @@ const QuizPage: React.FC<QuizPageProps> = ({ onStart }) => {
 
         {/* --- SECTION 2: CATEGORIES --- */}
         <section className="w-full">
-          <h2 className="text-[24px] font-bold leading-[32px] text-[#E5E7EB] mb-[21px] font-['Inter']">
+          <h2 className="text-[24px] font-[700] leading-[32px] text-[#E5E7EB] mb-[21px] font-['Inter']">
             Quiz Category
           </h2>
           

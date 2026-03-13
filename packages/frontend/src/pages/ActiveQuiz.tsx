@@ -2,10 +2,18 @@ import React, { useState } from 'react';
 import QuestionCard from '../components/QuestionCard';
 import type { TopicData, Question, UserAnswerHistory } from '../types/quiz';
 
-// Mock database for testing
+// Bơm đủ 10 câu hỏi
 const quizData: Question[] = [
   { id: 1, question: "What does the acronym 'API' stand for in software development?", options: ['Application Programming Interface', 'Advanced Program Integration', 'Automated Protocol Interface', 'App Processing Information'], correctAnswer: 0 },
   { id: 2, question: "Which hook is used to manage state in a React functional component?", options: ['useEffect', 'useState', 'useContext', 'useReducer'], correctAnswer: 1 },
+  { id: 3, question: "What does SQL stand for?", options: ['Strong Question Language', 'Structured Query Language', 'Simple Quick Log', 'Stylish Query List'], correctAnswer: 1 },
+  { id: 4, question: "What does HTML stand for?", options: ['Hyper Text Markup Language', 'Home Tool Markup Language', 'Hyperlinks and Text Markup Language', 'Hyper Tool Markup Language'], correctAnswer: 0 },
+  { id: 5, question: "Choose the correct HTML element for the largest heading:", options: ['<heading>', '<h6>', '<head>', '<h1>'], correctAnswer: 3 },
+  { id: 6, question: "What is the correct CSS syntax to change the text color of all p elements?", options: ['p {text-color: red;}', 'p {color: red;}', 'all.p {color: red;}', 'p.all {color: red;}'], correctAnswer: 1 },
+  { id: 7, question: "Inside which HTML element do we put the JavaScript?", options: ['<scripting>', '<script>', '<js>', '<javascript>'], correctAnswer: 1 },
+  { id: 8, question: "How do you write 'Hello World' in an alert box?", options: ['alertBox("Hello World");', 'msgBox("Hello World");', 'alert("Hello World");', 'msg("Hello World");'], correctAnswer: 2 },
+  { id: 9, question: "How do you create a function in JavaScript?", options: ['function myFunction()', 'function = myFunction()', 'function:myFunction()', 'create myFunction()'], correctAnswer: 0 },
+  { id: 10, question: "How to write an IF statement in JavaScript?", options: ['if i = 5 then', 'if i == 5 then', 'if (i == 5)', 'if i = 5'], correctAnswer: 2 }
 ];
 
 interface ActiveQuizProps {
@@ -19,8 +27,6 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) => {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
-  
-  // Track history for the result page
   const [history, setHistory] = useState<UserAnswerHistory[]>([]);
 
   const currentQuestion = quizData[currentStep];
@@ -40,7 +46,6 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) => {
     const isCorrect = selectedOption === currentQuestion.correctAnswer;
     const currentScore = isCorrect ? score + 1 : score;
     
-    // Save current step result
     const stepResult: UserAnswerHistory = {
       questionId: currentQuestion.id,
       questionText: currentQuestion.question,
@@ -50,9 +55,7 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) => {
     
     const updatedHistory = [...history, stepResult];
 
-    if (isCorrect) {
-      setScore(currentScore);
-    }
+    if (isCorrect) setScore(currentScore);
     setHistory(updatedHistory);
 
     if (currentStep < totalQuestions - 1) {
@@ -60,7 +63,6 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) => {
       setSelectedOption(null);
       setIsAnswered(false);
     } else {
-      // Pass history to result page
       onFinish(currentScore, totalQuestions, updatedHistory);
     }
   };
@@ -72,10 +74,10 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) => {
         {/* Progress Bar Header */}
         <div className="flex w-full max-w-[1002px] gap-[21px] h-[33px] items-start"> 
           <div className={`flex border-[1.5px] ${activeTopic.borderColor} ${activeTopic.badgeBg} rounded-[100px] h-full w-[277px] shrink-0 transition-colors duration-300 overflow-hidden`}>
-            <div className="bg-[#FFFFFF] text-[#1D4ED8] pl-[14px] pr-[17px] flex items-center justify-start font-[600] text-[14px] w-[204px] rounded-r-[100px] h-full">
+            <div className="bg-[#FFFFFF] text-[#1D4ED8] pl-[20px] flex items-center justify-start font-[700] text-[16px] w-[65%] h-full">
               {activeTopic.name}
             </div>
-            <div className="text-[#FFFFFF] flex items-center justify-center font-[500] text-[14px] flex-1">
+            <div className="text-[#FFFFFF] flex items-center justify-center font-[600] text-[14px] flex-1 uppercase tracking-wide h-full">
               {activeTopic.difficulty}
             </div>
           </div>
@@ -108,23 +110,20 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) => {
             onSelect={handleSelect}
           />
 
-          <div className="flex justify-between items-center w-full pt-[8px] pl-[24px]">
-            {isAnswered ? (
-              <span className="text-[14px] text-[#E5E7EB] font-['Inter']">
-                View the <span className="text-[#3B82F6] font-[500] hover:underline cursor-pointer transition-colors">API definition.</span>
-              </span>
-            ) : (
-              <div />
+          <div className="flex justify-between items-center w-full pt-[8px] pl-[24px] min-h-[44px]">
+            {isAnswered && (
+              <>
+                <span className="text-[14px] text-[#E5E7EB] font-['Inter']">
+                  View the <span className="text-[#3B82F6] font-[500] hover:underline cursor-pointer transition-colors">API definition.</span>
+                </span>
+                <button 
+                  onClick={handleNext}
+                  className="bg-[#3B82F6] text-white font-[600] text-[16px] py-[10px] px-[32px] rounded-[6px] transition-all font-['Inter'] cursor-pointer hover:bg-blue-600 shadow-md"
+                >
+                  {currentStep === totalQuestions - 1 ? 'Finish' : 'Next'}
+                </button>
+              </>
             )}
-
-            <button 
-              onClick={handleNext}
-              disabled={!isAnswered}
-              className={`font-[500] text-[16px] py-[10px] px-[32px] rounded-[6px] transition-all font-['Inter']
-                ${isAnswered ? 'bg-[#3B82F6] text-white cursor-pointer hover:bg-blue-600' : 'bg-[#374151] text-[#9CA3AF] cursor-not-allowed'}`}
-            >
-              {currentStep === totalQuestions - 1 ? 'Finish' : 'Next'}
-            </button>
           </div>
         </div>
         

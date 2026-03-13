@@ -6,9 +6,25 @@ interface QuizResultProps {
   topic: TopicData;
   score: number;
   totalQuestions: number;
-  history: UserAnswerHistory[]; // Receives actual test data
+  history: UserAnswerHistory[];
   onTryAnother: (topic?: TopicData) => void;
 }
+
+// Mock topics for the "Try another quiz" section
+const topicsList: TopicData[] = [
+  { id: 1, name: 'Topic 1', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
+  { id: 2, name: 'Topic 1', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
+  { id: 3, name: 'Topic 1', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
+  { id: 4, name: 'Topic 1', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
+  { id: 5, name: 'Topic 1', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
+  { id: 6, name: 'Topic 1', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
+  { id: 7, name: 'Topic 1', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
+  { id: 8, name: 'Topic 1', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
+  { id: 9, name: 'Topic 1', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
+  { id: 10, name: 'Topic 1', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
+  { id: 11, name: 'Topic 1', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
+  { id: 12, name: 'Topic 1', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
+];
 
 const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, history = [], onTryAnother }) => {
   const percentage = Math.round((score / totalQuestions) * 100) || 0;
@@ -27,11 +43,12 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
       <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-center gap-[40px]">
         
         {/* --- 1. BADGE TOPIC --- */}
-        <div className={`flex items-center w-[378px] h-[44px] border-[1.5px] ${topic.borderColor} rounded-[100px] shrink-0 overflow-hidden`}>
-          <div className="flex-[2] bg-[#FFFFFF] text-[#1D4ED8] pl-[20px] flex items-center justify-start font-[700] text-[16px] h-full">
+        {/* Updated badge layout to match Figma perfectly */}
+        <div className={`flex items-center w-[378px] h-[44px] border-[1.5px] ${topic.borderColor} ${topic.badgeBg} rounded-[100px] shrink-0 overflow-hidden`}>
+          <div className="bg-[#FFFFFF] text-[#1D4ED8] pl-[20px] flex items-center justify-start font-[700] text-[16px] w-[65%] h-full">
             {topic.name}
           </div>
-          <div className={`flex-[1] ${topic.badgeBg} text-[#FFFFFF] flex items-center justify-center font-[600] text-[15px] h-full uppercase tracking-wide`}>
+          <div className="text-[#FFFFFF] flex items-center justify-center font-[600] text-[15px] flex-1 uppercase tracking-wide h-full">
             {topic.difficulty}
           </div>
         </div>
@@ -71,6 +88,11 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
               <span className="text-white font-[600]">{incorrectCount} <span className="text-[#9CA3AF] font-normal">/ {totalQuestions}</span></span>
             </div>
           </div>
+
+          {/* Updated View Ranking button to italic as per Figma */}
+          <button className="text-[#3B82F6] text-[14px] hover:underline font-[500] italic cursor-pointer transition-colors mt-[4px]">
+            View Ranking
+          </button>
         </div>
 
         {/* --- 3. INCORRECT TERMS --- */}
@@ -81,7 +103,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
               {incorrectTerms.map((term, i) => (
                 <div key={`inc-${i}`} className="flex justify-between items-center w-full bg-[#3F0500] border-[1.5px] border-[#9B0000] rounded-[8px] p-[16px] hover:bg-[#4d0700] transition-colors">
                   <span className="text-[#E5E7EB] text-[14px] font-[500] truncate pr-4">{term.questionText}</span>
-                  <button className="bg-[#3B82F6] hover:bg-blue-600 text-white text-[14px] font-[500] px-[16px] py-[8px] rounded-[6px] transition-all whitespace-nowrap">
+                  <button className="bg-[#3B82F6] hover:bg-blue-600 text-white text-[14px] font-[500] px-[16px] py-[8px] rounded-[6px] transition-all whitespace-nowrap cursor-pointer">
                     View more...
                   </button>
                 </div>
@@ -98,7 +120,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
               {correctTerms.map((term, i) => (
                 <div key={`cor-${i}`} className="flex justify-between items-center w-full bg-[#0ABD5A]/10 border-[1.5px] border-[#0ABD5A] rounded-[8px] p-[16px] hover:bg-[#0abd5a]/20 transition-colors">
                   <span className="text-[#E5E7EB] text-[14px] font-[500] truncate pr-4">{term.questionText}</span>
-                  <button className="bg-[#3B82F6] hover:bg-blue-600 text-white text-[14px] font-[500] px-[16px] py-[8px] rounded-[6px] transition-all whitespace-nowrap">
+                  <button className="bg-[#3B82F6] hover:bg-blue-600 text-white text-[14px] font-[500] px-[16px] py-[8px] rounded-[6px] transition-all whitespace-nowrap cursor-pointer">
                     View more...
                   </button>
                 </div>
@@ -107,6 +129,27 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
           </div>
         )}
         
+        {/* --- 5. TRY ANOTHER QUIZ --- */}
+        <div className="w-full flex flex-col items-center gap-[24px] mt-[8px]">
+          <h2 className="text-[20px] font-[700] text-[#E5E7EB] w-full text-center">Try another quiz</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] w-full">
+            {topicsList.map((t, idx) => (
+              <div 
+                key={idx} 
+                onClick={() => onTryAnother(t)} 
+                className="cursor-pointer transition-transform hover:scale-[1.02]"
+              >
+                <TopicCard 
+                  name={t.name}
+                  difficulty={t.difficulty}
+                  borderColor={t.borderColor}
+                  badgeBg={t.badgeBg}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );
