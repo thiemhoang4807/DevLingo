@@ -22,8 +22,9 @@ export class UserController {
       const { fullName } = req.body;
 
       const user = await UserService.updateProfile(userId, fullName);
+      const { passwordHash, ...safeUser } = user;
 
-      return res.json({ success: true, data: user });
+      return res.json({ success: true, data: safeUser });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An unknown error occurred";
       return res.status(400).json({ success: false, message });
@@ -38,6 +39,18 @@ export class UserController {
       await UserService.changePassword(userId, newPassword);
 
       return res.json({ success: true, message: "Password changed successfully" });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res.status(400).json({ success: false, message });
+    }
+  }
+
+  static async getHistory(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user.id;
+      const history = await UserService.getHistory(userId);
+      
+      return res.json({ success: true, data: history });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An unknown error occurred";
       return res.status(400).json({ success: false, message });
