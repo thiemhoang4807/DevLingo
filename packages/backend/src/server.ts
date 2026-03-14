@@ -3,6 +3,8 @@ import cors from "cors";
 import { AppDataSource } from "./db/dataSource";
 import authRoutes from "./auth/authRoutes";
 import userRoutes from "./users/userRoutes"; 
+import lessonRoutes from "./lessons/lesson.routes";
+import questionRoutes from "./questions/question.routes";
 import { ApiResponse, User as SharedUser } from "@devlingo/shared";
 import dotenv from "dotenv";
 dotenv.config();
@@ -17,6 +19,8 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/lessons", lessonRoutes);
+app.use("/api/questions", questionRoutes);
 
 // Health check API
 app.get("/api/health", (req: Request, res: Response) => {
