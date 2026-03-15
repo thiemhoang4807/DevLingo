@@ -5,6 +5,7 @@ import authRoutes from "./auth/authRoutes";
 import userRoutes from "./users/userRoutes"; 
 import { ApiResponse, User as SharedUser } from "@devlingo/shared";
 import dotenv from "dotenv";
+import progressRoutes from "./progress/progressRoutes";
 dotenv.config();
 
 const app = express();
@@ -17,6 +18,9 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/progress", progressRoutes);
 
 // Health check API
 app.get("/api/health", (req: Request, res: Response) => {
