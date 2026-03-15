@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { LessonService } from "./lesson.service";
+import { LessonService } from "./lessonService";
 
 export class LessonController {
 
