@@ -3,6 +3,9 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import QuizManager from './pages/QuizManager';
 import LandingPage from './pages/LandingPage'; // <-- Import Landing Page của Quân
+import TermPageCategory from './pages/TermPageCaterory';
+import TermPageCategorySpecializedLetter from './pages/TermPageCategorySpecializedLetter';
+import Body from './components/BodyPage'; // Để render TermPage
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 
@@ -45,6 +48,17 @@ function App() {
               <QuizManager />
             </MainLayout>
           } 
+        />
+
+        <Route 
+          path="/term"
+          element={
+            <MainLayout>
+              <Body />
+              {/* <TermPageCategory /> */}
+              {/* <TermPageCategorySpecializedLetter /> */}
+            </MainLayout>
+          }
         />
         
         {/* Mặc định mở web lên sẽ vào trang Login */}
