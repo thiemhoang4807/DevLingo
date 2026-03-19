@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { AuthRequest } from "../middlewares/authMiddleware";
 import { ProgressService } from "./progressService";
 
@@ -15,7 +15,11 @@ export class ProgressController {
 
       const result = await ProgressService.saveResult(userId, lessonId, score);
 
-      return res.json({ success: true, message: "Quiz result saved", data: result });
+      return res.json({ 
+        success: true, 
+        message: "Quiz result saved and XP calculated", 
+        data: result 
+      });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An unknown error occurred";
       return res.status(500).json({ success: false, message });

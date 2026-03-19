@@ -24,6 +24,9 @@ export class Lesson {
   @Column("boolean", { default: false })
   isPublished!: boolean;
 
+  @Column("varchar", { default: "easy" })
+  difficulty!: "easy" | "medium" | "hard";
+  
   @OneToMany("Term", "lesson")
   terms!: Term[];
 
