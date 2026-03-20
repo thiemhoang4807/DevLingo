@@ -5,6 +5,7 @@ import {
   OneToMany 
 } from "typeorm";
 import type { Term } from "./Term";
+import { Question } from "./Question";
 
 @Entity("lessons")
 export class Lesson {
@@ -26,7 +27,8 @@ export class Lesson {
   @Column("boolean", { default: false })
   isPublished!: boolean;
 
-  // One lesson has many terms
   @OneToMany("Term", "lesson")
   terms!: Term[];
+  @OneToMany(() => Question, (question) => question.lesson)
+  questions!: Question[];
 }
