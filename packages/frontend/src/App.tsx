@@ -9,6 +9,9 @@ import Body from './components/BodyPage';
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 
+// 👇 Import thêm trang Learning History mới tạo
+import LearningHistoryPage from './pages/LearningHistoryPage';
+
 // Layout wrapper to include Header and Footer for inner pages
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -36,6 +39,9 @@ function App() {
         {/* Quizzes Route */}
         <Route path="/quizzes" element={<MainLayout><QuizManager /></MainLayout>} />
 
+        {/* 👇 Bổ sung Route cho Learning History tại đây 👇 */}
+        <Route path="/learning-history" element={<MainLayout><LearningHistoryPage /></MainLayout>} />
+
         {/* PHÂN HỆ TERMS (TỪ ĐIỂN) - Đã sửa lại chuẩn Router */}
         <Route 
           path="/term" 
@@ -51,9 +57,10 @@ function App() {
           {/* Vào /term/letter sẽ hiện danh sách từ theo chữ cái (Ảnh 2) */}
           <Route path="letter" element={<TermPageCategorySpecializedLetter />} />
         </Route>
-        
-        {/* Mặc định mở web lên sẽ vào trang Login */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Điều hướng mặc định nếu người dùng nhập sai link */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Router>
   );
