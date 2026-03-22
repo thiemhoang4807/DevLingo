@@ -1,26 +1,42 @@
-import express, { Request, Response } from "express";
-import cors from "cors";
+import express from "express";
+import cors from "cors"; // 1. Thêm dòng này
 import { AppDataSource } from "./db/dataSource";
-import dotenv from "dotenv";
-
 import authRoutes from "./auth/authRoutes";
 import userRoutes from "./users/userRoutes"; 
-import progressRoutes from "./progress/progressRoutes";
 import lessonRoutes from "./lessons/lessonRoutes";
 import questionRoutes from "./questions/questionRoutes";
+import progressRoutes from "./progress/progressRoutes";
+import dotenv from "dotenv";
+dotenv.config();
 import adminRoutes from "./routes/adminRoutes";
 
-dotenv.config();
 const app = express();
+const PORT = 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// 2. Cấu hình CORS (Phải đặt TRƯỚC các Routes)
+app.use(cors({
+  origin: "http://localhost:5173", // Cho phép Frontend của bạn
+  credentials: true                // Cho phép gửi cookie/token nếu cần
+}));
 
-// Routes (ĐÃ DỌN SẠCH CÁC DÒNG LẶP)
+app.use(express.json()); 
+
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/progress", progressRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
-app.use("/api/admin", adminRoutes); // Gắn bộ Router Admin vào
+app.use("/api/admin", adminRoutes);
+app.use("/api/progress", progressRoutes);
+
+// Khởi tạo Database rồi chạy Server
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Data Source has been initialized!");
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("❌ Error during Data Source initialization:", error);
+  });

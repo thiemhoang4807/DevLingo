@@ -8,13 +8,14 @@ import TermPageCategorySpecializedLetter from './pages/TermPageCategorySpecializ
 import Body from './components/BodyPage';
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
+import LearningHistoryPage from './pages/LearningHistoryPage';
 
-// Layout wrapper to include Header and Footer for inner pages
+// 🚀 Đã xóa bg-[#212121] ở thẻ main
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow bg-[#212121]">
+      <main className="flex-grow"> 
         {children}
       </main>
       <Footer />
@@ -36,24 +37,25 @@ function App() {
         {/* Quizzes Route */}
         <Route path="/quizzes" element={<MainLayout><QuizManager /></MainLayout>} />
 
-        {/* PHÂN HỆ TERMS (TỪ ĐIỂN) - Đã sửa lại chuẩn Router */}
+        {/* Route cho Learning History */}
+        <Route path="/learning-history" element={<MainLayout><LearningHistoryPage /></MainLayout>} />
+
+        {/* PHÂN HỆ TERMS (TỪ ĐIỂN) */}
         <Route 
           path="/term" 
           element={
             <MainLayout>
-              <Body /> {/* Body làm bộ khung chứa Sidebar bên phải */}
+              <Body />
             </MainLayout>
           }
         >
-          {/* Mặc định vào /term sẽ hiện trang Categories (Ảnh 1) */}
           <Route index element={<TermPageCategory />} />
-          
-          {/* Vào /term/letter sẽ hiện danh sách từ theo chữ cái (Ảnh 2) */}
           <Route path="letter" element={<TermPageCategorySpecializedLetter />} />
         </Route>
-        
-        {/* Mặc định mở web lên sẽ vào trang Login */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Điều hướng mặc định */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Router>
   );

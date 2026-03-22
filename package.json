@@ -11,6 +11,7 @@
     "dev": "npm run dev:backend & npm run dev:frontend"
   },
   "dependencies": {
+    "cors": "^2.8.6",
     "lucide-react": "^0.577.0"
   }
 }
