@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { AuthRequest } from "../middlewares/authMiddleware";
 import { ProgressService } from "./progressService";
 
@@ -6,18 +6,20 @@ export class ProgressController {
 
   static async submitQuiz(req: AuthRequest, res: Response) {
     try {
-      const userId = req.user.id; 
-      // Nhận thêm độ khó và tổng số câu hỏi để tính XP theo đúng GDD
-      const { lessonId, score, totalQuestions, difficulty = 'Easy' } = req.body;
+      const userId = req.user.id; // Lấy từ authMiddleware
+      const { lessonId, score } = req.body;
 
-      if (!lessonId || score === undefined || !totalQuestions) {
-        return res.status(400).json({ success: false, message: "Missing lessonId, score, or totalQuestions" });
+      if (!lessonId || score === undefined) {
+        return res.status(400).json({ success: false, message: "Missing lessonId or score" });
       }
 
-      // TODO (Technical Debt): Chuyển sang nhận mảng answers và tự chấm điểm backend để chống cheat
-      const result = await ProgressService.saveResult(userId, lessonId, score, totalQuestions, difficulty);
+      const result = await ProgressService.saveResult(userId, lessonId, score);
 
-      return res.json({ success: true, message: "Quiz result and XP saved", data: result });
+      return res.json({ 
+        success: true, 
+        message: "Quiz result saved and XP calculated", 
+        data: result 
+      });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An unknown error occurred";
       return res.status(500).json({ success: false, message });

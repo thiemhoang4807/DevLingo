@@ -1,9 +1,4 @@
-import { 
-  Entity, 
-  PrimaryGeneratedColumn, 
-  Column, 
-  OneToMany 
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import type { Term } from "./Term";
 import type { Question } from "./Question";
 
@@ -24,6 +19,9 @@ export class Lesson {
   @Column("boolean", { default: false })
   isPublished!: boolean;
 
+  @Column("varchar", { default: "easy" })
+  difficulty!: "easy" | "medium" | "hard";
+  
   @OneToMany("Term", "lesson")
   terms!: Term[];
 
