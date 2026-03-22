@@ -5,6 +5,7 @@ import authRoutes from "./auth/authRoutes";
 import userRoutes from "./users/userRoutes"; 
 import lessonRoutes from "./lessons/lessonRoutes";
 import questionRoutes from "./questions/questionRoutes";
+import progressRoutes from "./progress/progressRoutes";
 import dotenv from "dotenv";
 dotenv.config();
 import adminRoutes from "./routes/adminRoutes";
@@ -26,6 +27,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/progress", progressRoutes);
 
 // Khởi tạo Database rồi chạy Server
 AppDataSource.initialize()
