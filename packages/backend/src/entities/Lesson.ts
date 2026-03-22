@@ -27,8 +27,13 @@ export class Lesson {
   @Column("boolean", { default: false })
   isPublished!: boolean;
 
+  // Tích hợp thêm cột độ khó từ nhánh Gamification của Kiệt
+  @Column("varchar", { default: "easy" })
+  difficulty!: "easy" | "medium" | "hard";
+
   @OneToMany("Term", "lesson")
   terms!: Term[];
+  
   @OneToMany(() => Question, (question) => question.lesson)
   questions!: Question[];
 }
