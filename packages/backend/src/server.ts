@@ -6,6 +6,7 @@ import lessonRoutes from "./lessons/lessonRoutes";
 import questionRoutes from "./questions/questionRoutes";
 import { ApiResponse, User as SharedUser } from "@devlingo/shared";
 import dotenv from "dotenv";
+import progressRoutes from "./progress/progressRoutes";
 dotenv.config();
 import adminRoutes from "./routes/adminRoutes";
 
@@ -14,9 +15,10 @@ const PORT = 5000;
 
 app.use(express.json()); // Phải có dòng này để đọc được req.body
 
-// Routes
+// Routes (Đã xóa các dòng lặp dư thừa)
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/progress", progressRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
 // Gắn bộ Router Admin vào
