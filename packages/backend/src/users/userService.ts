@@ -1,8 +1,10 @@
 import bcrypt from "bcrypt";
 import { AppDataSource } from "../db/dataSource";
 import { User } from "../entities/User";
+import { UserProgress } from "../entities/UserProgress";
 
 const userRepo = AppDataSource.getRepository(User);
+const progressRepo = AppDataSource.getRepository(UserProgress);
 
 export class UserService {
 
@@ -37,4 +39,12 @@ export class UserService {
     select: ["id", "username", "role", "xp", "level", "createdAt"]
   });
   } 
+
+  static async getHistory(userId: string) {
+    return progressRepo.find({
+      where: { userId: userId },
+      relations: ["lesson"], 
+      order: { completedAt: "DESC" }
+    });
+  }
 }
