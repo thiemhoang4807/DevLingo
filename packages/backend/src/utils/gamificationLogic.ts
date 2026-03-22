@@ -1,10 +1,10 @@
-// 1. Công thức tính XP
 export const calculateXP = (correctAnswers: number, totalQuestions: number, difficulty: string): number => {
   const BASE_XP = 10;
   const multipliers: Record<string, number> = { easy: 1.0, medium: 1.5, hard: 2.0 };
-  const multiplier = multipliers[difficulty] || 1.0;
+  
+  const normalizedDifficulty = difficulty ? difficulty.toLowerCase() : 'easy';
+  const multiplier = multipliers[normalizedDifficulty] || 1.0;
 
-  // Tính điểm cơ bản
   let totalXP = (correctAnswers * BASE_XP) * multiplier;
 
   // Thưởng hoàn hảo (100% đúng)
@@ -12,8 +12,10 @@ export const calculateXP = (correctAnswers: number, totalQuestions: number, diff
     totalXP += 50;
   }
 
-  return Math.round(totalXP); // Làm tròn để tránh số lẻ
+  return Math.round(totalXP);
 };
+
+// ... (Giữ nguyên phần logic checkLevelUp của Kiệt)
 
 // 2. Logic thăng cấp
 export const checkLevelUp = (currentXP: number): { level: number, name: string } => {
