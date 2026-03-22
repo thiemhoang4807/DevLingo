@@ -5,7 +5,7 @@ import {
   OneToMany 
 } from "typeorm";
 import type { Term } from "./Term";
-import type { Question } from "./Question";
+import { Question } from "./Question";
 
 @Entity("lessons")
 export class Lesson {
@@ -18,15 +18,22 @@ export class Lesson {
   @Column("text", { nullable: true })
   description?: string | null;
 
+  @Column("varchar", { nullable: true })
+  thumbnailUrl?: string | null;
+
   @Column("integer", { nullable: true })
   orderIndex?: number | null;
 
   @Column("boolean", { default: false })
   isPublished!: boolean;
 
+  // Tích hợp thêm cột độ khó từ nhánh Gamification của Kiệt
+  @Column("varchar", { default: "easy" })
+  difficulty!: "easy" | "medium" | "hard";
+
   @OneToMany("Term", "lesson")
   terms!: Term[];
-
-  @OneToMany("Question", "lesson")
+  
+  @OneToMany(() => Question, (question) => question.lesson)
   questions!: Question[];
 }
