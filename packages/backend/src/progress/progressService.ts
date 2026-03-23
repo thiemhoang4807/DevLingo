@@ -4,6 +4,7 @@ import { User } from "../entities/User";
 import { Lesson } from "../entities/Lesson";
 import { Question } from "../entities/Question";
 import { calculateXP, checkLevelUp } from "../utils/gamificationLogic";
+import { BadgeService } from "../badges/badgeService";
 
 const progressRepo = AppDataSource.getRepository(UserProgress);
 const userRepo = AppDataSource.getRepository(User);
@@ -20,43 +21,63 @@ export class ProgressService {
     const totalQuestions = await questionRepo.count({ where: { lessonId } });
 
     // 2. Tính toán XP nhận được (score ở đây được hiểu là số câu đúng)
-    const earnedXP = calculateXP(score, totalQuestions, lesson.difficulty);
+    const currentAttemptXP = calculateXP(score, totalQuestions, lesson.difficulty || "easy");
 
     // 3. Xử lý lưu Progress (như Sprint 2)
     let progress = await progressRepo.findOne({ where: { userId, lessonId } });
+    let actualEarnedXP = 0;
     if (progress) {
-      if (score > progress.highestScore) progress.highestScore = score;
+      if (score > progress.highestScore) {
+        const oldXP = calculateXP(progress.highestScore, totalQuestions, lesson.difficulty || "easy");
+        actualEarnedXP = currentAttemptXP - oldXP; 
+        
+        progress.highestScore = score;
+      }
       progress.status = "completed";
       progress.completedAt = new Date();
     } else {
+      actualEarnedXP = currentAttemptXP;
       progress = progressRepo.create({
-        userId, lessonId, highestScore: score, status: "completed", completedAt: new Date()
+        userId, 
+        lessonId, 
+        highestScore: score, 
+        status: "completed", 
+        completedAt: new Date()
       });
     }
     await progressRepo.save(progress);
 
-    // 4. Cộng XP cho User và kiểm tra lên cấp
     const user = await userRepo.findOneBy({ id: userId });
     if (!user) throw new Error("User not found");
 
-    user.xp += earnedXP;
-    const newLevelInfo = checkLevelUp(user.xp);
-    
     let isLevelUp = false;
-    if (newLevelInfo.level > user.level) {
-      user.level = newLevelInfo.level; // Cập nhật level mới
-      isLevelUp = true;
-    }
-    await userRepo.save(user);
+    let newLevelInfo = checkLevelUp(user.xp);
 
-    // 5. Trả về thông tin để Frontend hiển thị hiệu ứng
+    if (actualEarnedXP > 0) {
+      user.xp += actualEarnedXP;
+      newLevelInfo = checkLevelUp(user.xp);
+      
+      if (newLevelInfo.level > user.level) {
+        user.level = newLevelInfo.level; 
+        isLevelUp = true;
+      }
+      await userRepo.save(user);
+    }
+
+    const newlyUnlockedBadges = await BadgeService.checkAndUnlockBadges(userId);
+
     return {
-      progress,
-      earnedXP,
+      userId: progress.userId,
+      lessonId: progress.lessonId,
+      highestScore: progress.highestScore,
+      status: progress.status,
+      
+      earnedXP: actualEarnedXP,
       totalXP: user.xp,
       isLevelUp,
       newLevel: user.level,
-      levelName: newLevelInfo.name
+      levelName: newLevelInfo.name,
+      unlockedBadges: newlyUnlockedBadges 
     };
   }
   static async getMyProgress(userId: string) {
