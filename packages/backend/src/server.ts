@@ -9,6 +9,8 @@ import progressRoutes from "./progress/progressRoutes";
 import dotenv from "dotenv";
 dotenv.config();
 import adminRoutes from "./routes/adminRoutes";
+import leaderboardRoutes from "./leaderboard/leaderboardRoutes";
+import badgeRoutes from "./badges/badgeRoutes";
 
 const app = express();
 const PORT = 5000;
@@ -28,6 +30,8 @@ app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/progress", progressRoutes);
+app.use("/api/leaderboard", leaderboardRoutes); 
+app.use("/api/users/me/badges", badgeRoutes);
 
 // Khởi tạo Database rồi chạy Server
 AppDataSource.initialize()
