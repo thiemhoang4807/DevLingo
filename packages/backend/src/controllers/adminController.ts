@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../db/dataSource";
 import { Lesson } from "../entities/Lesson";
 import { Question } from "../entities/Question";
+import logger from "../utils/logger";
 
 const lessonRepo = AppDataSource.getRepository(Lesson);
 const questionRepo = AppDataSource.getRepository(Question);
@@ -9,14 +10,41 @@ const questionRepo = AppDataSource.getRepository(Question);
 export const adminController = {
   // ================= LESSON APIs =================
   getLessons: async (req: Request, res: Response): Promise<void> => {
-    try {
-      const lessons = await lessonRepo.find();
-      res.json({ success: true, data: lessons });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: "Internal server error" });
+  try {
+    const { search, difficulty, isPublished } = req.query; // Lấy params từ Postman
+    const query = lessonRepo.createQueryBuilder("lesson");
+
+    // Logic Search
+    if (search) {
+      query.andWhere("lesson.title LIKE :search", { search: `%${search}%` });
     }
-  },
+
+    // Logic Filter
+    if (difficulty) {
+      query.andWhere("lesson.difficulty = :difficulty", { difficulty });
+    }
+
+    if (isPublished !== undefined) {
+      query.andWhere("lesson.isPublished = :isPublished", { 
+        isPublished: isPublished === "true" 
+      });
+    }
+
+    const lessons = await query.getMany();
+
+    // 🚀 Ghi Log thực tế vào file
+    logger.info(`[ADMIN] Fetched ${lessons.length} lessons | Query: ${JSON.stringify(req.query)}`);
+
+    res.json({ 
+      success: true, 
+      count: lessons.length, // Trả về count để check Postman
+      data: lessons 
+    });
+  } catch (error: any) {
+    logger.error(`[ADMIN] Fetch Lessons Error: ${error.message}`);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+},
 
   getLessonById: async (req: Request, res: Response): Promise<void> => {
     try {

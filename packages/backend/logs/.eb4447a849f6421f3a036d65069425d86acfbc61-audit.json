@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\Users\\Admin\\DevLingo\\packages\\backend\\logs\\.eb4447a849f6421f3a036d65069425d86acfbc61-audit.json",
+    "files": [
+        {
+            "date": 1774665217636,
+            "name": "C:\\Users\\Admin\\DevLingo\\packages\\backend\\logs\\error-2026-03-28.log",
+            "hash": "af0e951c405fc1dd9421ca15c50f405736bdd5562a083278fb306c49d84cfb80"
+        }
+    ],
+    "hashType": "sha256"
+}

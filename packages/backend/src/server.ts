@@ -7,6 +7,8 @@ import lessonRoutes from "./lessons/lessonRoutes";
 import questionRoutes from "./questions/questionRoutes";
 import progressRoutes from "./progress/progressRoutes";
 import dotenv from "dotenv";
+import logger from "./utils/logger";
+logger.info("Test Winston: Logger đã khởi động thành công!");
 dotenv.config();
 import adminRoutes from "./routes/adminRoutes";
 
@@ -24,7 +26,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/lessons", lessonRoutes);
+//app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/progress", progressRoutes);
