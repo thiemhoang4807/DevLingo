@@ -9,6 +9,7 @@ import { Question } from "../entities/Question";
 import { UserProgress } from "../entities/UserProgress";
 import { Badge } from "../entities/Badge";
 import { UserBadge } from "../entities/UserBadge";
+import { Contribution } from "../entities/Contribution";
 
 export const AppDataSource = new DataSource({
   type: "sqlite",
@@ -22,7 +23,8 @@ export const AppDataSource = new DataSource({
     Question,
     UserProgress,
     Badge,
-    UserBadge
+    UserBadge,
+    Contribution
   ],
   migrations: ["src/migrations/**/*.ts"],
   subscribers: [],

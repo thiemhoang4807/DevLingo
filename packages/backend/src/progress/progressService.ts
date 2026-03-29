@@ -4,6 +4,7 @@ import { User } from "../entities/User";
 import { Lesson } from "../entities/Lesson";
 import { Question } from "../entities/Question";
 import { calculateXP, checkLevelUp } from "../utils/gamificationLogic";
+import { ContributionService } from "../contribution/ContributionService";
 
 const progressRepo = AppDataSource.getRepository(UserProgress);
 const userRepo = AppDataSource.getRepository(User);
@@ -48,7 +49,7 @@ export class ProgressService {
       isLevelUp = true;
     }
     await userRepo.save(user);
-
+    await ContributionService.recordActivity(userId);
     // 5. Trả về thông tin để Frontend hiển thị hiệu ứng
     return {
       progress,
