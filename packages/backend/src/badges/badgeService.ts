@@ -42,12 +42,29 @@ export class BadgeService {
     // Lấy toàn bộ lịch sử nộp bài của user này để làm "chất liệu" tính toán
     const progressList = await progressRepo.find({ where: { userId } });
 
-    // 🏆 NHÓM 3: MILESTONE (Cột mốc Level)
+    // 🏆 NHÓM 3: MILESTONE (Hệ thống Rank & Danh hiệu Tối thượng)
     const levelBadges = [
-      { req: 5, name: "DevLingo Pro" },        // Tier 1
-      { req: 8, name: "DevLingo Master" },     // Tier 2
-      { req: 10, name: "DevLingo Legendary" }  // Tier 3
+      // --- Khu vực rank ĐỒNG (Bronze) ---
+      { req: 2, name: "Bronze 1" },
+      { req: 3, name: "Bronze 2" },
+      { req: 4, name: "Bronze 3" },
+
+      // --- Khu vực rank BẠC (Silver) ---
+      { req: 5, name: "Silver 1" },
+      { req: 6, name: "Silver 2" },
+      { req: 7, name: "Silver 3" },
+
+      // --- Khu vực rank VÀNG (Gold) ---
+      { req: 8, name: "Gold 1" },
+      { req: 9, name: "Gold 2" },
+      { req: 10, name: "Gold 3" },
+
+      // --- CÁC DANH HIỆU TỐI THƯỢNG (Theo GDD) ---
+      { req: 5, name: "DevLingo Pro" },
+      { req: 8, name: "DevLingo Master" },
+      { req: 10, name: "DevLingo Legendary" }
     ];
+
     for (const b of levelBadges) {
       if (user.level >= b.req) await this.grantBadge(userId, b.name, newlyUnlocked);
     }
