@@ -28,8 +28,7 @@ app.use(cors({
 
 app.use(express.json()); 
 
-app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); // Điều chỉnh đường dẫn '../uploads' tùy cấu trúc thư mục của bạn
-
+app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
   max: 100, 
