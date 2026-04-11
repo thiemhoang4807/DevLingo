@@ -31,7 +31,7 @@ export class BadgeService {
   }
 
   // ==========================================
-  // API: QUÉT VÀ PHÁT HUY HIỆU (Chạy ngầm)
+  // API: QUÉT VÀ PHÁT HUY HIỆU (ĐỘNG 100%)
   // ==========================================
   static async checkAndUnlockBadges(userId: string) {
     const user = await userRepo.findOneBy({ id: userId });
@@ -42,56 +42,38 @@ export class BadgeService {
     // Lấy toàn bộ lịch sử nộp bài của user này để làm "chất liệu" tính toán
     const progressList = await progressRepo.find({ where: { userId } });
 
-    // 🏆 NHÓM 3: MILESTONE (Hệ thống Rank & Danh hiệu Tối thượng)
-    const levelBadges = [
-      // --- Khu vực rank ĐỒNG (Bronze) ---
-      { req: 2, name: "Bronze 1" },
-      { req: 3, name: "Bronze 2" },
-      { req: 4, name: "Bronze 3" },
-
-      // --- Khu vực rank BẠC (Silver) ---
-      { req: 5, name: "Silver 1" },
-      { req: 6, name: "Silver 2" },
-      { req: 7, name: "Silver 3" },
-
-      // --- Khu vực rank VÀNG (Gold) ---
-      { req: 8, name: "Gold 1" },
-      { req: 9, name: "Gold 2" },
-      { req: 10, name: "Gold 3" },
-
-      // --- CÁC DANH HIỆU TỐI THƯỢNG (Theo GDD) ---
-      { req: 5, name: "DevLingo Pro" },
-      { req: 8, name: "DevLingo Master" },
-      { req: 10, name: "DevLingo Legendary" }
-    ];
-
-    for (const b of levelBadges) {
-      if (user.level >= b.req) await this.grantBadge(userId, b.name, newlyUnlocked);
-    }
-
-    // 🎯 NHÓM 2: COMPLETION (Sưu tầm - Tổng số câu đúng)
+    // 1. Tính toán các chỉ số hiện tại của User
     let totalCorrect = 0;
-    progressList.forEach(p => totalCorrect += p.highestScore); // Cộng dồn tất cả điểm kỷ lục
-
-    const completionBadges = [
-      { req: 50, name: "Internet Explorer" }, // Tier 1 (Giả sử cần 50 câu)
-      { req: 100, name: "A Hundred!" },       // Tier 2 
-      { req: 500, name: "Flawless Finisher" } // Tier 3
-    ];
-    for (const b of completionBadges) {
-      if (totalCorrect >= b.req) await this.grantBadge(userId, b.name, newlyUnlocked);
-    }
-
-    // 🏃‍♂️ NHÓM 1: CONSISTENCY (Chăm chỉ - Chuỗi ngày Streak)
+    progressList.forEach(p => totalCorrect += p.highestScore);
     const currentStreak = this.calculateStreak(progressList);
-    
-    const streakBadges = [
-      { req: 1, name: "First Lesson" },   // Tier 1 (Hoàn thành bài đầu)
-      { req: 3, name: "3-day-streak" },   // Tier 2
-      { req: 7, name: "Streak Holder" }   // Tier 3
-    ];
-    for (const b of streakBadges) {
-      if (currentStreak >= b.req) await this.grantBadge(userId, b.name, newlyUnlocked);
+
+    // 2. Lấy TẤT CẢ huy hiệu đang có trong Database (Do Admin/Leader tạo)
+    const allBadges = await badgeRepo.find();
+
+    // 3. Quét từng huy hiệu xem User có đạt điều kiện không
+    for (const badge of allBadges) {
+      // Nếu huy hiệu bị lỗi thiếu điều kiện thì bỏ qua
+      if (!badge.conditionType || badge.conditionValue === null) continue; 
+
+      let isEligible = false;
+
+      // Phân loại điều kiện để xét duyệt
+      switch (badge.conditionType) {
+        case 'level':
+          if (user.level >= badge.conditionValue) isEligible = true;
+          break;
+        case 'score':
+          if (totalCorrect >= badge.conditionValue) isEligible = true;
+          break;
+        case 'streak':
+          if (currentStreak >= badge.conditionValue) isEligible = true;
+          break;
+      }
+
+      // Nếu đủ điều kiện -> Trao huy hiệu
+      if (isEligible) {
+        await this.grantBadgeObj(userId, badge, newlyUnlocked);
+      }
     }
 
     return newlyUnlocked; 
@@ -101,16 +83,13 @@ export class BadgeService {
   // CÁC HÀM PHỤ TRỢ (Helper Functions)
   // ==========================================
 
-  // 🛠️ Hàm "Đóng gói": Tìm huy hiệu trong kho và trao cho User
-  private static async grantBadge(userId: string, badgeName: string, newlyUnlocked: Badge[]) {
-    const badge = await badgeRepo.findOneBy({ name: badgeName });
-    if (badge) {
-      const exists = await userBadgeRepo.findOneBy({ userId, badgeId: badge.id });
-      if (!exists) { // Nếu chưa có thì mới phát
-        const newUnlock = userBadgeRepo.create({ userId, badgeId: badge.id, unlockedAt: new Date() });
-        await userBadgeRepo.save(newUnlock);
-        newlyUnlocked.push(badge);
-      }
+  // 🛠️ Hàm "Đóng gói": Trao huy hiệu (Đã tối ưu tốc độ, không cần chọc DB tìm Badge nữa)
+  private static async grantBadgeObj(userId: string, badge: Badge, newlyUnlocked: Badge[]) {
+    const exists = await userBadgeRepo.findOneBy({ userId, badgeId: badge.id });
+    if (!exists) { 
+      const newUnlock = userBadgeRepo.create({ userId, badgeId: badge.id, unlockedAt: new Date() });
+      await userBadgeRepo.save(newUnlock);
+      newlyUnlocked.push(badge);
     }
   }
 
@@ -118,17 +97,21 @@ export class BadgeService {
   private static calculateStreak(progressList: UserProgress[]): number {
     if (!progressList || progressList.length === 0) return 0;
 
-    // Lấy danh sách các ngày user có nộp bài (chuẩn hóa về 0 giờ 0 phút để dễ so sánh)
+    // Lấy danh sách các ngày user có nộp bài 
+    // Dùng (p as any) để lách lỗi gạch đỏ TypeScript nếu Dev 1 chưa cập nhật Entity
     const sortedDates = progressList
-      .map(p => new Date(p.completedAt).setHours(0, 0, 0, 0))
+      .map(p => {
+        const dateString = (p as any).completedAt || (p as any).updatedAt || new Date();
+        return new Date(dateString).setHours(0, 0, 0, 0);
+      })
       .sort((a, b) => b - a); // Sắp xếp từ mới nhất đến cũ nhất
 
-    // Lọc bỏ các ngày trùng nhau (1 ngày nộp 10 bài thì cũng chỉ tính là 1 ngày)
+    // Lọc bỏ các ngày trùng nhau
     const uniqueDates = [...new Set(sortedDates)];
 
     let streak = 1;
     const today = new Date().setHours(0, 0, 0, 0);
-    const yesterday = today - 86400000; // Trừ đi 24 giờ (tính bằng mili-giây)
+    const yesterday = today - 86400000; // Trừ đi 24 giờ
 
     // Nếu hôm nay và hôm qua đều KHÔNG đăng nhập -> Rớt chuỗi về 0
     if (uniqueDates[0] !== today && uniqueDates[0] !== yesterday) return 0;
