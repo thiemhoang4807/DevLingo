@@ -1,15 +1,27 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../db/dataSource";
 import { Badge } from "../entities/Badge";
+import { BadgeService } from "./badgeService"; 
+import { AuthRequest } from "../middlewares/authMiddleware";
 import fs from "fs";
 import path from "path";
 
-// 🚀 Khai báo interface đè lên Request mặc định để TypeScript nhận diện req.file
 interface MulterRequest extends Request {
   file?: any;
 }
 
 const badgeRepo = AppDataSource.getRepository(Badge);
+
+export const getMyBadges = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user.id; // Lấy ID từ token đăng nhập
+    const data = await BadgeService.getMyBadges(userId);
+    
+    return res.status(200).json({ success: true, data });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 export const getBadges = async (req: Request, res: Response) => {
   try {
