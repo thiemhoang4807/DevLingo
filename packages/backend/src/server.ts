@@ -7,8 +7,8 @@ import lessonRoutes from "./lessons/lessonRoutes";
 import questionRoutes from "./questions/questionRoutes";
 import progressRoutes from "./progress/progressRoutes";
 import adminRoutes from "./routes/adminRoutes";
-import leaderboardRoutes from "./leaderboard/leaderboardRoutes";
-import { badgeRoutes } from "./badges/badgeRoutes"; 
+import leaderboardRoutes from "./routes/leaderboardRoutes";
+import { badgeRoutes } from "./routes/badgeRoutes";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -29,6 +29,7 @@ app.use(cors({
 app.use(express.json()); 
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); 
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, 
   max: 100, 
