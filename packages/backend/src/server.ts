@@ -1,53 +1,54 @@
 import express from "express";
-import cors from "cors"; // 1. Thêm dòng này
+import cors from "cors"; 
 import { AppDataSource } from "./db/dataSource";
 import authRoutes from "./auth/authRoutes";
 import userRoutes from "./users/userRoutes"; 
 import lessonRoutes from "./lessons/lessonRoutes";
 import questionRoutes from "./questions/questionRoutes";
 import progressRoutes from "./progress/progressRoutes";
-import dotenv from "dotenv";
-dotenv.config();
 import adminRoutes from "./routes/adminRoutes";
 import leaderboardRoutes from "./leaderboard/leaderboardRoutes";
-import badgeRoutes from "./badges/badgeRoutes";
+import { badgeRoutes } from "./badges/badgeRoutes"; 
+import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import path from "path"; 
+
+dotenv.config();
 
 const app = express();
-app.use(helmet());
 const PORT = 5000;
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 phút
-  max: 100, // Mỗi IP chỉ được gọi tối đa 100 lần trong 15 phút
-  message: { success: false, message: "Spam ít thôi bro, đi lọ 1 tí đi!" }
-});
 
-// 2. Cấu hình CORS (Phải đặt TRƯỚC các Routes)
+app.use(helmet());
+
 app.use(cors({
-  origin: "http://localhost:5173", // Cho phép Frontend của bạn
-  credentials: true                // Cho phép gửi cookie/token nếu cần
+  origin: "http://localhost:5173", 
+  credentials: true                
 }));
 
 app.use(express.json()); 
 
-// Routes
+app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); // Điều chỉnh đường dẫn '../uploads' tùy cấu trúc thư mục của bạn
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
+  message: { success: false, message: "Spam ít thôi bro, đi lọ 1 tí đi!" }
+});
+app.use("/api", limiter); 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
-app.use("/api/admin", adminRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/leaderboard", leaderboardRoutes); 
-app.use("/api/users/me/badges", badgeRoutes);
-app.use("/api", limiter);
+app.use("/api", badgeRoutes); 
 
-// Khởi tạo Database rồi chạy Server
 AppDataSource.initialize()
   .then(() => {
-    console.log("Data Source has been initialized!");
+    console.log("🚀 Data Source has been initialized!");
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`🚀 Server is running on port ${PORT}`);
     });
   })
   .catch((error) => {
