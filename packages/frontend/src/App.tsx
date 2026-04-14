@@ -10,7 +10,7 @@ import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 
 // === CÁC COMPONENT ADMIN ĐƯỢC THÊM VÀO TỪ SPRINT NÀY ===
-import AdminLayout from './components/layout/AdminLayout';
+import AdminLayout from './layouts/AdminLayout';
 import TermManagement from './pages/admin/TermManagement';
 import QuizManagement from './pages/admin/QuizManagement';
 import UserManagement from './pages/admin/UserManagement';
