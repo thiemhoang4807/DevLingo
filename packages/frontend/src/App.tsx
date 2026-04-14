@@ -9,6 +9,7 @@ import Body from './components/BodyPage';
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 import LearningHistoryPage from './pages/LearningHistoryPage';
+import UserProfilePage from "./pages/UserProfilePage";
 import LeaderBoard from './pages/LeaderBoard';
 
 // 🚀 Đã xóa bg-[#212121] ở thẻ main
@@ -60,6 +61,7 @@ function App() {
         {/* Điều hướng mặc định */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/profile" element={<MainLayout><UserProfilePage /></MainLayout>} />
       </Routes>
     </Router>
   );
