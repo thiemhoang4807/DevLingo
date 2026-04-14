@@ -1,0 +1,10 @@
+node_modules/
+
+# Build files
+dist/
+
+*.sqlite
+devLingoDb.sqlite
+
+uploads/*
+!uploads/.gitkeep

@@ -24,6 +24,11 @@ export const AppDataSource = new DataSource({
     Badge,
     UserBadge
   ],
+  extra: {
+    pragmas: {
+      journal_mode: 'WAL' 
+    }
+  },
   migrations: ["src/migrations/**/*.ts"],
   subscribers: [],
 });

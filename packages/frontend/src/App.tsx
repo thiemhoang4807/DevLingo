@@ -9,8 +9,12 @@ import ContributionPage from './pages/ContributionPage';
 import Body from './components/BodyPage';
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
+import LearningHistoryPage from './pages/LearningHistoryPage';
+import UserProfilePage from "./pages/UserProfilePage";
+import LeaderBoard from './pages/LeaderBoard';
 
 // Layout wrapper hỗ trợ chuyển đổi Theme cho phần nền main
+// 🚀 Đã xóa bg-[#212121] ở thẻ main
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -40,6 +44,8 @@ function App() {
 
         {/* Contribution Route */}
         <Route path="/contribution" element={<MainLayout><ContributionPage /></MainLayout>} />
+        {/* Route cho Learning History */}
+        <Route path="/learning-history" element={<MainLayout><LearningHistoryPage /></MainLayout>} />
 
         {/* PHÂN HỆ TERMS (TỪ ĐIỂN) */}
         <Route 
@@ -56,6 +62,13 @@ function App() {
 
         {/* Mặc định mở web lên sẽ vào trang Login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Leader Board */}
+        <Route path="/leader-board" element={<MainLayout><LeaderBoard /></MainLayout>} />
+
+        {/* Điều hướng mặc định */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/profile" element={<MainLayout><UserProfilePage /></MainLayout>} />
       </Routes>
     </Router>
   );
