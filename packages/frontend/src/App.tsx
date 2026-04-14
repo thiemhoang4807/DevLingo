@@ -9,6 +9,7 @@ import Body from './components/BodyPage';
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 import LearningHistoryPage from './pages/LearningHistoryPage';
+import LeaderBoard from './pages/LeaderBoard';
 
 // 🚀 Đã xóa bg-[#212121] ở thẻ main
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
@@ -52,6 +53,9 @@ function App() {
           <Route index element={<TermPageCategory />} />
           <Route path="letter" element={<TermPageCategorySpecializedLetter />} />
         </Route>
+
+        {/* Leader Board */}
+        <Route path="/leader-board" element={<MainLayout><LeaderBoard /></MainLayout>} />
 
         {/* Điều hướng mặc định */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
