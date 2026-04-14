@@ -1,9 +1,9 @@
 import express from "express";
-import cors from "cors"; 
+import cors from "cors";
 import { AppDataSource } from "./db/dataSource";
 import authRoutes from "./auth/authRoutes";
 import userRoutes from "./users/userRoutes"; 
-import lessonRoutes from "./lessons/lessonRoutes";
+import lessonRoutes from "./lessons/lessonRoutes"; // Đã import
 import questionRoutes from "./questions/questionRoutes";
 import progressRoutes from "./progress/progressRoutes";
 import adminRoutes from "./routes/adminRoutes";
@@ -13,6 +13,8 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import path from "path"; 
+import adminRoutes from "./routes/adminRoutes"; 
+import logger from "./utils/logger";
 
 dotenv.config();
 
@@ -36,9 +38,16 @@ const limiter = rateLimit({
   message: { success: false, message: "Spam ít thôi bro, đi lọ 1 tí đi!" }
 });
 app.use("/api", limiter); 
+// 🚀 Các middleware ghi log cơ bản (tùy chọn)
+app.use((req, res, next) => {
+  logger.info(`[${req.method}] ${req.url}`);
+  next();
+});
+
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/lessons", lessonRoutes);
+app.use("/api/lessons", lessonRoutes); // 🚀 ĐÃ BỎ DẤU COMMENT Ở ĐÂY
 app.use("/api/questions", questionRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/leaderboard", leaderboardRoutes); 
@@ -49,8 +58,11 @@ AppDataSource.initialize()
     console.log("🚀 Data Source has been initialized!");
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
+    logger.info("Data Source has been initialized!");
+    app.listen(PORT, () => {
+      logger.info(`Server is running on port ${PORT}`);
     });
   })
   .catch((error) => {
-    console.error("❌ Error during Data Source initialization:", error);
+    logger.error(`❌ Error during Data Source initialization: ${error.message}`);
   });
