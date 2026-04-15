@@ -11,6 +11,7 @@ import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 
 // Layout wrapper hỗ trợ chuyển đổi Theme cho phần nền main
+
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -56,6 +57,7 @@ function App() {
 
         {/* Mặc định mở web lên sẽ vào trang Login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
+
       </Routes>
     </Router>
   );
