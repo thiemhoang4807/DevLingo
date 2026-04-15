@@ -3,18 +3,20 @@ import { adminController } from "../controllers/adminController";
 
 const router = Router();
 
-// ================= ROUTES CHO LESSON =================
-router.get("/lessons", adminController.getLessons);          // Lấy danh sách
-router.get("/lessons/:id", adminController.getLessonById);   // Lấy chi tiết
-router.post("/lessons", adminController.createLesson);       // Thêm mới
-router.put("/lessons/:id", adminController.updateLesson);    // Sửa
-router.delete("/lessons/:id", adminController.deleteLesson); // Xóa
+router.get("/lessons", adminController.getLessons);
+router.get("/lessons/:id", adminController.getLessonById);
+router.post("/lessons", adminController.createLesson);
+router.put("/lessons/:id", adminController.updateLesson);
+router.delete("/lessons/:id", adminController.deleteLesson);
 
-// ================= ROUTES CHO QUESTION =================
-router.get("/questions", adminController.getQuestions);          // Lấy danh sách (có thể truyền ?lessonId=1)
-router.get("/questions/:id", adminController.getQuestionById);   // Lấy chi tiết
-router.post("/questions", adminController.createQuestion);       // Thêm mới
-router.put("/questions/:id", adminController.updateQuestion);    // Sửa
-router.delete("/questions/:id", adminController.deleteQuestion); // Xóa
+router.get("/questions", adminController.getQuestions);
+router.get("/questions/:id", adminController.getQuestionById);
+router.post("/questions", adminController.createQuestion);
+router.put("/questions/:id", adminController.updateQuestion);
+router.delete("/questions/:id", adminController.deleteQuestion);
+
+router.get("/contributions", adminController.getContributions);
+router.put("/contributions/:id/approve", adminController.approveContribution);
+router.put("/contributions/:id/reject", adminController.rejectContribution);
 
 export default router;
