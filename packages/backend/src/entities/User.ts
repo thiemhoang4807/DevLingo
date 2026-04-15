@@ -2,7 +2,8 @@ import {
   Entity, 
   PrimaryGeneratedColumn, 
   Column, 
-  CreateDateColumn 
+  CreateDateColumn, 
+  Index
 } from "typeorm";
 
 @Entity("users")
@@ -22,6 +23,7 @@ export class User {
   @Column("varchar", { default: "student" })
   role!: string;
 
+  @Index()
   @Column("integer", { default: 0 })
   xp!: number;
 
