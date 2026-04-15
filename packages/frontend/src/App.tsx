@@ -15,6 +15,13 @@ import LeaderBoard from './pages/LeaderBoard';
 
 // Layout wrapper hỗ trợ chuyển đổi Theme cho phần nền main
 
+// === CÁC COMPONENT ADMIN ĐƯỢC THÊM VÀO TỪ SPRINT NÀY ===
+import AdminLayout from './layouts/AdminLayout';
+import TermManagement from './pages/admin/TermManagement';
+import QuizManagement from './pages/admin/QuizManagement';
+import UserManagement from './pages/admin/UserManagement';
+
+// Layout wrapper to include Header and Footer for inner pages
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -58,6 +65,17 @@ function App() {
         >
           <Route index element={<TermPageCategory />} />
           <Route path="letter" element={<TermPageCategorySpecializedLetter />} />
+        </Route>
+        
+        {/* ========================================================
+            PHÂN HỆ ADMIN DASHBOARD (THÊM MỚI CHỈ DÀNH CHO ADMIN)
+            - Nằm ngoài MainLayout để không bị dính Header/Footer cũ
+            - Dùng AdminLayout (Sidebar đen)
+        ======================================================== */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="terms" element={<TermManagement />} />
+          <Route path="quizzes" element={<QuizManagement />} />
+          <Route path="users" element={<UserManagement />} />
         </Route>
 
         {/* Mặc định mở web lên sẽ vào trang Login */}
