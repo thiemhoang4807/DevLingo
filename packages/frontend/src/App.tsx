@@ -14,7 +14,7 @@ import UserProfilePage from "./pages/UserProfilePage";
 import LeaderBoard from './pages/LeaderBoard';
 
 // Layout wrapper hỗ trợ chuyển đổi Theme cho phần nền main
-// 🚀 Đã xóa bg-[#212121] ở thẻ main
+
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -62,13 +62,17 @@ function App() {
 
         {/* Mặc định mở web lên sẽ vào trang Login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
+
         {/* Leader Board */}
         <Route path="/leader-board" element={<MainLayout><LeaderBoard /></MainLayout>} />
 
+        {/*Profile*/}
+        <Route path="/profile" element={<MainLayout><UserProfilePage /></MainLayout>} />
+        
         {/* Điều hướng mặc định */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/profile" element={<MainLayout><UserProfilePage /></MainLayout>} />
+        
       </Routes>
     </Router>
   );
