@@ -1,50 +1,43 @@
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 
-// Hàm tạo storage linh hoạt cho từng thư mục (badges, lessons, v.v.)
-const createStorage = (subFolder: string) => multer.diskStorage({
-    destination: (req, file, cb) => {
-        // Đường dẫn: packages/backend/uploads/badges hoặc packages/backend/uploads/lessons
-        const rootDir = process.cwd(); // Đảm bảo lấy đúng thư mục gốc của backend
-        const uploadPath = path.join(rootDir, 'uploads', subFolder);
-        
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-        }
-        cb(null, uploadPath);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        // Tên file: thumbnail-123456.png hoặc image-123456.jpg
-        cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
-    }
-});
-
-// Bộ lọc định dạng ảnh dùng chung
-const imageFilter = (req: any, file: any, cb: any) => {
-    const filetypes = /jpeg|jpg|png|svg|webp/;
-    const mimetype = filetypes.test(file.mimetype);
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-
-    if (mimetype && extname) {
-        return cb(null, true);
-    }
-    cb(new Error("Định dạng không hỗ trợ! Chỉ chấp nhận jpg, png, svg, webp."));
+// 1. Đảm bảo thư mục lưu ảnh luôn tồn tại (nếu chưa có thì tự động tạo)
+const ensureDirectoryExistence = (dirPath: string) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
 };
 
-// --- EXPORTS ---
-
-// Dùng cho Admin Badge API (Giới hạn 2MB)
-export const uploadBadge = multer({ 
-    storage: createStorage('badges'),
-    limits: { fileSize: 2 * 1024 * 1024 },
-    fileFilter: imageFilter
+// 2. Cấu hình nơi lưu trữ và tên file
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Sếp lưu ảnh vào thư mục uploads/badges (sau này có thể đổi tên tùy ý)
+    const uploadPath = path.join(process.cwd(), "uploads/badges"); 
+    ensureDirectoryExistence(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    // Đổi tên file để không bao giờ bị trùng (VD: image-1710000000.png)
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+  },
 });
 
-// Dùng cho Admin Lesson API (Giới hạn 5MB cho ảnh bài học chất lượng cao hơn)
-export const uploadLesson = multer({ 
-    storage: createStorage('lessons'),
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: imageFilter
+// 3. Bộ lọc: Chỉ cho phép người dùng up ảnh, cấm up file bậy bạ (exe, pdf...)
+const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Chỉ cho phép tải lên file định dạng ảnh (JPG, PNG, GIF, WEBP)!"));
+  }
+};
+
+// 4. Đóng gói lại thành biến uploadBadge để export ra ngoài
+export const uploadBadge = multer({ 
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 } // Giới hạn ảnh tối đa 5MB cho nhẹ Server
 });

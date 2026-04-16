@@ -44,11 +44,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/lessons", lessonRoutes); // 🚀 ĐÃ BỎ DẤU COMMENT Ở ĐÂY
+app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
+app.use("/api/contributions", contributionRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/leaderboard", leaderboardRoutes); 
 app.use("/api", badgeRoutes); 
@@ -63,6 +64,11 @@ AppDataSource.initialize()
       logger.info(`Server is running on port ${PORT}`);
     });
   })
-  .catch((error) => {
-    logger.error(`❌ Error during Data Source initialization: ${error.message}`);
+  .catch((error: unknown) => {
+    if (error instanceof Error) {
+      console.error("❌ Error during Data Source initialization:", error.message);
+      return;
+    }
+
+    console.error("❌ Unknown error during Data Source initialization");
   });
