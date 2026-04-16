@@ -5,16 +5,29 @@ import QuizManager from './pages/QuizManager';
 import LandingPage from './pages/LandingPage';
 import TermPageCategory from './pages/TermPageCaterory';
 import TermPageCategorySpecializedLetter from './pages/TermPageCategorySpecializedLetter';
+import ContributionPage from './pages/ContributionPage';
 import Body from './components/BodyPage';
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
+import LearningHistoryPage from './pages/LearningHistoryPage';
+import UserProfilePage from "./pages/UserProfilePage";
+import LeaderBoard from './pages/LeaderBoard';
+
+// Layout wrapper hỗ trợ chuyển đổi Theme cho phần nền main
+
+// === CÁC COMPONENT ADMIN ĐƯỢC THÊM VÀO TỪ SPRINT NÀY ===
+import AdminLayout from './layouts/AdminLayout';
+import TermManagement from './pages/admin/TermManagement';
+import QuizManagement from './pages/admin/QuizManagement';
+import UserManagement from './pages/admin/UserManagement';
 
 // Layout wrapper to include Header and Footer for inner pages
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow bg-[#212121]">
+      {/* bg-white: Nền trắng cho Light Mode, dark:bg-[#212121]: Nền xám đen cho Dark Mode */}
+      <main className="flex-grow bg-white dark:bg-[#212121] transition-colors duration-300">
         {children}
       </main>
       <Footer />
@@ -36,24 +49,48 @@ function App() {
         {/* Quizzes Route */}
         <Route path="/quizzes" element={<MainLayout><QuizManager /></MainLayout>} />
 
-        {/* PHÂN HỆ TERMS (TỪ ĐIỂN) - Đã sửa lại chuẩn Router */}
+        {/* Contribution Route */}
+        <Route path="/contribution" element={<MainLayout><ContributionPage /></MainLayout>} />
+        {/* Route cho Learning History */}
+        <Route path="/learning-history" element={<MainLayout><LearningHistoryPage /></MainLayout>} />
+
+        {/* PHÂN HỆ TERMS (TỪ ĐIỂN) */}
         <Route 
           path="/term" 
           element={
             <MainLayout>
-              <Body /> {/* Body làm bộ khung chứa Sidebar bên phải */}
+              <Body /> 
             </MainLayout>
           }
         >
-          {/* Mặc định vào /term sẽ hiện trang Categories (Ảnh 1) */}
           <Route index element={<TermPageCategory />} />
-          
-          {/* Vào /term/letter sẽ hiện danh sách từ theo chữ cái (Ảnh 2) */}
           <Route path="letter" element={<TermPageCategorySpecializedLetter />} />
         </Route>
         
+        {/* ========================================================
+            PHÂN HỆ ADMIN DASHBOARD (THÊM MỚI CHỈ DÀNH CHO ADMIN)
+            - Nằm ngoài MainLayout để không bị dính Header/Footer cũ
+            - Dùng AdminLayout (Sidebar đen)
+        ======================================================== */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="terms" element={<TermManagement />} />
+          <Route path="quizzes" element={<QuizManagement />} />
+          <Route path="users" element={<UserManagement />} />
+        </Route>
+
         {/* Mặc định mở web lên sẽ vào trang Login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Leader Board */}
+        <Route path="/leader-board" element={<MainLayout><LeaderBoard /></MainLayout>} />
+
+        {/*Profile*/}
+        <Route path="/profile" element={<MainLayout><UserProfilePage /></MainLayout>} />
+        
+        {/* Điều hướng mặc định */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        
       </Routes>
     </Router>
   );
