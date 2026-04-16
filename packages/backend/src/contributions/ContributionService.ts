@@ -9,7 +9,7 @@ interface SubmitContributionInput {
   lessonId?: number;
   termName?: string;
   definition?: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
 }
 
 export class ContributionService {
@@ -17,24 +17,15 @@ export class ContributionService {
     const lessonId = Number(payload.lessonId);
     const termName = payload.termName?.trim();
     const definition = payload.definition?.trim();
-    const imageUrl = payload.imageUrl?.trim() || null;
+    const imageUrl = payload.imageUrl; // Đã xử lý ở Controller
 
-    if (!lessonId || Number.isNaN(lessonId)) {
-      throw new Error("lessonId is required");
-    }
-
-    if (!termName) {
-      throw new Error("termName is required");
-    }
-
-    if (!definition) {
-      throw new Error("definition is required");
-    }
+    // Validation
+    if (!lessonId || Number.isNaN(lessonId)) throw new Error("lessonId is required");
+    if (!termName) throw new Error("termName is required");
+    if (!definition) throw new Error("definition is required");
 
     const lesson = await lessonRepo.findOneBy({ id: lessonId });
-    if (!lesson) {
-      throw new Error("Lesson not found");
-    }
+    if (!lesson) throw new Error("Lesson not found");
 
     const contribution = contributionRepo.create({
       lessonId,
@@ -57,7 +48,7 @@ export class ContributionService {
     return await contributionRepo.find({
       where: { contributorId: userId },
       relations: ["lesson"],
-      order: { createdAt: "DESC" },
+      order: { createdAt: "DESC" }
     });
   }
 }
