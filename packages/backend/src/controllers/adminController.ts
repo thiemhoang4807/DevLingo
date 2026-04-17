@@ -4,7 +4,7 @@ import { Lesson } from "../entities/Lesson";
 import { Question } from "../entities/Question";
 import { Contribution } from "../entities/Contribution";
 import { Term } from "../entities/Term";
-import logger from "../utils/logger"; // Giữ lại logger từ nhánh develop
+import logger from "../utils/logger";
 
 const lessonRepo = AppDataSource.getRepository(Lesson);
 const questionRepo = AppDataSource.getRepository(Question);
@@ -12,35 +12,30 @@ const contributionRepo = AppDataSource.getRepository(Contribution);
 const termRepo = AppDataSource.getRepository(Term);
 
 export const adminController = {
-  // === LOGIC TỪ NHÁNH DEVELOP: Đã có phân trang, lọc và logger ===
+  // === QUẢN LÝ BÀI HỌC (LESSON) ===
   getLessons: async (req: Request, res: Response): Promise<void> => {
     try {
       const { search, difficulty, isPublished, page = 1, limit = 10 } = req.query;
       const query = lessonRepo.createQueryBuilder("lesson");
 
-      // Admin có quyền search theo tiêu đề
       if (search) {
         query.andWhere("lesson.title LIKE :search", { search: `%${search}%` });
       }
 
-      // Lọc theo độ khó
       if (difficulty) {
         query.andWhere("lesson.difficulty = :difficulty", { difficulty });
       }
 
-      // Admin lọc được cả trạng thái Published/Draft
       if (isPublished !== undefined) {
         query.andWhere("lesson.isPublished = :isPublished", { isPublished: isPublished === 'true' });
       }
 
-      // 🚀 BẮT BUỘC PHẢI PHÂN TRANG
       const pageNumber = Number(page);
       const limitNumber = Number(limit);
       query.skip((pageNumber - 1) * limitNumber).take(limitNumber);
 
       const [lessons, total] = await query.getManyAndCount();
 
-      // 🚀 Ghi log gọn gàng không bị rớt dòng để sau này trace bug cho dễ
       logger.info(`[ADMIN] Fetched ${lessons.length} lessons | Query: ${JSON.stringify(req.query)}`);
 
       res.status(200).json({ 
@@ -59,7 +54,56 @@ export const adminController = {
     }
   },
 
-  // === LOGIC TỪ NHÁNH FEATURE CỦA SẾP ===
+  getLessonById: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const lesson = await lessonRepo.findOneBy({ id: parseInt(id) });
+      if (!lesson) {
+        res.status(404).json({ success: false, message: "Lesson not found" });
+        return;
+      }
+      res.json({ success: true, data: lesson });
+    } catch (error) {
+      logger.error(`[ADMIN] Error fetching lesson by ID: ${error}`);
+      res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  },
+
+  createLesson: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const newLesson = lessonRepo.create(req.body);
+      await lessonRepo.save(newLesson);
+      res.status(201).json({ success: true, data: newLesson });
+    } catch (error) {
+      logger.error(`[ADMIN] Error creating lesson: ${error}`);
+      res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  },
+
+  updateLesson: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      await lessonRepo.update(id, req.body);
+      const updatedLesson = await lessonRepo.findOneBy({ id: parseInt(id) });
+      res.json({ success: true, data: updatedLesson });
+    } catch (error) {
+      logger.error(`[ADMIN] Error updating lesson: ${error}`);
+      res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  },
+
+  deleteLesson: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      await lessonRepo.delete(id);
+      res.json({ success: true, message: "Lesson deleted successfully" });
+    } catch (error) {
+      logger.error(`[ADMIN] Error deleting lesson: ${error}`);
+      res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  },
+
+  // === QUẢN LÝ CÂU HỎI (QUESTION) ===
   getQuestions: async (req: Request, res: Response): Promise<void> => {
     try {
       const { lessonId } = req.query;
@@ -73,18 +117,26 @@ export const adminController = {
     }
   },
 
+  // 🚀 HÀM VỪA ĐƯỢC THÊM VÀO ĐÂY:
+  getQuestionById: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const question = await questionRepo.findOneBy({ id: parseInt(id) });
+      if (!question) {
+        res.status(404).json({ success: false, message: "Question not found" });
+        return;
+      }
+      res.json({ success: true, data: question });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Internal server error" });
+    }
+  },
+
   createQuestion: async (req: Request, res: Response): Promise<void> => {
     try {
       const {
-        lessonId,
-        termId,
-        questionText,
-        optionA,
-        optionB,
-        optionC,
-        optionD,
-        correctOption,
-        xpReward,
+        lessonId, termId, questionText, optionA, optionB, optionC, optionD, correctOption, xpReward,
       } = req.body;
 
       const lesson = await lessonRepo.findOneBy({ id: parseInt(lessonId) });
@@ -97,11 +149,7 @@ export const adminController = {
         lessonId: parseInt(lessonId),
         termId: parseInt(termId),
         questionText,
-        optionA,
-        optionB,
-        optionC,
-        optionD,
-        correctOption,
+        optionA, optionB, optionC, optionD, correctOption,
         xpReward: xpReward || 10,
       });
 
@@ -136,12 +184,11 @@ export const adminController = {
     }
   },
 
+  // === QUẢN LÝ ĐÓNG GÓP (CONTRIBUTION) ===
   getContributions: async (req: Request, res: Response): Promise<void> => {
     try {
       const { status } = req.query;
-      const whereCondition = status
-        ? { status: String(status) as Contribution["status"] }
-        : undefined;
+      const whereCondition = status ? { status: String(status) as Contribution["status"] } : undefined;
 
       const contributions = await contributionRepo.find({
         where: whereCondition,
@@ -199,10 +246,7 @@ export const adminController = {
       res.json({
         success: true,
         message: "Contribution approved successfully",
-        data: {
-          contribution,
-          term: newTerm,
-        },
+        data: { contribution, term: newTerm },
       });
     } catch (error) {
       console.error(error);
