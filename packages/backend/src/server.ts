@@ -13,8 +13,8 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import path from "path"; 
-import adminRoutes from "./routes/adminRoutes"; 
 import logger from "./utils/logger";
+import ContributionRoutes from './contributions/ContributionRoutes'; 
 
 dotenv.config();
 
@@ -48,7 +48,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
-app.use("/api/contributions", contributionRoutes);
+app.use("/api/contributions", ContributionRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/leaderboard", leaderboardRoutes); 
@@ -57,18 +57,18 @@ app.use("/api", badgeRoutes);
 AppDataSource.initialize()
   .then(() => {
     console.log("🚀 Data Source has been initialized!");
+    logger.info("Data Source has been initialized!");
+
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
-    logger.info("Data Source has been initialized!");
-    app.listen(PORT, () => {
       logger.info(`Server is running on port ${PORT}`);
     });
-  })
+  }) 
   .catch((error: unknown) => {
     if (error instanceof Error) {
       console.error("❌ Error during Data Source initialization:", error.message);
       return;
     }
-
+    
     console.error("❌ Unknown error during Data Source initialization");
   });
