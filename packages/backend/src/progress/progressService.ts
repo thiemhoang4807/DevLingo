@@ -4,7 +4,7 @@ import { User } from "../entities/User";
 import { Lesson } from "../entities/Lesson";
 import { Question } from "../entities/Question";
 import { calculateXP, checkLevelUp } from "../utils/gamificationLogic";
-import { BadgeService } from "../badges/badgeService";
+import { BadgeService } from "../services/badgeService";
 
 const progressRepo = AppDataSource.getRepository(UserProgress);
 const userRepo = AppDataSource.getRepository(User);
