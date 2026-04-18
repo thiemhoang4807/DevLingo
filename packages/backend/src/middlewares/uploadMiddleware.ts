@@ -36,8 +36,8 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
 };
 
 // 4. Đóng gói lại thành biến uploadBadge để export ra ngoài
-export const uploadBadge = multer({ 
+export const upload = multer({ 
     storage: storage,
     fileFilter: fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 } // Giới hạn ảnh tối đa 5MB cho nhẹ Server
+    limits: { fileSize: 5 * 1024 * 1024 } 
 });
