@@ -1,0 +1,39 @@
+import { 
+  Entity, 
+  PrimaryGeneratedColumn, 
+  Column, 
+  OneToMany 
+} from "typeorm";
+import type { Term } from "./Term";
+import { Question } from "./Question";
+
+@Entity("lessons")
+export class Lesson {
+  @PrimaryGeneratedColumn("increment")
+  id!: number;
+
+  @Column("varchar", { nullable: false })
+  title!: string;
+
+  @Column("text", { nullable: true })
+  description?: string | null;
+
+  @Column("varchar", { nullable: true })
+  thumbnailUrl?: string | null;
+
+  @Column("integer", { nullable: true })
+  orderIndex?: number | null;
+
+  @Column("boolean", { default: false })
+  isPublished!: boolean;
+
+  // Tích hợp thêm cột độ khó từ nhánh Gamification của Kiệt
+  @Column("varchar", { default: "easy" })
+  difficulty!: "easy" | "medium" | "hard";
+
+  @OneToMany("Term", "lesson")
+  terms!: Term[];
+  
+  @OneToMany(() => Question, (question) => question.lesson)
+  questions!: Question[];
+}
