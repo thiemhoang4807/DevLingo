@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { uploadBadge } from "../middlewares/uploadMiddleware"; 
+import { upload } from "../middlewares/uploadMiddleware"; 
 import { verifyToken } from "../middlewares/authMiddleware";
 import { 
   createBadge, 
@@ -10,10 +10,11 @@ import {
 } from "../controllers/badgeController";
 
 const router = Router();
+
 router.get("/badges/me", verifyToken, getMyBadges);
-router.post("/badges", verifyToken, uploadBadge.single("image"), createBadge);
+router.post("/badges", verifyToken, upload.single("image"), createBadge); 
 router.get("/badges", verifyToken, getBadges);
-router.put("/badges/:id", verifyToken, uploadBadge.single("image"), updateBadge);
+router.put("/badges/:id", verifyToken, upload.single("image"), updateBadge); 
 router.delete("/badges/:id", verifyToken, deleteBadge);
 
 export { router as badgeRoutes };
