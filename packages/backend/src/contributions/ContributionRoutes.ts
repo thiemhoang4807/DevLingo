@@ -1,14 +1,22 @@
 import { Router } from "express";
-import { verifyToken } from "../middlewares/authMiddleware";
+import { verifyToken, requireAdmin } from "../middlewares/authMiddleware"; 
 import { ContributionController } from "./ContributionController";
-// 🚀 Nhớ dùng đúng cái middleware upload của team (ở đây tôi dùng uploadBadge như file badgeRoutes sếp gửi)
-import { uploadBadge } from "../middlewares/uploadMiddleware"; 
+import { upload } from "../middlewares/uploadMiddleware";
 
 const router = Router();
 
-// Thêm uploadBadge.single("image") vào giữa verifyToken và Controller
-router.post("/", verifyToken, uploadBadge.single("image"), ContributionController.submit);
+// User gửi đóng góp (Gắn thêm upload ảnh để nhận ảnh từ vựng)
+router.post("/", verifyToken, upload.single("image"), ContributionController.createContribution);
 
-router.get("/me", verifyToken, ContributionController.getMyContributions);
+// Lấy danh sách đóng góp của CÁ NHÂN User đó (gợi ý từ VS Code của bạn)
+router.get("/my-contributions", verifyToken, ContributionController.getMyContributions);
+
+// ==========================================
+// 🔴 Chỉ dành cho Admin duyệt/từ chối
+// ==========================================
+router.use(verifyToken, requireAdmin);
+router.get("/", ContributionController.getContributions);
+router.put("/:id/approve", ContributionController.approveContribution);
+router.put("/:id/reject", ContributionController.rejectContribution);
 
 export default router;

@@ -3,8 +3,11 @@ import {
   PrimaryGeneratedColumn, 
   Column, 
   CreateDateColumn, 
-  Index
+  Index,
+  OneToMany // Thêm cái này
 } from "typeorm";
+import { UserBadge } from "./UserBadge"; // Import thêm
+import { UserProgress } from "./UserProgress"; // Import thêm
 
 @Entity("users")
 export class User {
@@ -32,4 +35,12 @@ export class User {
 
   @CreateDateColumn({ type: "datetime" })
   createdAt!: Date;
+
+  // ✅ BỔ SUNG: Để có thể truy xuất huy hiệu từ User
+  @OneToMany(() => UserBadge, (ub) => ub.user)
+  userBadges!: UserBadge[];
+
+  // ✅ BỔ SUNG: Để có thể truy xuất tiến độ từ User
+  @OneToMany(() => UserProgress, (up) => up.user)
+  progressRecords!: UserProgress[];
 }

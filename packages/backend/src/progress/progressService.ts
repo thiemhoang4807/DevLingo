@@ -4,7 +4,7 @@ import { User } from "../entities/User";
 import { Lesson } from "../entities/Lesson";
 import { Question } from "../entities/Question";
 import { calculateXP, checkLevelUp } from "../utils/gamificationLogic";
-import { BadgeService } from "../services/badgeService";
+import { BadgeService } from "../badge/badgeService";
 
 const progressRepo = AppDataSource.getRepository(UserProgress);
 const userRepo = AppDataSource.getRepository(User);
@@ -20,12 +20,18 @@ export class ProgressService {
 
     const totalQuestions = await questionRepo.count({ where: { lessonId } });
 
+    // 🛡️ CHỐNG HACK: Không cho phép số câu đúng lớn hơn tổng số câu hỏi
+    if (score < 0 || score > totalQuestions) {
+      throw new Error("Invalid score: Có dấu hiệu gian lận điểm số!");
+    }
+
     // 2. Tính toán XP nhận được (score ở đây được hiểu là số câu đúng)
     const currentAttemptXP = calculateXP(score, totalQuestions, lesson.difficulty || "easy");
 
-    // 3. Xử lý lưu Progress (như Sprint 2)
+    // 3. Xử lý lưu Progress
     let progress = await progressRepo.findOne({ where: { userId, lessonId } });
     let actualEarnedXP = 0;
+    
     if (progress) {
       if (score > progress.highestScore) {
         const oldXP = calculateXP(progress.highestScore, totalQuestions, lesson.difficulty || "easy");
@@ -80,6 +86,7 @@ export class ProgressService {
       unlockedBadges: newlyUnlockedBadges 
     };
   }
+
   static async getMyProgress(userId: string) {
     return progressRepo.find({
       where: { userId },

@@ -5,70 +5,81 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import path from "path"; 
 import logger from "./utils/logger";
-
-// Database & Routes
 import { AppDataSource } from "./db/dataSource";
+
+// ==========================================
+// 📦 IMPORT CÁC MODULE TÍNH NĂNG (FEATURE-BASED)
+// ==========================================
 import authRoutes from "./auth/authRoutes";
 import userRoutes from "./users/userRoutes"; 
 import lessonRoutes from "./lessons/lessonRoutes"; 
 import questionRoutes from "./questions/questionRoutes";
+import termRoutes from "./terms/termRoutes"; // 👈 ĐÃ BỔ SUNG: Module Từ vựng
+import ContributionRoutes from './contributions/ContributionRoutes'; 
 import progressRoutes from "./progress/progressRoutes";
-import adminRoutes from "./routes/adminRoutes"; 
-import leaderboardRoutes from "./routes/leaderboardRoutes";
-import { badgeRoutes } from "./routes/badgeRoutes";
-import contributionRoutes from "./contributions/ContributionRoutes";
+import leaderboardRoutes from "./leaderboard/leaderboardRoutes";
+import { badgeRoutes } from "./badge/badgeRoutes";
 
 dotenv.config();
 
 const app = express();
-const PORT = 5000;
+const PORT = 5000; 
 
+// ==========================================
+// 🛡️ MIDDLEWARE BẢO MẬT & TIỆN ÍCH
+// ==========================================
 app.use(helmet());
 
 app.use(cors({
-  origin: "http://localhost:5173", 
+  origin: "http://localhost:5173", // Link Frontend 
   credentials: true                
 }));
 
 app.use(express.json()); 
 
+// Cấp quyền truy cập công khai cho thư mục chứa ảnh upload
 app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); 
 
+// 🛑 KHIÊN CHỐNG SPAM (Rate Limiter)
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 100, // Giới hạn 100 requests / 1 IP
   message: { success: false, message: "Spam ít thôi bro, đi lọ 1 tí đi!" }
 });
-app.use("/api", limiter); 
+ app.use("/api", limiter); 
 
-// 🚀 Các middleware ghi log cơ bản (tùy chọn)
+// 📝 LOGGER: Ghi nhận mọi request gửi tới
 app.use((req, res, next) => {
   logger.info(`[${req.method}] ${req.url}`);
   next();
 });
 
-// Đăng ký các Routes
+// ==========================================
+// 🚀 ĐĂNG KÝ TUYẾN ĐƯỜNG (ROUTER MOUNTING)
+// ==========================================
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
-app.use("/api/contributions", contributionRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/api/terms", termRoutes); // 👈 ĐÃ BỔ SUNG: API Từ vựng
+app.use("/api/contributions", ContributionRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/leaderboard", leaderboardRoutes); 
-app.use("/api", badgeRoutes); 
+app.use("/api/badges", badgeRoutes);
 
-// 🚀 Đã sửa lại lỗi cú pháp ngoặc nhọn ở đoạn này
+// ==========================================
+// 🗄️ KHỞI ĐỘNG DATABASE & SERVER
+// ==========================================
 AppDataSource.initialize()
   .then(() => {
-    logger.info("Data Source has been initialized!");
     console.log("🚀 Data Source has been initialized!");
-    
+    logger.info("Data Source has been initialized!");
+
     app.listen(PORT, () => {
-      logger.info(`Server is running on port ${PORT}`);
       console.log(`🚀 Server is running on port ${PORT}`);
+      logger.info(`Server is running on port ${PORT}`);
     });
-  })
+  }) 
   .catch((error: unknown) => {
     if (error instanceof Error) {
       console.error("❌ Error during Data Source initialization:", error.message);
