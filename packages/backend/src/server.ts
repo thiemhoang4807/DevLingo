@@ -1,26 +1,24 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import path from "path"; 
 import logger from "./utils/logger";
 import { AppDataSource } from "./db/dataSource";
 
-// ==========================================
 // 📦 IMPORT CÁC MODULE TÍNH NĂNG (FEATURE-BASED)
-// ==========================================
 import authRoutes from "./auth/authRoutes";
 import userRoutes from "./users/userRoutes"; 
 import lessonRoutes from "./lessons/lessonRoutes"; 
 import questionRoutes from "./questions/questionRoutes";
-import termRoutes from "./terms/termRoutes"; // 👈 ĐÃ BỔ SUNG: Module Từ vựng
+import termRoutes from "./terms/termRoutes"; 
 import ContributionRoutes from './contributions/ContributionRoutes'; 
 import progressRoutes from "./progress/progressRoutes";
 import leaderboardRoutes from "./leaderboard/leaderboardRoutes";
 import { badgeRoutes } from "./badge/badgeRoutes";
-
-dotenv.config();
 
 const app = express();
 const PORT = 5000; 
@@ -46,7 +44,8 @@ const limiter = rateLimit({
   max: 100, // Giới hạn 100 requests / 1 IP
   message: { success: false, message: "Spam ít thôi bro, đi lọ 1 tí đi!" }
 });
- app.use("/api", limiter); 
+// 💡 Bật dòng dưới nếu đang dùng Postman test dồn dập (Stress Test)
+// app.use("/api", limiter); 
 
 // 📝 LOGGER: Ghi nhận mọi request gửi tới
 app.use((req, res, next) => {
@@ -61,7 +60,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
-app.use("/api/terms", termRoutes); // 👈 ĐÃ BỔ SUNG: API Từ vựng
+app.use("/api/terms", termRoutes); 
 app.use("/api/contributions", ContributionRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/leaderboard", leaderboardRoutes); 
