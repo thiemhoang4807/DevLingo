@@ -12,6 +12,7 @@ import Footer from './layouts/Footer';
 import LearningHistoryPage from './pages/LearningHistoryPage';
 import UserProfilePage from "./pages/UserProfilePage";
 import LeaderBoard from './pages/LeaderBoard';
+import TermPageCategoryDetail from './pages/TermPageCategoryDetail';
 
 // Layout wrapper hỗ trợ chuyển đổi Theme cho phần nền main
 
@@ -64,7 +65,8 @@ function App() {
           }
         >
           <Route index element={<TermPageCategory />} />
-          <Route path="letter" element={<TermPageCategorySpecializedLetter />} />
+          <Route path="letter/:letter" element={<TermPageCategorySpecializedLetter />} />
+          <Route path="category/:categoryId" element={<TermPageCategoryDetail />} />
         </Route>
         
         {/* ========================================================
