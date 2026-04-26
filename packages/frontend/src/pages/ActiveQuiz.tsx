@@ -1,24 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import QuestionCard from '../components/QuestionCard';
 import axiosClient from '../api/axiosClient';
-import type { TopicData, Question, UserAnswerHistory } from '../types/quiz';
 
-interface ActiveQuizProps
-{
-    onBack: () => void;
-    topic?: TopicData | null;
-    onFinish: (score: number, total: number, history: UserAnswerHistory[]) => void;
-}
-
-const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
+export default function ActiveQuiz({ onBack, topic, onFinish }: any)
 {
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
     const [score, setScore] = useState(0);
-    const [history, setHistory] = useState<UserAnswerHistory[]>([]);
+    const [history, setHistory] = useState<any[]>([]);
     
-    const [quizData, setQuizData] = useState<Question[]>([]);
+    const [quizData, setQuizData] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() =>
@@ -27,25 +19,29 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
         {
             try
             {
-                const response: any = await axiosClient.get('/api/questions', { params: { lessonId: topic?.id } });
-                const data = response.data?.data || response.data || response;
+                console.log("Đang gọi API lấy câu hỏi cho lessonId:", topic?.id);
                 
+                const response: any = await axiosClient.get('/api/questions', { 
+                    params: { lessonId: topic?.id } 
+                });
+                
+                console.log("Dữ liệu trả về từ Backend:", response);
+
+                const data = response.data?.data || response.data || response;
+
+                if (!data || data.length === 0)
+                {
+                    setQuizData([]);
+                    return;
+                }
+
                 const formattedQuestions = data.map((q: any) =>
                 {
                     const options = [q.optionA, q.optionB, q.optionC, q.optionD];
                     let correctAnswerIndex = 0;
-                    if (q.correctOption === 'B')
-                    {
-                        correctAnswerIndex = 1;
-                    }
-                    if (q.correctOption === 'C')
-                    {
-                        correctAnswerIndex = 2;
-                    }
-                    if (q.correctOption === 'D')
-                    {
-                        correctAnswerIndex = 3;
-                    }
+                    if (q.correctOption === 'B') correctAnswerIndex = 1;
+                    if (q.correctOption === 'C') correctAnswerIndex = 2;
+                    if (q.correctOption === 'D') correctAnswerIndex = 3;
 
                     return {
                         id: q.id,
@@ -59,7 +55,7 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
             }
             catch (error)
             {
-                console.error(error);
+                console.error("Lỗi API tải câu hỏi:", error);
             }
             finally
             {
@@ -73,18 +69,11 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
         }
     }, [topic]);
 
-    const activeTopic = topic || {
-        id: 1, name: 'Topic 1', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]'
-    };
-
     if (isLoading)
     {
         return (
-            <div className="min-h-screen bg-[#212121] text-white flex items-center justify-center font-['Inter']">
-                <div className="animate-pulse flex flex-col items-center">
-                    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-[#3B82F6] font-semibold text-lg">Đang tải câu hỏi...</p>
-                </div>
+            <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -92,7 +81,7 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
     if (quizData.length === 0)
     {
         return (
-            <div className="min-h-screen bg-[#212121] text-white flex flex-col items-center justify-center gap-6 font-['Inter']">
+            <div className="min-h-screen bg-[#121212] text-white flex flex-col items-center justify-center gap-6">
                 <p className="text-xl text-gray-400">Chủ đề này chưa có câu hỏi nào!</p>
                 <button 
                     onClick={onBack} 
@@ -119,7 +108,7 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
         const isCorrect = selectedOption === currentQuestion.correctAnswer;
         const currentScore = isCorrect ? score + 1 : score;
         
-        const stepResult: UserAnswerHistory = {
+        const stepResult = {
             questionId: currentQuestion.id,
             questionText: currentQuestion.question,
             selectedOption: selectedOption,
@@ -152,28 +141,28 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
             }
             catch (error)
             {
-                console.error(error);
+                console.error("Lỗi khi lưu điểm:", error);
             }
             onFinish(currentScore, totalQuestions, updatedHistory);
         }
     };
 
     return (
-        <div className="min-h-screen bg-[#212121] text-white pt-[40px] pb-12 font-['Inter'] flex flex-col items-center">
-            <div className="w-full max-w-[1280px] px-[32px] flex flex-col items-start gap-[40px]">
+        <div className="min-h-screen bg-[#121212] text-white pt-[40px] pb-12 flex flex-col items-center font-['Inter']">
+            <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-start gap-[40px]">
                 
-                <div className="flex w-full max-w-[1002px] gap-[21px] h-[33px] items-start"> 
-                    <div className={`flex border-[1.5px] ${activeTopic.borderColor} ${activeTopic.badgeBg} rounded-[100px] h-full w-[277px] shrink-0 transition-colors duration-300 overflow-hidden`}>
-                        <div className="bg-[#FFFFFF] text-[#1D4ED8] pl-[20px] flex items-center justify-start font-[700] text-[16px] w-[65%] h-full">
-                            {activeTopic.name}
+                <div className="flex w-full gap-[21px] h-[33px] items-start"> 
+                    <div className={`flex border-[1.5px] border-[#3B82F6] bg-[#3B82F6] rounded-[100px] h-full w-[277px] shrink-0 overflow-hidden`}>
+                        <div className="bg-white text-blue-700 pl-5 flex items-center font-bold text-[16px] w-[65%] h-full">
+                            {topic?.title || topic?.name}
                         </div>
-                        <div className="text-[#FFFFFF] flex items-center justify-center font-[600] text-[14px] flex-1 uppercase tracking-wide h-full">
-                            {activeTopic.difficulty}
+                        <div className="text-white flex items-center justify-center font-semibold text-[14px] flex-1 uppercase h-full">
+                            {topic?.difficulty || 'EASY'}
                         </div>
                     </div>
 
                     <div className="flex flex-col justify-between h-full w-full flex-1">
-                        <span className="text-[12px] font-[600] text-[#FFFFFF] leading-[15px] font-['Inter']">
+                        <span className="text-[12px] font-semibold text-white">
                             Question {currentStep + 1} of {totalQuestions}
                         </span>
                         <div className="flex gap-[7px] w-full h-[18px]">
@@ -196,7 +185,7 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
                     </div>
                 </div>
 
-                <div className="flex flex-col items-start gap-[24px] w-full max-w-[1002px]">
+                <div className="flex flex-col items-start gap-[24px] w-full">
                     <QuestionCard 
                         question={currentQuestion.question}
                         options={currentQuestion.options}
@@ -206,19 +195,14 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
                         onSelect={handleSelect}
                     />
 
-                    <div className="flex justify-between items-center w-full pt-[8px] pl-[24px] min-h-[44px]">
+                    <div className="flex justify-end items-center w-full pt-[8px] min-h-[44px]">
                         {isAnswered && (
-                            <>
-                                <span className="text-[14px] text-[#E5E7EB] font-['Inter']">
-                                    View the <span className="text-[#3B82F6] font-[500] hover:underline cursor-pointer transition-colors">API definition.</span>
-                                </span>
-                                <button 
-                                    onClick={handleNext}
-                                    className="bg-[#3B82F6] text-white font-[600] text-[16px] py-[10px] px-[32px] rounded-[6px] transition-all font-['Inter'] cursor-pointer hover:bg-blue-600 shadow-md"
-                                >
-                                    {currentStep === totalQuestions - 1 ? 'Finish' : 'Next'}
-                                </button>
-                            </>
+                            <button 
+                                onClick={handleNext}
+                                className="bg-[#3B82F6] text-white font-semibold text-[16px] py-[10px] px-[32px] rounded-[6px] transition-all hover:bg-blue-600 shadow-md"
+                            >
+                                {currentStep === totalQuestions - 1 ? 'Finish' : 'Next'}
+                            </button>
                         )}
                     </div>
                 </div>
@@ -226,6 +210,4 @@ const ActiveQuiz: React.FC<ActiveQuizProps> = ({ onBack, topic, onFinish }) =>
             </div>
         </div>
     );
-};
-
-export default ActiveQuiz;
+}
