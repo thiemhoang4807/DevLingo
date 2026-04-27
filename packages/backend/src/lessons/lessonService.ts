@@ -10,10 +10,18 @@ const questionRepo = AppDataSource.getRepository(Question);
 export class LessonService {
 
   static async getAllPublishedLessons() {
-    return await lessonRepo.find({
+    const lessons = await lessonRepo.find({
       where: { isPublished: true },
-      select: ["id", "title"] 
+      order: { orderIndex: "ASC" },
+      select: ["id", "title", "category", "difficulty"]
     });
+
+    return lessons.map(lesson => ({
+      id: lesson.id,
+      title: lesson.title,
+      name: lesson.category ?? lesson.title,
+      difficulty: lesson.difficulty
+    }));
   }
 
   static async getLessonDetailById(id: number) {
@@ -29,11 +37,13 @@ export class LessonService {
     return {
       id: lesson.id,
       title: lesson.title,
+      category: lesson.category,
+      difficulty: lesson.difficulty,
       terms: lesson.terms.map(term => ({
         id: term.id,
         termName: term.termName,
         definition: term.definition
-      })),
+    })),
       questions: lesson.questions.map(q => ({
         id: q.id,
         questionText: q.questionText,
