@@ -3,21 +3,25 @@ const path = require('path');
 const matter = require('gray-matter');
 const axios = require('axios');
 
-// 1. CẤU HÌNH ĐƯỜNG DẪN VÀ API
-const MOCK_DATA_DIR = path.join(__dirname, 'mock-data'); // Thư mục chứa các file .md
-    const API_URL = 'http://localhost:5000/api/terms';       
-    const ADMIN_TOKEN = 'ĐIỀN_TOKEN_ADMIN_VÀO_ĐÂY';          
+const MOCK_DATA_DIR = path.join(__dirname, 'TermsData'); 
+const API_URL = 'http://localhost:5000/api/terms';       
+const ADMIN_TOKEN = 'Bearer ĐIỀN_TOKEN_VÀO_ĐÂY';          
+
+// 🚀 BẢNG DỊCH THUẬT: Biến chữ Category thành số lessonId cho API 
+const categoryToLessonId = {
+    "Internet Terms": 1,
+    "Hardware Terms": 4,
+    "Software Terms": 7,  
+    "Technical Terms": 10 
+};
 
 async function seedData() {
-    console.log("🚀 Bắt đầu quét file .md và nạp vào Database...");
+    console.log("🚀 Bắt đầu quét file .md...");
 
-    // Lấy danh sách các thư mục chủ đề (Internet Terms, Hardware Terms...)
     const categories = fs.readdirSync(MOCK_DATA_DIR);
 
     for (const category of categories) {
         const categoryPath = path.join(MOCK_DATA_DIR, category);
-        
-        // Bỏ qua nếu không phải là thư mục
         if (!fs.statSync(categoryPath).isDirectory()) continue;
 
         const files = fs.readdirSync(categoryPath);
@@ -25,27 +29,35 @@ async function seedData() {
         for (const file of files) {
             if (!file.endsWith('.md')) continue;
 
-            // 2. ĐỌC VÀ BÓC TÁCH FILE .MD
             const filePath = path.join(categoryPath, file);
             const fileContent = fs.readFileSync(filePath, 'utf-8');
-            const parsed = matter(fileContent); // Bóc tách bằng gray-matter
-            const data = parsed.data; // Đây chính là cục data nằm trong ---
+            
+            // gray-matter sẽ tách làm 2 phần:
+            // parsed.data: Chứa title, category, relatedTerms
+            // parsed.content: Chứa TOÀN BỘ chữ nằm dưới dấu --- (# Backend \n In the computer world...)
+            const parsed = matter(fileContent); 
+            const data = parsed.data;
+            const content = parsed.content; 
 
-            // 3. GỌI API ĐỂ BƠM VÀO DATABASE
+            // Tự động suy ra lessonId từ bảng dịch thuật ở trên
+            const mappedLessonId = categoryToLessonId[data.category] || 1;
+
             try {
+                // Đóng gói hàng gửi cho Kiệt
                 await axios.post(API_URL, {
-                    termName: data.termName,
-                    definition: data.definition,
-                    example: data.example,
-                    lessonId: data.lessonId 
-                    // Có thể truyền thêm description là parsed.content (nội dung bên dưới ---)
+                    termName: data.title,             // Đổi title thành termName
+                    definition: content.trim(),       // Bê nguyên phần thân bài viết làm định nghĩa!
+                    lessonId: mappedLessonId,         // Gửi số ID chứ không gửi chữ
+                    
+                    // Xử lý mảng relatedTerms thành chuỗi JSON để Database dễ lưu
+                    relatedTerms: data.relatedTerms ? JSON.stringify(data.relatedTerms) : "[]" 
                 }, {
                     headers: { 'Authorization': ADMIN_TOKEN }
                 });
 
-                console.log(`✅ Đã nạp thành công: ${data.termName}`);
+                console.log(`✅ Đã nạp thành công: ${data.title}`);
             } catch (error) {
-                console.error(`❌ Lỗi khi nạp ${data.termName}:`, error.response?.data?.message || error.message);
+                console.error(`❌ Lỗi khi nạp ${data.title}:`, error.message);
             }
         }
     }
