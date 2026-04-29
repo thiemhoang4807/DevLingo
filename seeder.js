@@ -45,8 +45,8 @@ async function seedData() {
             try {
                 // Đóng gói hàng gửi cho Kiệt
                 await axios.post(API_URL, {
-                    termName: data.title,             // Đổi title thành termName
-                    definition: content.trim(),       // Bê nguyên phần thân bài viết làm định nghĩa!
+                    termName: data.title,             
+                    definition: content.trim(),       
                     lessonId: mappedLessonId,         // Gửi số ID chứ không gửi chữ
                     
                     // Xử lý mảng relatedTerms thành chuỗi JSON để Database dễ lưu
