@@ -11,7 +11,21 @@ const questionRepo = AppDataSource.getRepository(Question);
 
 export class LessonService {
 
-  // 1. LẤY DANH SÁCH 
+  static async getAllPublishedLessons() {
+    const lessons = await lessonRepo.find({
+      where: { isPublished: true },
+      order: { orderIndex: "ASC" },
+      select: ["id", "title", "category", "difficulty"]
+    });
+
+    return lessons.map(lesson => ({
+      id: lesson.id,
+      title: lesson.title,
+      name: lesson.category ?? lesson.title,
+      difficulty: lesson.difficulty
+    }));
+  }
+
   static async getLessons(search?: string, difficulty?: string, page: number = 1, limit: number = 10) {
     const query = lessonRepo.createQueryBuilder("lesson");
 
@@ -32,7 +46,6 @@ export class LessonService {
     };
   }
 
-  // 2. LẤY CHI TIẾT ( Kéo theo Terms và Questions )
   static async getLessonDetailById(id: number) {
     const lesson = await lessonRepo.findOne({
       where: { id: id },
@@ -44,6 +57,7 @@ export class LessonService {
     return {
       id: lesson.id,
       title: lesson.title,
+      category: lesson.category,
       description: lesson.description,
       difficulty: lesson.difficulty,
       thumbnailUrl: lesson.thumbnailUrl,
@@ -57,14 +71,16 @@ export class LessonService {
       questions: lesson.questions.map(q => ({
         id: q.id,
         questionText: q.questionText,
-        optionA: q.optionA, optionB: q.optionB, optionC: q.optionC, optionD: q.optionD,
+        optionA: q.optionA, 
+        optionB: q.optionB, 
+        optionC: q.optionC, 
+        optionD: q.optionD,
         correctOption: q.correctOption,
         xpReward: q.xpReward
       }))
     };
   }
 
-  // 3. Check trùng tên của Bạn + Upload ảnh 
   static async createLesson(data: any, thumbnailUrl: string | null) {
     if (!data.title) throw new Error("Title is required");
 
@@ -82,7 +98,6 @@ export class LessonService {
     return await lessonRepo.save(newLesson);
   }
 
-  // 4. Check trùng tên + Thay ảnh cũ vật lý
   static async updateLesson(id: number, data: any, newThumbnailUrl: string | null) {
     const lesson = await lessonRepo.findOne({ where: { id: id } });
     if (!lesson) throw new Error("Lesson not found");
@@ -92,7 +107,6 @@ export class LessonService {
         if (existingLesson) throw new Error("Lesson title already exists");
     }
 
-    // Xóa ảnh cũ nếu có up ảnh mới
     if (newThumbnailUrl) {
       if (lesson.thumbnailUrl) {
         const oldImagePath = path.join(process.cwd(), lesson.thumbnailUrl); 
@@ -109,7 +123,6 @@ export class LessonService {
     return await lessonRepo.save(lesson);
   }
 
-  // 5. XÓA BÀI HỌC 
   static async deleteLesson(id: number) {
     const lesson = await lessonRepo.findOne({ where: { id: id } });
     if (!lesson) throw new Error("Lesson not found");
@@ -123,7 +136,6 @@ export class LessonService {
     return { message: "Lesson deleted successfully" };
   }
 
-  // 6. THÊM TỪ VỰNG/CÂU HỎI 
   static async addTermToLesson(lessonId: number, termData: any) {
     const newTerm = termRepo.create({ ...termData, lessonId: lessonId });
     return await termRepo.save(newTerm);
