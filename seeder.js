@@ -33,8 +33,8 @@ async function seedData() {
             const fileContent = fs.readFileSync(filePath, 'utf-8');
             
             // gray-matter sẽ tách làm 2 phần:
-            // parsed.data: Chứa title, category, relatedTerms
-            // parsed.content: Chứa TOÀN BỘ chữ nằm dưới dấu --- (# Backend \n In the computer world...)
+            // parsed.data: Chứa title, category, relatedTerms, imageUrl
+            // parsed.content: Chứa TOÀN BỘ chữ nằm dưới dấu --- 
             const parsed = matter(fileContent); 
             const data = parsed.data;
             const content = parsed.content; 
@@ -43,13 +43,14 @@ async function seedData() {
             const mappedLessonId = categoryToLessonId[data.category] || 1;
 
             try {
-                // Đóng gói hàng gửi cho Kiệt
                 await axios.post(API_URL, {
                     termName: data.title,             
                     definition: content.trim(),       
-                    lessonId: mappedLessonId,         // Gửi số ID chứ không gửi chữ
+                    lessonId: mappedLessonId,         
                     
-                    // Xử lý mảng relatedTerms thành chuỗi JSON để Database dễ lưu
+                    // 🌟 DÒNG MỚI THÊM: Lấy link ảnh từ .md ném vào, không có thì để null
+                    imageUrl: data.imageUrl || null, 
+                    
                     relatedTerms: data.relatedTerms ? JSON.stringify(data.relatedTerms) : "[]" 
                 }, {
                     headers: { 'Authorization': ADMIN_TOKEN }
@@ -57,7 +58,8 @@ async function seedData() {
 
                 console.log(`✅ Đã nạp thành công: ${data.title}`);
             } catch (error) {
-                console.error(`❌ Lỗi khi nạp ${data.title}:`, error.message);
+                const backendErrorMessage = error.response?.data?.message || error.message;
+                console.error(`❌ Lỗi khi nạp [${data.title}]:`, backendErrorMessage);
             }
         }
     }
