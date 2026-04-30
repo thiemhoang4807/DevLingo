@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { Sun, Moon, GraduationCap, Search, User, LogOut } from "lucide-react";
-import logo from "../../assets/images/icon_user.png";
+import { Sun, Moon, GraduationCap, Search, User, LogOut, History } from "lucide-react";
+// 🚀 Đã đổi sang avata.png đồng bộ
+import defaultAvatar from "../../assets/images/avata.png"; 
 import { useTheme } from "../../context/ThemeContext";
 import axiosClient from '../../api/axiosClient';
 import { useNavigate } from "react-router-dom";
@@ -54,7 +55,7 @@ export default function Header()
     {
         if (!avatarPath)
         {
-            return logo;
+            return defaultAvatar; // Dùng ảnh mặc định mới
         }
         if (avatarPath.startsWith('http'))
         {
@@ -176,7 +177,17 @@ export default function Header()
                                         }}
                                         className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${theme === 'dark' ? 'text-gray-200 hover:bg-[#3A3A3A]' : 'text-gray-700 hover:bg-gray-100'}`}
                                     >
-                                        <User size={16} /> Hồ sơ cá nhân
+                                        <User size={16} /> User Profile
+                                    </button>
+                                    
+                                    <button 
+                                        onClick={() => {
+                                            setIsDropdownOpen(false);
+                                            navigate('/learning-history'); 
+                                        }}
+                                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${theme === 'dark' ? 'text-gray-200 hover:bg-[#3A3A3A]' : 'text-gray-700 hover:bg-gray-100'}`}
+                                    >
+                                        <History size={16} /> Learning History
                                     </button>
                                     
                                     <div className={`h-px my-1 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}`}></div>

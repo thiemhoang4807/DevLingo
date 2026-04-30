@@ -13,6 +13,9 @@ import LearningHistoryPage from './pages/LearningHistoryPage';
 import UserProfilePage from "./pages/UserProfilePage";
 import LeaderBoard from './pages/LeaderBoard';
 import TermPageCategoryDetail from './pages/TermPageCategoryDetail';
+import ScrollToTop from './utils/ScrollToTop';
+import AboutUs from './pages/AboutUs';
+import Contact from './pages/Contact';
 
 // Layout wrapper hỗ trợ chuyển đổi Theme cho phần nền main
 
@@ -39,6 +42,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -93,6 +97,11 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
         
+        {/* About Us */}
+        <Route path="/about" element={<MainLayout><AboutUs /></MainLayout>} />
+
+        {/* Contact */}
+        <Route path="/contact" element={<MainLayout><Contact /></MainLayout>} />
       </Routes>
     </Router>
   );

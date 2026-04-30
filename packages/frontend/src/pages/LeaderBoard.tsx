@@ -16,19 +16,18 @@ type user = {
     colorBgTrophy?: string,
 };
 
-// Style cho những người top đầu
+// Style cho những người top đầu (Thứ tự: Top 2, Top 1, Top 3)
 var topPlayer: Array<user> = [ 
-    {name: "Nguyen Van C", points: "50,000", terms: "6666", colorBgTrophy: "#CDCDCD"},
-    {name: "Pham Van C", points: "100,000", terms: "6666", colorBgTrophy: "#FFD365"},
-    {name: "Nguyen Van C", points: "20,000", terms: "6666", colorBgTrophy: "#B38A48"}
+    {name: "Nguyen Van C", points: "50,000", terms: "6,666", colorBgTrophy: "#CDCDCD"}, // Top 2
+    {name: "Pham Van C", points: "100,000", terms: "8,999", colorBgTrophy: "#FFD365"}, // Top 1
+    {name: "Nguyen Van B", points: "20,000", terms: "3,200", colorBgTrophy: "#B38A48"}  // Top 3
 ];
 
-const trophies = [top1, top2, top3]; // Ảnh chapions
+const trophies = [top2, top1, top3]; // Đã sắp xếp lại ảnh cúp cho khớp với Data: Bạc, Vàng, Đồng
 
-// Style cho những người kế tiếp 
 const baseUser = {
-    points: "3667",
-    terms: "12,241",
+    points: "3,667",
+    terms: "1,241",
     email: "@hoangtuaruma"
 };
 
@@ -43,179 +42,184 @@ const players: Array<user> = [
     { name: "Nguyen Van A", ...baseUser }
 ];
 
-// Tạo mảng 1 -> 10
 const numbers = Array.from({ length: 10 }, (_, i) => i + 1);
-// Tạo style chung cho thanh điều hướng trang
-const numbersStyle = {
-    display: "flex",
-    flex: "1",
-    alignItems: "center",
-    justifyContent: "space-around",
-    gap: "6px",
-    height: "100%",
-    color: "#FFFFFF99"
-};
 
 export default function LeaderBoard() {
-    const [activeTab, setActiveTab] = useState<"daily" | "monthly">("daily"); // Cho thanh điều hướng tháng
-    const [index, setIndex] = useState(1); // Cho thanh điều hướng trang
+    const { theme } = useTheme();
+    const isDark = theme === "dark";
+    
+    const [activeTab, setActiveTab] = useState<"daily" | "monthly">("daily");
+    const [index, setIndex] = useState(1);
 
     return (
-        <div className={`w-full min-h-screen font-[Inter] transition-colors duration-300 px-12 bg-[#0A0A0A]`}>
-            <div className={`w-full min-h-screen`}>
-                {/* Thanh điều chỉnh khoảng thời gian */}
-                <div className={`w-full h-42 flex items-end justify-center mb-14.75`}>
-                    <div className={`w-73 h-9.75 rounded-xl px-1 py-1 flex bg-[#181C2A] drop-shadow-[0_4px_1px_#0C0F1B]`}>
-                        {
-                            period.map(el => (
-                                <li key={el} 
+        <div className={`w-full min-h-screen font-['Inter'] transition-colors duration-300 pb-20 ${isDark ? "bg-[#0A0A0A]" : "bg-[#F9FAFB]"}`}>
+            <div className={`w-full max-w-[1002px] mx-auto pt-12 px-6`}>
+                
+                {/* --- 1. THANH ĐIỀU CHỈNH THỜI GIAN --- */}
+                <div className={`w-full flex justify-center mb-16`}>
+                    <div className={`p-1.5 rounded-xl flex transition-all ${isDark ? "bg-[#181C2A] shadow-md" : "bg-white border border-gray-200 shadow-sm"}`}>
+                        {period.map(el => {
+                            const isActive = activeTab === el.toLocaleLowerCase();
+                            return (
+                                <button key={el} 
                                     onClick={() => setActiveTab(el.toLocaleLowerCase() as "daily" | "monthly")}
-                                    className={`${activeTab === el.toLocaleLowerCase() ? "bg-[#293047]" : ""}
-                                                list-none w-35.5 h-7.75 rounded-lg px-6 py-2 text-[#ffffff]
-                                                flex items-center justify-center cursor-pointer transition duration-300 ease-in-out`}>
-                                    {el} 
-                                </li>
-                            ))
-                        }
+                                    className={`w-[140px] h-[36px] rounded-lg flex items-center justify-center font-medium text-sm transition-all duration-300
+                                        ${isActive 
+                                            ? (isDark ? "bg-[#293047] text-white shadow-sm" : "bg-blue-600 text-white shadow-sm") 
+                                            : (isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-gray-900")
+                                        }`}
+                                >
+                                    {el}
+                                </button>
+                            )
+                        })}
                     </div>
                 </div>
-                {/* Các player thuộc nhóm top */}
-                <div className={`w-full flex flex-row gap-2.75 items-center justify-center`}>
-                    {
-                        topPlayer.map((el, index) => (
-                            <div key={index} className={`w-122 h-110 flex flex-col gap-4
-                                                        ${index === 1 ? "mb-24" : "mb-0"}`}>
-                                {/* Avatar và tên của player */}
-                                <div className={`w-full h-35`}>
-                                    <div className={`flex flex-col items-center justify-center gap-2.75`}>
-                                        <div className={`w-28.5 h-28.5 bg-white rounded-[10px]`}></div>
-                                        <div className={``}>
-                                            <p className={`text-[#FFFFFF] font-semibold text-2xl`}>
-                                                {el.name}
-                                            </p>
+
+                {/* --- 2. BỤC VINH QUANG (PODIUM) --- */}
+                <div className={`w-full flex flex-row items-end justify-center gap-4 sm:gap-6 h-[420px]`}>
+                    {topPlayer.map((el, idx) => {
+                        const isTop1 = idx === 1;
+                        // Tính toán chiều cao linh hoạt cho thân bục (Top 1 cao nhất)
+                        const podiumHeight = isTop1 ? "h-[260px]" : idx === 0 ? "h-[200px]" : "h-[160px]";
+                        const avatarSize = isTop1 ? "w-[100px] h-[100px]" : "w-[80px] h-[80px]";
+                        const glowEffect = isTop1 && isDark ? "drop-shadow-[0_0_25px_rgba(255,211,101,0.15)]" : "";
+
+                        return (
+                            <div key={idx} className={`w-[220px] sm:w-[280px] flex flex-col items-center ${glowEffect}`}>
+                                
+                                {/* Avatar & Info */}
+                                <div className={`flex flex-col items-center justify-center gap-3 mb-6 ${isTop1 ? "-translate-y-4" : ""}`}>
+                                    <div className={`${avatarSize} rounded-2xl shadow-lg border-4 transition-all
+                                        ${isTop1 ? "border-[#FFD365]" : idx === 0 ? "border-[#CDCDCD]" : "border-[#B38A48]"}
+                                        ${isDark ? "bg-[#2A2D35]" : "bg-white"}`}>
+                                    </div>
+                                    <div className="text-center">
+                                        <p className={`font-bold text-[18px] truncate max-w-[180px] ${isDark ? "text-white" : "text-gray-900"}`}>
+                                            {el.name}
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                {/* Khối Bục 3D */}
+                                <div className="w-full flex flex-col items-center">
+                                    {/* Mặt trên bục (Nắp bục) */}
+                                    <div style={{ clipPath: "polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%)" }}
+                                         className={`w-full h-[28px] ${isDark ? "bg-gradient-to-t from-[#0B0D16] to-[#181C2A]" : "bg-gradient-to-t from-gray-200 to-gray-300"}`}>
+                                    </div>
+                                            
+                                    {/* Thân bục */}
+                                    <div className={`w-full ${podiumHeight} flex flex-col items-center rounded-b-lg shadow-inner
+                                        ${isDark ? "bg-gradient-to-b from-[#181D2B] to-[#0E0F15]" : "bg-gradient-to-b from-gray-100 to-white border-x border-b border-gray-200"}`}>
+                                        
+                                        {/* Icon Cúp */}
+                                        <div className={`w-full h-14 flex items-center justify-center border-b ${isDark ? "border-[#FFFFFF12]" : "border-gray-200"}`}>
+                                            <div style={{ background: el.colorBgTrophy ?? "white" }}
+                                                 className={`w-9 h-9 flex items-center justify-center rounded-lg shadow-sm`}>
+                                                <img src={trophies[idx]} alt="Trophy" className="w-6 h-6 object-contain" />
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Điểm & Số Terms */}
+                                        <div className={`flex flex-col items-center justify-center flex-1 w-full gap-4 ${isDark ? "text-white" : "text-gray-800"}`}>
+                                            <div className="text-center">
+                                                <p className={`text-xl font-bold ${isDark ? "text-[#60A5FA]" : "text-blue-600"}`}>{el.points}</p>
+                                                <p className={`text-[11px] font-semibold uppercase tracking-widest ${isDark ? "text-gray-500" : "text-gray-400"}`}>Points</p>
+                                            </div>
+                                            <div className="text-center">
+                                                <p className={`text-xl font-bold ${isDark ? "text-[#60A5FA]" : "text-blue-600"}`}>{el.terms}</p>
+                                                <p className={`text-[11px] font-semibold uppercase tracking-widest ${isDark ? "text-gray-500" : "text-gray-400"}`}>Terms</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                {/* Vector và thang điểm player */}
-                                <div className={``}>
-                                    {/* Vector */}
-                                    <div    style={{ clipPath: "polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)" }}
-                                            className={`bg-linear-to-t from-[#0B0D16] to-[#181C2A] w-full h-[32.33px]`}></div>
-                                    {/* Thang điểm của player */}
-                                    <div className={`bg-linear-to-t from-[#0E0F15] via-[#0F1118] to-[#181D2B] w-full h-97 px-[19.25px]`}>
-                                        {/* Icon chiếc cúp */}
-                                        <div className={`w-full h-12 border border-[#181D2B] border-b-[#FFFFFF12] flex items-center justify-center`}>
-                                            <div    style={{ background: el.colorBgTrophy ?? "white" }}
-                                                    className={`w-11 h-11 flex items-center justify-center rounded-lg px-1 py-1`}>
-                                                <img src={trophies[index]}></img>
-                                            </div>
+                            </div>
+                        )
+                    })}
+                </div>
+
+                {/* --- 3. BẢNG DANH SÁCH PLAYERS --- */} 
+                <div className={`w-full mt-16`}>
+                    <div className={`w-full flex flex-col gap-3`}>
+                        {/* Header Bảng */}
+                        <div className={`w-full grid grid-cols-[80px_1fr_120px_120px] md:grid-cols-[80px_1fr_150px_150px] font-semibold text-[13px] uppercase tracking-wider px-6 mb-2 
+                            ${isDark ? "text-gray-500" : "text-gray-400"}`}>
+                            <p className="text-center">Rank</p>
+                            <p>Username</p>
+                            <p className="text-center">Terms</p>
+                            <p className="text-center">Points</p>
+                        </div>
+                        
+                        {/* List */}
+                        <div className={`flex flex-col gap-3`}>
+                            {players.map((el, idx) => (
+                                <div key={idx} className={`w-full h-[72px] grid grid-cols-[80px_1fr_120px_120px] md:grid-cols-[80px_1fr_150px_150px] items-center rounded-2xl px-6 transition-all hover:-translate-y-0.5
+                                    ${isDark ? "bg-[#171C29] hover:bg-[#1E2536]" : "bg-white border border-gray-100 shadow-sm hover:shadow-md"}`}>
+                                    
+                                    <div className={`flex items-center justify-center text-[16px] font-bold ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                                        #{idx + 4}
+                                    </div>
+                                    
+                                    <div className={`flex flex-row gap-4 items-center`}>
+                                        <div className={`w-11 h-11 rounded-full shadow-sm ${isDark ? "bg-[#2A2D35]" : "bg-gray-200"}`}></div>
+                                        <div className={`flex flex-col justify-center`}>
+                                            <p className={`text-[15px] font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{el.name}</p>
+                                            <p className={`font-medium text-[13px] ${isDark ? "text-gray-500" : "text-gray-400"}`}>{el.email}</p>
                                         </div>
-                                        {/* Points và Terms */}
-                                        <div className={`w-full h-full flex flex-col text-[#FFFFFF]`}>
-                                            <div className={`w-full h-13.75 flex flex-col items-center justify-between mt-8`}>
-                                                <p className={`text-2xl font-semibold`}> {el.points} </p>
-                                                <p className={`text-sm font-normal`}> Points </p>
-                                            </div>
-                                            <div className={`w-full h-13.75 flex flex-col items-center justify-between mt-8`}>
-                                                <p className={`text-2xl font-semibold`}> {el.terms} </p>
-                                                <p className={`text-sm font-normal`}> Terms </p>
-                                            </div>
-                                        </div>
+                                    </div>
+                                    
+                                    <div className={`flex items-center justify-center text-[15px] font-semibold ${isDark ? "text-white" : "text-gray-700"}`}>
+                                        {el.terms}
+                                    </div>
+                                    
+                                    <div className={`flex items-center justify-center text-[15px] font-bold ${isDark ? "text-[#60A5FA]" : "text-blue-600"}`}>
+                                        {el.points}
                                     </div>
                                 </div>
-                            </div>
-                        ))
-                    }
-                </div>
-                {/* Bảng các player */} 
-                <div className={`w-full`}>
-                    <div className={`w-full flex flex-col gap-4.5`}>
-                        {/* Tiêu đề */}
-                        <div className={`w-full flex items-center justify-between font-normal text-sm text-[#FFFFFF99] px-4`}>
-                            <p> Rank </p>
-                            <p> Username </p>
-                            <p> Terms Learned </p>
-                            <p> Points </p>
-                        </div>
-                        {/* Players */}
-                        <div className={`flex flex-col gap-2`}>
-                            {
-                                players.map((el, index) => (
-                                    <div className={`w-full h-12 flex items-center justify-between bg-[#171C29] rounded-xl px-4`}>
-                                        <div className={`h-full flex items-center justify-center text-sm font-semibold leading-5 text-[#ffffff]`}>
-                                            <p> {index + 4} </p>
-                                        </div>
-                                        <div className={`w-50 h-9 flex flex-row gap-2`}>
-                                            <div className={`w-8 h-8 bg-white rounded-full`}></div>
-                                            <div className={`flex flex-col gap-1 items-start justify-between`}>
-                                                <p className={`text-white text-[12px] leading-4 font-medium`}> {el.name} </p>
-                                                <p className={`text-[#FFFFFF99] font-light text-[12px] leading-4`}> {el.email} </p>
-                                            </div>
-                                        </div>
-                                        <div className={`h-full flex items-center justify-center text-sm font-semibold leading-5 text-[#ffffff]`}>
-                                            <p className={`absolute left-260`}> {el.terms} </p>
-                                        </div>
-                                        <div className={`h-full flex items-center justify-center text-sm font-semibold leading-5 text-[#ffffff]`}>
-                                            <p> {el.points} </p>
-                                        </div>
-                                    </div>
-                                ))
-                            }
+                            ))}
                         </div>
                     </div>
                 </div>
-                {/* Thanh thời gian và thanh điều hướng */}
-                <div className={`w-full flex justify-end pr-8 py-5.5`}>
-                    <div className={`w-full flex items-center gap-[204.5px]`}>
-                        {/* Thanh thời gian */}
-                        <div className={`text-[#FFFFFF] flex flex-1 flex-col items-center justify-between h-13.75 ml-120`}>
-                            <h1 className={`font-semibold text-2xl`}> Ends in </h1>
-                            <p className={`font-normal text-sm`}> 10 days 23 hours 23 seconds </p>
+
+                {/* --- 4. FOOTER: THANH THỜI GIAN & ĐIỀU HƯỚNG --- */}
+                <div className={`w-full flex flex-col md:flex-row justify-between items-center gap-6 py-10 mt-6 border-t ${isDark ? "border-gray-800" : "border-gray-200"}`}>
+                    
+                    <div className={`flex flex-col items-center md:items-start`}>
+                        <h1 className={`font-bold text-[18px] ${isDark ? "text-white" : "text-gray-900"}`}>Season ends in</h1>
+                        <p className={`font-medium text-[14px] mt-1 ${isDark ? "text-[#60A5FA]" : "text-blue-600"}`}>10d : 23h : 23s</p>
+                    </div>
+                    
+                    <div className={`flex items-center gap-2`}>
+                        <button onClick={() => setIndex(index - 2 < 0 ? numbers.length : index - 1)}
+                            className={`p-2 rounded-full transition-colors ${isDark ? "text-gray-400 hover:bg-gray-800 hover:text-white" : "text-gray-500 hover:bg-gray-200 hover:text-gray-900"}`}>
+                            <ChevronLeft size={20} />
+                        </button>
+                        
+                        <div className={`flex items-center gap-1.5`}>
+                            {[...numbers.slice(0,3), "...", ...numbers.slice(numbers.length - 2, numbers.length)].map((el, i) => {
+                                if (el === "...") return <span key={i} className={`px-2 font-bold ${isDark ? "text-gray-600" : "text-gray-400"}`}>...</span>
+                                
+                                const num = el as number;
+                                const isCurrent = index === num;
+                                return (
+                                    <button key={i} onClick={() => setIndex(num)}
+                                        className={`w-9 h-9 rounded-lg flex items-center justify-center text-[14px] font-bold transition-all
+                                            ${isCurrent 
+                                                ? (isDark ? "bg-blue-600 text-white shadow-lg" : "bg-blue-600 text-white shadow-md") 
+                                                : (isDark ? "text-gray-400 hover:bg-[#171C29] hover:text-white" : "text-gray-600 hover:bg-gray-200")}`}>
+                                        {num}
+                                    </button>
+                                )
+                            })}
                         </div>
-                        {/* Thanh điều hướng */}
-                        <div className={`text-[#FFFFFF] w-66 h-8 flex items-center justify-between gap-4`}>
-                            <div className={`flex items-center justify-center`}>
-                                <ChevronLeft    className={`cursor-pointer`}
-                                                onClick={() => {
-                                                    setIndex(index - 2 < 0 ? numbers.length : index - 1)
-                                                }}/>
-                            </div>
-                            <div className={`h-2.5 flex flex-1 items-center justify-between gap-1`}>
-                                {/* Nhóm chứa các số 1 */}
-                                <div style={{...numbersStyle}} className={`cursor-pointer`}>
-                                    {
-                                        numbers.slice(0,3).map(el => (
-                                            <p  key={el}
-                                                className={`${index === el ? "bg-[#171C29] font-semibold text-[#FFFFFF]" : ""}
-                                                            w-6.75 h-8 rounded-[10px] flex items-center justify-center`}>
-                                                {el}
-                                            </p>
-                                        ))
-                                    }
-                                </div>
-                                <div> <p className={`text-[#FFFFFF99] cursor-default`}> ... </p> </div>
-                                {/* Nhóm chứa các số 2 */}
-                                <div style={{...numbersStyle}} className={`cursor-pointer`}>
-                                    {
-                                        numbers.slice(numbers.length - 2, numbers.length).map(el => (
-                                            <p  key={el}
-                                                className={`${index === el ? "bg-[#171C29] font-semibold text-[#FFFFFF]" : ""}
-                                                            w-6.75 h-8 rounded-[10px] flex items-center justify-center`}>
-                                                {el}
-                                            </p>
-                                        ))
-                                    }
-                                </div>
-                            </div>
-                            <div className={`flex items-center justify-center`}>
-                                <ChevronRight   className={`cursor-pointer`}
-                                                onClick={() => {
-                                                    setIndex(index + 1 > numbers.length ? 1 : index + 1)
-                                                }}/>
-                            </div>
-                        </div>
+                        
+                        <button onClick={() => setIndex(index + 1 > numbers.length ? 1 : index + 1)}
+                            className={`p-2 rounded-full transition-colors ${isDark ? "text-gray-400 hover:bg-gray-800 hover:text-white" : "text-gray-500 hover:bg-gray-200 hover:text-gray-900"}`}>
+                            <ChevronRight size={20} />
+                        </button>
                     </div>
                 </div>
+
             </div>
         </div>
     );

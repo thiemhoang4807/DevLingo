@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Search, Zap, Shuffle, SquarePen, Trophy } from "lucide-react"
 import { useTheme } from "../context/ThemeContext"
 import QuestionCard from "../components/QuestionCard"
@@ -24,6 +25,7 @@ const correctAnswerIndex = 0;
 
 export default function LandingPage() {
   const { theme } = useTheme()
+  const navigate = useNavigate()
   const isDark = theme === "dark"
   
   const [searchQuery, setSearchQuery] = useState("")
@@ -140,7 +142,8 @@ export default function LandingPage() {
                 <h2 className={`text-[20px] font-bold mb-6 ${isDark ? "text-white" : "text-[#2563EB]"}`}>
                   Daily Challenge Quiz
                 </h2>
-                <div className={`rounded-xl overflow-hidden ${isDark ? "bg-[#212121]" : "bg-white border border-gray-200 shadow-sm"}`}>
+                {/* Đã sửa màu nền từ bg-[#212121] thành bg-transparent để hòa vào nền của trang */}
+                <div className="rounded-xl overflow-hidden bg-transparent">
                     <QuestionCard 
                         question={quizQuestionText}
                         options={quizOptions}
@@ -170,7 +173,11 @@ export default function LandingPage() {
                     <p className="text-[13px] text-blue-100 mt-0.5">Compete with friends and master new terms!</p>
                   </div>
                 </div>
-                <button className={`rounded px-5 py-2 text-[13px] font-bold transition-colors ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-white text-[#1E3A8A] hover:bg-gray-100"}`}>
+                {/* Đã thêm sự kiện onClick để chuyển hướng */}
+                <button 
+                  onClick={() => navigate('/leader-board')} 
+                  className={`cursor-pointer rounded px-5 py-2 text-[13px] font-bold transition-colors ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-white text-[#1E3A8A] hover:bg-gray-100"}`}
+                >
                   View Rankings
                 </button>
               </div>
