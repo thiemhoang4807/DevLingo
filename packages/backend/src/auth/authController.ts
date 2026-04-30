@@ -2,11 +2,15 @@ import { Request, Response } from "express";
 import { AuthService } from "./authService";
 
 export class AuthController {
-
   static async register(req: Request, res: Response) {
     try {
       const { username, password, fullName } = req.body;
 
+      if (!username || !password) {
+      return res.status(400).json({ success: false, message: "Username và Password không được để trống" });
+      }
+
+      // Gọi vào Service để xử lý logic nặng
       const data = await AuthService.register(username, password, fullName);
 
       return res.status(201).json({
@@ -16,9 +20,8 @@ export class AuthController {
       });
 
     } catch (error: unknown) {
-      // Ép kiểu lỗi chuẩn TypeScript thay vì dùng 'any'
       const message = error instanceof Error ? error.message : "An unknown error occurred";
-      return res.status(400).json({
+      return res.status(400).json({ // Đổi thành 400 vì lỗi thường do user nhập sai hoặc trùng
         success: false,
         message
       });

@@ -1,104 +1,136 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TopicCard from '../components/TopicCard';
 import QuestionCard from '../components/QuestionCard';
-import type { TopicData } from '../types/quiz';
+import axiosClient from '../api/axiosClient';
+import { useTheme } from "../context/ThemeContext";
 
-interface QuizPageProps {
-  onStart: (topic: TopicData) => void;
+interface QuizPageProps
+{
+    onStart: (topic: any) => void;
 }
 
-const topics: TopicData[] = [
-  { id: 1, name: 'Topic 1', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
-  { id: 2, name: 'Topic 2', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
-  { id: 3, name: 'Topic 3', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
-  { id: 4, name: 'Topic 4', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
-  { id: 5, name: 'Topic 5', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
-  { id: 6, name: 'Topic 6', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
-  { id: 7, name: 'Topic 7', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
-  { id: 8, name: 'Topic 8', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
-  { id: 9, name: 'Topic 9', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
-  { id: 10, name: 'Topic 10', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
-  { id: 11, name: 'Topic 11', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
-  { id: 12, name: 'Topic 12', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
-];
+export default function QuizPage({ onStart }: QuizPageProps)
+{
+    const { theme } = useTheme();
+    const [selectedOption, setSelectedOption] = useState<number | null>(null);
+    const [isAnswered, setIsAnswered] = useState<boolean>(false);
+    const [topics, setTopics] = useState<any[]>([]);
 
-const QuizPage: React.FC<QuizPageProps> = ({ onStart }) => {
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [isAnswered, setIsAnswered] = useState(false);
+    useEffect(() =>
+    {
+        const fetchTopics = async () =>
+        {
+            try
+            {
+                const response: any = await axiosClient.get('/api/lessons');
+                const data = response.data?.data || response.data || response;
 
-  const randomQuestion = {
-    id: 99,
-    question: "What does the acronym 'API' stand for in software development?",
-    options: [
-      'Application Programming Interface', 
-      'Advanced Program Integration', 
-      'Automated Protocol Interface', 
-      'App Processing Information'
-    ],
-    correctAnswer: 0
-  };
+                let filtered = data.filter((lesson: any) =>
+                {
+                    if (!lesson.title)
+                    {
+                        return false;
+                    }
+                    return ['Internet', 'Hardware', 'Software'].some(keyword =>
+                        lesson.title.toLowerCase().includes(keyword.toLowerCase())
+                    );
+                });
 
-  const handleSelect = (index: number) => {
-    if (isAnswered) return;
-    setSelectedOption(index);
-    setIsAnswered(true);
-  };
+                const orderMap: any = { 'internet': 1, 'hardware': 2, 'software': 3 };
+                const diffMap: any = { 'easy': 1, 'medium': 2, 'hard': 3, 'extreme': 4 };
 
-  return (
-    <div className="min-h-screen bg-[#212121] text-white pt-[40px] pb-[100px] font-['Inter'] flex flex-col items-center">
-      <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-start text-left">
-        
-        {/* --- SECTION 1: RANDOM QUESTION --- */}
-        <section className="w-full mb-[48px] flex flex-col gap-[24px]">
-          <h2 className="text-[24px] font-[700] leading-[32px] text-[#E5E7EB] font-['Inter']">
-            Random Quiz Question
-          </h2>
-          
-          <QuestionCard 
-            question={randomQuestion.question}
-            options={randomQuestion.options}
-            selectedOption={selectedOption}
-            correctAnswer={randomQuestion.correctAnswer}
-            isAnswered={isAnswered}
-            onSelect={handleSelect}
-          />
+                filtered.sort((a: any, b: any) =>
+                {
+                    const aName = a.title.toLowerCase().replace(' term', '');
+                    const bName = b.title.toLowerCase().replace(' term', '');
+                    const aDiff = a.difficulty?.toLowerCase() || 'easy';
+                    const bDiff = b.difficulty?.toLowerCase() || 'easy';
 
-          <div className="flex justify-start items-center w-full pt-[8px] pl-[24px] min-h-[24px]">
-            {isAnswered && (
-              <span className="text-[14px] text-[#E5E7EB] font-['Inter']">
-                View the <span className="text-[#3B82F6] font-[500] hover:underline cursor-pointer transition-colors">API definition.</span>
-              </span>
-            )}
-          </div>
-        </section>
+                    if (orderMap[aName] !== orderMap[bName])
+                    {
+                        return orderMap[aName] - orderMap[bName];
+                    }
+                    return diffMap[aDiff] - diffMap[bDiff];
+                });
 
-        {/* --- SECTION 2: CATEGORIES --- */}
-        <section className="w-full">
-          <h2 className="text-[24px] font-[700] leading-[32px] text-[#E5E7EB] mb-[21px] font-['Inter']">
-            Quiz Category
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px]">
-            {topics.map((topic) => (
-              <div 
-                key={topic.id} 
-                onClick={() => onStart(topic)} 
-                className="cursor-pointer transition-transform hover:scale-[1.02]"
-              >
-                <TopicCard 
-                  name={topic.name}
-                  difficulty={topic.difficulty}
-                  borderColor={topic.borderColor}
-                  badgeBg={topic.badgeBg}
-                />
-              </div>
-            ))}
-          </div>
-        </section>
+                setTopics(filtered);
+            }
+            catch (error)
+            {
+                console.error(error);
+            }
+        };
+        fetchTopics();
+    }, []);
 
-      </div>
-    </div>
-  );
-};
+    const randomQuestion = {
+        id: 99,
+        question: "What does the acronym 'API' stand for in software development?",
+        options: [
+            'Application Programming Interface',
+            'Advanced Program Integration',
+            'Automated Protocol Interface',
+            'App Processing Information'
+        ],
+        correctAnswer: 0
+    };
 
-export default QuizPage;
+    const capitalize = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Easy';
+
+    return (
+        <div className={`min-h-screen pt-10 pb-20 flex flex-col items-center font-['Inter'] transition-colors duration-300 ${theme === 'dark' ? 'bg-[#121212] text-white' : 'bg-gray-50 text-black'}`}>
+            <div className="w-full max-w-5xl px-8 flex flex-col items-start">
+
+                <section className="w-full mb-12 flex flex-col gap-6">
+                    <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>
+                        Random Quiz Question
+                    </h2>
+                    <QuestionCard
+                        question={randomQuestion.question}
+                        options={randomQuestion.options}
+                        selectedOption={selectedOption}
+                        correctAnswer={randomQuestion.correctAnswer}
+                        isAnswered={isAnswered}
+                        onSelect={(idx: number) =>
+                        {
+                            if (!isAnswered)
+                            {
+                                setSelectedOption(idx);
+                                setIsAnswered(true);
+                            }
+                        }}
+                    />
+                </section>
+
+                <section className="w-full">
+                    <div className="mb-6">
+                        <h2 className={`text-[32px] font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
+                            More Quizzes
+                        </h2>
+                        <p className={`${theme === 'dark' ? 'text-[#A0AEC0]' : 'text-gray-600'} text-[16px]`}>
+                            Test your knowledge with these 10-question computer technology quizzes.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        {topics.map((topic: any) =>
+                        (
+                            <div
+                                key={topic.id}
+                                onClick={() => onStart(topic)}
+                                className="cursor-pointer"
+                            >
+                                <TopicCard
+                                    name={topic.title}
+                                    difficulty={capitalize(topic.difficulty)}
+                                    description={topic.description || 'Test your knowledge with these specialized questions.'}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    );
+}

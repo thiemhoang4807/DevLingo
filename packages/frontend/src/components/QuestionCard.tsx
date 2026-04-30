@@ -1,66 +1,79 @@
-import React from 'react';
+import { useTheme } from "../context/ThemeContext";
 
-interface QuestionCardProps {
-  question: string;
-  options: string[];
-  selectedOption: number | null;
-  correctAnswer?: number; // Optional: Only provided when we want to reveal the answer
-  isAnswered: boolean;
-  onSelect: (index: number) => void;
+interface QuestionCardProps
+{
+    question: string;
+    options: string[];
+    selectedOption: number | null;
+    correctAnswer: number;
+    isAnswered: boolean;
+    onSelect: (idx: number) => void;
 }
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ 
-  question, 
-  options, 
-  selectedOption, 
-  correctAnswer, 
-  isAnswered, 
-  onSelect 
-}) => {
-  return (
-    <div className="flex flex-col gap-[24px] w-full p-[24px]">
-      <h3 className="text-[18px] font-[500] leading-[28px] text-[#E5E7EB] text-left w-full font-['Inter']">
-        {question}
-      </h3>
-      
-      <div className="flex flex-col gap-[16px] w-full">
-        {options.map((opt, i) => {
-          let boxStyle = "border-[#4B5563] bg-transparent hover:border-[#3B82F6]";
-          let letterBg = "bg-[#1E3A8A]";
-          let letterColor = "text-[#3B82F6]";
+export default function QuestionCard({ question, options, selectedOption, correctAnswer, isAnswered, onSelect }: QuestionCardProps)
+{
+    const { theme } = useTheme();
 
-          // Logic to apply colors after an answer is submitted
-          if (isAnswered && correctAnswer !== undefined) {
-            if (i === correctAnswer) {
-              boxStyle = "border-[#0ABD5A] bg-[#0ABD5A]/10";
-              letterBg = "bg-[#0ABD5A]";
-              letterColor = "text-white";
-            } else if (i === selectedOption) {
-              boxStyle = "border-[#9B0000] bg-[#3F0500]"; 
-              letterBg = "bg-[#8D0000]";
-              letterColor = "text-white";
-            } else {
-              boxStyle = "border-[#374151] opacity-50";
-            }
-          }
+    const letters = ['A', 'B', 'C', 'D'];
 
-          return (
-            <button 
-              key={i} 
-              onClick={() => onSelect(i)}
-              disabled={isAnswered}
-              className={`flex items-center p-[16px] gap-[24px] border-[1.5px] rounded-[8px] transition-all w-full text-left font-['Inter'] ${isAnswered ? 'cursor-default' : 'cursor-pointer'} ${boxStyle}`}
-            >
-              <div className={`w-[32px] h-[32px] shrink-0 rounded-[6px] flex items-center justify-center font-[600] text-[14px] leading-[20px] transition-colors ${letterBg} ${letterColor}`}>
-                {String.fromCharCode(65 + i)}
-              </div>
-              <span className="text-[#E5E7EB] text-[14px] font-[500] leading-[20px]">{opt}</span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
+    return (
+        <div className="w-full flex flex-col gap-6">
+            {/* 🚀 Màu chữ câu hỏi tự đổi: Đen cho Light, Xám sáng cho Dark */}
+            <p className={`text-[18px] font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>
+                {question}
+            </p>
 
-export default QuestionCard;
+            <div className="flex flex-col gap-4">
+                {options.map((option, idx) =>
+                {
+                    const isSelected = selectedOption === idx;
+                    const isCorrect = isAnswered && idx === correctAnswer;
+                    const isWrong = isAnswered && isSelected && idx !== correctAnswer;
+
+                    // 🚀 Cài đặt màu sắc mặc định theo Theme
+                    let borderClass = theme === 'dark' ? 'border-gray-700' : 'border-[#CBD5E1]';
+                    let bgClass = theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white';
+                    let textClass = theme === 'dark' ? 'text-gray-300' : 'text-gray-700';
+
+                    // Xử lý màu sắc khi chọn Đúng/Sai
+                    if (isCorrect)
+                    {
+                        borderClass = 'border-[#0ABD5A]';
+                        bgClass = theme === 'dark' ? 'bg-[#0ABD5A]/20' : 'bg-[#0ABD5A]/10';
+                        textClass = theme === 'dark' ? 'text-[#0ABD5A]' : 'text-[#068a41]';
+                    }
+                    else if (isWrong)
+                    {
+                        borderClass = 'border-[#EF4444]';
+                        bgClass = theme === 'dark' ? 'bg-[#EF4444]/20' : 'bg-[#EF4444]/10';
+                        textClass = theme === 'dark' ? 'text-[#EF4444]' : 'text-[#b91c1c]';
+                    }
+                    else if (isSelected && !isAnswered)
+                    {
+                        borderClass = 'border-[#3B82F6]';
+                        bgClass = theme === 'dark' ? 'bg-[#3B82F6]/20' : 'bg-[#F0F9FF]';
+                    }
+
+                    return (
+                        <div
+                            key={idx}
+                            onClick={() => onSelect(idx)}
+                            className={`flex items-center gap-4 p-4 rounded-xl border-[1.5px] cursor-pointer transition-all ${borderClass} ${bgClass} ${!isAnswered && 'hover:border-[#3B82F6]'}`}
+                        >
+                            <div className={`flex items-center justify-center w-8 h-8 rounded text-sm font-bold ${
+                                isCorrect ? 'bg-[#0ABD5A] text-white' :
+                                isWrong ? 'bg-[#EF4444] text-white' :
+                                theme === 'dark' ? 'bg-[#2D3748] text-white' : 'bg-[#1E3A8A] text-white'
+                            }`}>
+                                {letters[idx]}
+                            </div>
+                            <span className={`text-[16px] font-medium ${textClass}`}>
+                                {option}
+                            </span>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}

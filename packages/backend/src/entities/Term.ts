@@ -23,6 +23,9 @@ export class Term {
   definition!: string;
 
   @Column("text", { nullable: true })
+  imageUrl?: string | null;
+
+  @Column("text", { nullable: true })
   slangExplanation?: string | null;
 
   @Column("text", { nullable: true })
