@@ -33,7 +33,7 @@ async function seedData() {
             const fileContent = fs.readFileSync(filePath, 'utf-8');
             
             // gray-matter sẽ tách làm 2 phần:
-            // parsed.data: Chứa title, category, relatedTerms, imageUrl
+            // parsed.data: Chứa title, category, relatedTerms (Đã bỏ imageUrl)
             // parsed.content: Chứa TOÀN BỘ chữ nằm dưới dấu --- 
             const parsed = matter(fileContent); 
             const data = parsed.data;
@@ -47,10 +47,6 @@ async function seedData() {
                     termName: data.title,             
                     definition: content.trim(),       
                     lessonId: mappedLessonId,         
-                    
-                    // 🌟 DÒNG MỚI THÊM: Lấy link ảnh từ .md ném vào, không có thì để null
-                    imageUrl: data.imageUrl || null, 
-                    
                     relatedTerms: data.relatedTerms ? JSON.stringify(data.relatedTerms) : "[]" 
                 }, {
                     headers: { 'Authorization': ADMIN_TOKEN }
