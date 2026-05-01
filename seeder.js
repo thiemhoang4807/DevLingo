@@ -5,14 +5,14 @@ const axios = require('axios');
 
 const MOCK_DATA_DIR = path.join(__dirname, 'TermsData'); 
 const API_URL = 'http://localhost:5000/api/terms';       
-const ADMIN_TOKEN = 'Bearer <Dán token vào đây>'; 
+const ADMIN_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM4YzA5MDBkLWM5OGUtNDM4ZS1hYzZjLWZlNWFhMmYwZTQ3ZCIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzc3NjE2MTI0LCJleHAiOjE3NzgyMjA5MjR9.DckU8OAR6ijC_paTo-RGsDWUtpl4ezvN3NOcdRz3w4o'; 
 
 // BẢNG DỊCH THUẬT
 const categoryToLessonId = {
     "Internet Terms": 1,
-    "Hardware Terms": 4,
-    "Software Terms": 7,  
-    "Technical Terms": 10 
+    "Hardware Terms": 2,
+    "Software Terms": 3,  
+    "Technical Terms": 4 
 };
 
 // ⏱️ HÀM MỚI: Bắt hệ thống dừng lại một chút (tính bằng mili-giây)
@@ -42,18 +42,19 @@ async function seedData() {
             const mappedLessonId = categoryToLessonId[data.category] || 1;
 
             try {
+                // 📦 ĐÓNG GÓI DỮ LIỆU GỬI LÊN BACKEND
                 await axios.post(API_URL, {
                     termName: data.title,             
                     definition: content.trim(),       
                     lessonId: mappedLessonId,         
-                    relatedTerms: data.relatedTerms ? JSON.stringify(data.relatedTerms) : "[]" 
+                    imageUrl: data.imageUrl || null   
                 }, {
                     headers: { 'Authorization': ADMIN_TOKEN }
                 });
 
                 console.log(`✅ Đã nạp thành công: ${data.title}`);
                 
-                // ⏱️ Nghỉ giải lao 200ms (0.2 giây) trước khi nạp từ tiếp theo để lách luật ông Kiệt
+                // ⏱️ Nghỉ giải lao 200ms (0.2 giây) trước khi nạp từ tiếp theo 
                 await delay(200); 
 
             } catch (error) {
