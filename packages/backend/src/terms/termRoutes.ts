@@ -1,13 +1,14 @@
-import { Router } from "express";
-import { TermController } from "./termController";
-import { verifyToken, requireAdmin } from "../middlewares/authMiddleware";
+    import { Router } from "express";
+    import { TermController } from "./termController";
+    import { verifyToken, requireAdmin } from "../middlewares/authMiddleware";
 
-const router = Router();
+    const router = Router();
 
-// Toàn bộ thao tác với Term (Sửa/Xóa) đều cần quyền Admin
-router.use(verifyToken, requireAdmin);
+    // Toàn bộ thao tác với Term (Sửa/Xóa) đều cần quyền Admin
+    router.use(verifyToken, requireAdmin);
 
-router.put("/:id", TermController.updateTerm);
-router.delete("/:id", TermController.deleteTerm);
+    router.put("/:id", TermController.updateTerm);
+    router.delete("/:id", TermController.deleteTerm);
+    router.post("/", TermController.createTerm);
 
-export default router;
+    export default router;
