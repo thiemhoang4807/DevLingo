@@ -21,6 +21,7 @@ export default function TermPageCategoryDetail()
         {
             try
             {
+                // Gọi API lấy dữ liệu từ Backend của Kiệt
                 const [objLessonRes, objTermsRes] = await Promise.all([
                     axiosClient.get(`/api/lessons/${categoryId}`),
                     axiosClient.get(`/api/terms`, { params: { lessonId: categoryId } })
@@ -34,7 +35,7 @@ export default function TermPageCategoryDetail()
             }
             catch (objError)
             {
-                console.error(objError);
+                console.error("Lỗi gọi API:", objError);
             }
             finally
             {
@@ -102,10 +103,6 @@ export default function TermPageCategoryDetail()
                             key={objTerm.id}
                             className={`p-6 rounded-[10px] border-2 transition-all hover:border-[#3B82F6] shadow-sm ${theme === 'dark' ? 'bg-[#1E1E1E] border-[#374151]' : 'bg-white border-gray-200'}`}
                         >
-                            {objTerm.imageUrl &&
-                            (
-                                <img src={`http://localhost:5000${objTerm.imageUrl}`} alt={objTerm.termName} className="w-full h-32 object-cover rounded-[8px] mb-4" />
-                            )}
                             <h3 className="text-[20px] font-[700] text-[#3B82F6] mb-2">{objTerm.termName}</h3>
                             <div className={`text-[15px] leading-relaxed markdown-body ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
                                 <ReactMarkdown>
