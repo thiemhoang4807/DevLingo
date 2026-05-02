@@ -70,46 +70,46 @@ export default function TermPageCategorySpecializedLetter()
                 </h2>
             </div>
 
-            <div className="container__list flex flex-col gap-[10px] w-full">
+            {/* ĐÃ CHUYỂN ĐỔI THÀNH GIAO DIỆN GRID (LƯỚI) GIỐNG BÊN CATEGORY */}
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {isLoading ?
                 (
-                    // Loading Skeleton
-                    [1, 2, 3, 4, 5].map(skeleton =>
+                    // Loading Skeleton dạng khối vuông
+                    [1, 2, 3, 4, 5, 6].map(skeleton =>
                     (
-                        <div key={skeleton} className="h-[66px] bg-blue-400/20 animate-pulse rounded-[6px] w-full"></div>
+                        <div key={skeleton} className="h-[200px] bg-blue-400/20 animate-pulse rounded-[10px] w-full"></div>
                     ))
                 ) : terms.length === 0 ?
                 (
-                    // Trạng thái trống
-                    <div className="flex flex-col items-center justify-center py-20 opacity-60 dark:text-white">
+                    // Trạng thái trống trải dài toàn bộ lưới (col-span-full)
+                    <div className="col-span-full flex flex-col items-center justify-center py-20 opacity-60 dark:text-white">
                         <BookOpen size={48} className="mb-4" />
                         <p className="text-[16px]">Chưa có từ vựng nào bắt đầu bằng chữ '{letter}'</p>
                     </div>
                 ) :
                 (
-                    // Render Data thật
+                    // Render Data thật dạng Card
                     terms.map((term: any) =>
                     (
-                        <li 
-                            key={term.id} 
-                            className="list-none bg-[#E8E7E7] dark:bg-[#4A4A4A] rounded-[6px] border border-[#B9B8B8] dark:border-[#777676] flex flex-row gap-[16px] items-center p-[16px] min-h-[66px] cursor-pointer hover:opacity-80 transition-opacity shadow-sm"
+                        <div
+                            key={term.id}
+                            onClick={() => navigate(`/term/detail/${term.id}`)} // Nối ống sang trang chi tiết
+                            className="p-6 rounded-[10px] border-2 transition-all hover:border-[#3B82F6] shadow-sm cursor-pointer bg-white border-gray-200 dark:bg-[#1E1E1E] dark:border-[#374151]"
                         >
-                            <div className="icon min-w-[32px] h-[32px] rounded-[6px] flex items-center justify-center bg-gradient-to-b from-[#B1B1B1] to-[#FFFFFF] dark:to-[#4B4B4B]">
-                                <p className="cursor-default font-bold text-[14px] text-[#000000] dark:text-[#FFFFFF] leading-[20px]">
-                                    {term.termName.charAt(0).toUpperCase()}
-                                </p>
-                            </div>
-
-                            <div className="content flex-1 text-left flex flex-col">
-                                <p className="font-[600] text-[16px] text-[#000000] dark:text-[#FFFEFE] leading-[24px]">
-                                    {term.termName}
-                                </p>
-                                {/* Hiển thị thêm dòng định nghĩa ngắn gọn */}
-                                <p className="text-[13px] text-gray-600 dark:text-gray-300 line-clamp-1 mt-1">
-                                    {term.definition}
-                                </p>
-                            </div>
-                        </li>
+                            {/* Hiển thị ảnh nếu có */}
+                            {term.imageUrl && (
+                                <img
+                                    src={term.imageUrl.startsWith('http') ? term.imageUrl : `http://localhost:5000${term.imageUrl}`}
+                                    alt={term.termName}
+                                    className="w-full h-32 object-cover rounded-[8px] mb-4 bg-gray-50 dark:bg-gray-800/50"
+                                />
+                            )}
+                            
+                            {/* Tên từ vựng */}
+                            <h3 className="text-[20px] font-[700] text-[#3B82F6]">
+                                {term.termName}
+                            </h3>
+                        </div>
                     ))
                 )}
             </div>

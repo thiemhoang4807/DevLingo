@@ -1,3 +1,4 @@
+import ReactMarkdown from 'react-markdown';
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
@@ -7,6 +8,7 @@ import { ArrowLeft, BookOpen, PlayCircle } from "lucide-react";
 export default function TermPageCategoryDetail()
 {
     const { categoryId } = useParams();
+    console.log("👉 Mã ID trên thanh địa chỉ là:", categoryId);
     const navigate = useNavigate();
     const { theme } = useTheme();
 
@@ -33,7 +35,7 @@ export default function TermPageCategoryDetail()
             }
             catch (objError)
             {
-                console.error(objError);
+                console.error("Lỗi gọi API:", objError);
             }
             finally
             {
@@ -103,12 +105,20 @@ export default function TermPageCategoryDetail()
                         >
                             {objTerm.imageUrl &&
                             (
-                                <img src={`http://localhost:5000${objTerm.imageUrl}`} alt={objTerm.termName} className="w-full h-32 object-cover rounded-[8px] mb-4" />
+                                <img 
+                                    src={objTerm.imageUrl.startsWith('http') ? objTerm.imageUrl : `http://localhost:5000${objTerm.imageUrl}`} 
+                                    alt={objTerm.termName} 
+                                    className="w-full h-32 object-cover rounded-[8px] mb-4" 
+                                />
                             )}
+                            
                             <h3 className="text-[20px] font-[700] text-[#3B82F6] mb-2">{objTerm.termName}</h3>
-                            <p className={`text-[15px] leading-relaxed ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                                {objTerm.definition}
-                            </p>
+                            
+                            <div className={`text-[15px] leading-relaxed markdown-body ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                                <ReactMarkdown>
+                                    {objTerm.definition}
+                                </ReactMarkdown>
+                            </div>
                         </div>
                     ))}
                 </div>
