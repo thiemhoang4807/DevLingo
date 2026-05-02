@@ -8,6 +8,7 @@ import { ArrowLeft, BookOpen, PlayCircle } from "lucide-react";
 export default function TermPageCategoryDetail()
 {
     const { categoryId } = useParams();
+    console.log("👉 Mã ID trên thanh địa chỉ là:", categoryId);
     const navigate = useNavigate();
     const { theme } = useTheme();
 
