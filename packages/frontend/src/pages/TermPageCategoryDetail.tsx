@@ -99,9 +99,7 @@ export default function TermPageCategoryDetail()
                     (
                         <div
                             key={objTerm.id}
-                            // 👇 1. Thêm onClick để chuyển hướng sang trang chi tiết của từ vựng
                             onClick={() => navigate(`/term/detail/${objTerm.id}`)} 
-                            // 👇 2. Thêm class cursor-pointer để biết là bấm được
                             className={`p-6 rounded-[10px] border-2 transition-all hover:border-[#3B82F6] shadow-sm cursor-pointer ${theme === 'dark' ? 'bg-[#1E1E1E] border-[#374151]' : 'bg-white border-gray-200'}`}
                         >
                             {objTerm.imageUrl &&
