@@ -5,7 +5,7 @@ const axios = require('axios');
 
 const MOCK_DATA_DIR = path.join(__dirname, 'TermsData'); 
 const API_URL = 'http://localhost:5000/api/terms';       
-const ADMIN_TOKEN = 'Bearer <Dán token vào đây>'; 
+const ADMIN_TOKEN = 'Bearer <Dán token admin vô đây>'; 
 
 // BẢNG DỊCH THUẬT
 const categoryToLessonId = {
