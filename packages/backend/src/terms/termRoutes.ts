@@ -1,14 +1,22 @@
-    import { Router } from "express";
-    import { TermController } from "./termController";
-    import { verifyToken, requireAdmin } from "../middlewares/authMiddleware";
+import { Router } from "express";
+import { TermController } from "./termController";
+import { verifyToken, requireAdmin } from "../middlewares/authMiddleware";
 
-    const router = Router();
+const router = Router();
 
-    // Toàn bộ thao tác với Term (Sửa/Xóa) đều cần quyền Admin
-    router.use(verifyToken, requireAdmin);
+// =================================================================
+// ✅ KHU VỰC PUBLIC: Ai cũng vào xem được (Không cần đăng nhập/Admin)
+// =================================================================
+router.get("/", TermController.getTerms);       // Lấy danh sách từ vựng
+router.get("/:id", TermController.getTermById); // Lấy chi tiết 1 từ vựng
 
-    router.put("/:id", TermController.updateTerm);
-    router.delete("/:id", TermController.deleteTerm);
-    router.post("/", TermController.createTerm);
+// =================================================================
+// 🛑 KHU VỰC BẢO MẬT: Bắt đầu từ dòng này, bắt buộc phải là ADMIN
+// =================================================================
+router.use(verifyToken, requireAdmin);
 
-    export default router;
+router.post("/", TermController.createTerm);
+router.put("/:id", TermController.updateTerm);
+router.delete("/:id", TermController.deleteTerm);
+
+export default router;
