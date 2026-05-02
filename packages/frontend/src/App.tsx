@@ -14,6 +14,8 @@ import UserProfilePage from "./pages/UserProfilePage";
 import LeaderBoard from './pages/LeaderBoard';
 import TermPageCategoryDetail from './pages/TermPageCategoryDetail';
 
+import TermDetailPage from './pages/TermDetailPage'; 
+
 // Layout wrapper hỗ trợ chuyển đổi Theme cho phần nền main
 
 // === CÁC COMPONENT ADMIN ĐƯỢC THÊM VÀO TỪ SPRINT NÀY ===
@@ -67,6 +69,10 @@ function App() {
           <Route index element={<TermPageCategory />} />
           <Route path="letter/:letter" element={<TermPageCategorySpecializedLetter />} />
           <Route path="category/:categoryId" element={<TermPageCategoryDetail />} />
+          
+          {/* 👇 2. ĐÂY LÀ DÒNG NỐI ỐNG ĐỂ CLICK VÀO CARD NÓ BAY SANG TRANG CHI TIẾT */}
+          <Route path="detail/:id" element={<TermDetailPage />} />
+          
         </Route>
         
         {/* ========================================================
