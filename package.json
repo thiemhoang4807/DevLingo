@@ -8,10 +8,12 @@
   "scripts": {
     "dev:backend": "npm run dev --workspace=@devlingo/backend",
     "dev:frontend": "npm run dev --workspace=@devlingo/frontend",
-    "dev": "npm run dev:backend & npm run dev:frontend"
+    "dev": "npm run dev:backend & npm run dev:frontend",
+    "seed": "node seeder.js"
   },
   "dependencies": {
     "express-rate-limit": "^8.3.2",
+    "gray-matter": "^4.0.3",
     "helmet": "^8.1.0",
     "lucide-react": "^0.577.0",
     "multer": "^2.1.1"

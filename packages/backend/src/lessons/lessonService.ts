@@ -2,12 +2,40 @@ import { AppDataSource } from "../db/dataSource";
 import { Lesson } from "../entities/Lesson";
 import { Term } from "../entities/Term";
 import { Question } from "../entities/Question";
+import fs from "fs";
+import path from "path";
 
 const lessonRepo = AppDataSource.getRepository(Lesson);
 const termRepo = AppDataSource.getRepository(Term);
 const questionRepo = AppDataSource.getRepository(Question);
 
 export class LessonService {
+
+  static async getLessons(search?: string, difficulty?: string, page: number = 1, limit: number = 10) {
+    const queryBuilder = lessonRepo.createQueryBuilder("lesson");
+
+    if (search) {
+      queryBuilder.andWhere("lesson.title LIKE :search", { search: `%${search}%` });
+    }
+    
+    if (difficulty) {
+      queryBuilder.andWhere("lesson.difficulty = :difficulty", { difficulty });
+    }
+
+    const [lessons, total] = await queryBuilder
+      .orderBy("lesson.orderIndex", "ASC")
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      lessons,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
 
   static async getAllPublishedLessons() {
     const lessons = await lessonRepo.find({
@@ -27,7 +55,7 @@ export class LessonService {
   static async getLessonDetailById(id: number) {
     const lesson = await lessonRepo.findOne({
       where: { id: id },
-      relations: ["terms", "questions"] 
+      relations: ["terms", "questions"]
     });
 
     if (!lesson) {
@@ -43,7 +71,7 @@ export class LessonService {
         id: term.id,
         termName: term.termName,
         definition: term.definition
-    })),
+      })),
       questions: lesson.questions.map(q => ({
         id: q.id,
         questionText: q.questionText,
@@ -57,58 +85,55 @@ export class LessonService {
     };
   }
 
-  static async createLesson(title: string) {
-    const existingLesson = await lessonRepo.findOne({
-      where: { title: title }
-    });
-
-    if (existingLesson) {
-      throw new Error("Lesson title already exists"); 
+  static async createLesson(data: any, thumbnailUrl?: string | null): Promise<any> {
+    if (data.title) {
+      const existingLesson = await lessonRepo.findOne({ where: { title: data.title } });
+      if (existingLesson) {
+        throw new Error("Lesson title already exists");
+      }
     }
 
     const newLesson = lessonRepo.create({
-      title,
-      isPublished: false 
+      ...data,
+      thumbnailUrl: thumbnailUrl
     });
-
     await lessonRepo.save(newLesson);
+    return newLesson;
 
-    return {
-      id: newLesson.id,
-      title: newLesson.title,
-      isPublished: newLesson.isPublished
-    };
   }
 
-  static async updateLesson(id: number, updateData: { title?: string; isPublished?: boolean }) {
-    const lesson = await lessonRepo.findOne({
-      where: { id: id }
-    });
 
+
+  static async updateLesson(id: number, updateData: any, newThumbnailUrl?: string | null) {
+    const lesson = await lessonRepo.findOne({ where: { id: id } });
     if (!lesson) {
       throw new Error("Lesson not found");
     }
 
     if (updateData.title && updateData.title !== lesson.title) {
-        const existingLesson = await lessonRepo.findOne({ where: { title: updateData.title } });
-        if (existingLesson) throw new Error("Lesson title already exists");
+      const existingLesson = await lessonRepo.findOne({ where: { title: updateData.title } });
+      if (existingLesson) throw new Error("Lesson title already exists");
     }
-
     Object.assign(lesson, updateData);
-    await lessonRepo.save(lesson);
 
+    if (newThumbnailUrl) {
+      lesson.thumbnailUrl = newThumbnailUrl;
+    }
+    await lessonRepo.save(lesson);
     return lesson;
   }
 
   static async deleteLesson(id: number) {
-    const lesson = await lessonRepo.findOne({
-      where: { id: id }
-    });
-
+    const lesson: any = await lessonRepo.findOne({ where: { id: id } });
     if (!lesson) {
       throw new Error("Lesson not found");
     }
-
+    if (lesson.thumbnailUrl) {
+        const filePath = path.join(__dirname, "../../", lesson.thumbnailUrl);
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+    }
     await lessonRepo.remove(lesson);
     return { message: "Lesson deleted successfully" };
   }
