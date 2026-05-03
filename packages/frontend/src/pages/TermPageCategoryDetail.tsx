@@ -1,4 +1,3 @@
-import ReactMarkdown from 'react-markdown';
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
@@ -8,7 +7,6 @@ import { ArrowLeft, BookOpen, PlayCircle } from "lucide-react";
 export default function TermPageCategoryDetail()
 {
     const { categoryId } = useParams();
-    console.log("👉 Mã ID trên thanh địa chỉ là:", categoryId);
     const navigate = useNavigate();
     const { theme } = useTheme();
 
@@ -101,7 +99,8 @@ export default function TermPageCategoryDetail()
                     (
                         <div
                             key={objTerm.id}
-                            className={`p-6 rounded-[10px] border-2 transition-all hover:border-[#3B82F6] shadow-sm ${theme === 'dark' ? 'bg-[#1E1E1E] border-[#374151]' : 'bg-white border-gray-200'}`}
+                            onClick={() => navigate(`/term/detail/${objTerm.id}`)} 
+                            className={`p-6 rounded-[10px] border-2 transition-all hover:border-[#3B82F6] shadow-sm cursor-pointer ${theme === 'dark' ? 'bg-[#1E1E1E] border-[#374151]' : 'bg-white border-gray-200'}`}
                         >
                             {objTerm.imageUrl &&
                             (
@@ -112,13 +111,8 @@ export default function TermPageCategoryDetail()
                                 />
                             )}
                             
-                            <h3 className="text-[20px] font-[700] text-[#3B82F6] mb-2">{objTerm.termName}</h3>
+                            <h3 className="text-[20px] font-[700] text-[#3B82F6]">{objTerm.termName}</h3>
                             
-                            <div className={`text-[15px] leading-relaxed markdown-body ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                                <ReactMarkdown>
-                                    {objTerm.definition}
-                                </ReactMarkdown>
-                            </div>
                         </div>
                     ))}
                 </div>
