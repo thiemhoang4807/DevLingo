@@ -5,7 +5,7 @@ const axios = require('axios');
 
 const MOCK_DATA_DIR = path.join(__dirname, 'TermsData'); 
 const API_URL = 'http://localhost:5000/api/terms';       
-const ADMIN_TOKEN = 'Bearer <Dán token admin vô đây>'; 
+const ADMIN_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjczMDUzZWU3LTBhZmMtNDJjNS1hNDRhLThmZGRiMTgwYjQ0OSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3Nzc0NTUyMCwiZXhwIjoxNzc4MzUwMzIwfQ._0rv2u7kIueEI79wdMiY_PLJXX_eLpwvFvqbYnK3C6o'; 
 
 // BẢNG DỊCH THUẬT
 const categoryToLessonId = {
