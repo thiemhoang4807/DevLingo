@@ -11,7 +11,7 @@ WORKDIR /app
 RUN apk add --no-cache python3 make g++
 
 # Copy workspace root files
-COPY package.json package-lock.json ./
+COPY package*.json ./
 
 # Copy shared package
 COPY packages/shared ./packages/shared

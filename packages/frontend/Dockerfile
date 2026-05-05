@@ -8,7 +8,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copy workspace root files
-COPY package.json package-lock.json ./
+COPY package*.json ./
 
 # Copy shared package (frontend có thể cần import types)
 COPY packages/shared ./packages/shared
