@@ -23,15 +23,17 @@ import leaderboardRoutes from "./leaderboard/leaderboardRoutes";
 import { badgeRoutes } from "./badge/badgeRoutes";
 
 const app = express();
-const PORT = 5000; 
+const PORT = process.env.PORT || 5000; 
 
 // ==========================================
 // 🛡️ MIDDLEWARE BẢO MẬT & TIỆN ÍCH
 // ==========================================
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }, // Cho phép frontend load ảnh từ backend
+}));
 
 app.use(cors({
-  origin: "http://localhost:5173", // Link Frontend 
+  origin: process.env.CORS_ORIGIN || "http://localhost:5173", // Link Frontend 
   credentials: true                
 }));
 
@@ -43,8 +45,8 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 // 🛑 KHIÊN CHỐNG SPAM (Rate Limiter)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 phút
-  max: 100, // Giới hạn 100 requests / 1 IP
-  message: { success: false, message: "Spam ít thôi bro, đi lọ 1 tí đi!" }
+  max: 1000, // Giới hạn 100 requests / 1 IP
+  message: { success: false, message: "Spam ít thôi bro" }
 });
 app.use("/api", limiter); 
 

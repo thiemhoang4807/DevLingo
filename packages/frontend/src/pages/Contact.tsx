@@ -18,11 +18,11 @@ export default function Contact() {
         },
         { 
             name: "Phạm Văn Tuấn Kiệt", role: "Backend Developer", githubId: "NoFoundShadow",
-            facebook: "https://facebook.com/", email: "kiet@example.com" 
+            facebook: "facebook.com/kietpham1604", email: "tuankietpham0407@gmail.com" 
         },
         { 
             name: "Dương Tuấn Ngọc", role: "Backend Developer", githubId: "tothuongcau",
-            facebook: "https://facebook.com/", email: "ngoc@example.com" 
+            facebook: "https://www.facebook.com/share/1LNfXQfmzo/", email: "ngocduong2812thll@gmail.com" 
         },
         { 
             name: "Phan Đăng Trọng Tín", role: "Backend Developer", githubId: "TinPhan0602",
@@ -30,15 +30,15 @@ export default function Contact() {
         },
         { 
             name: "Đỗ Hoàng Anh Tú", role: "Frontend Developer", githubId: "Tus-na",
-            facebook: "https://facebook.com/", email: "tu@example.com" 
+            facebook: "https://www.facebook.com/tu.ang.4201/", email: "tudha.ti.2225@gmail.com" 
         },
         { 
             name: "Hứa Nguyên Khôi", role: "Frontend Developer", githubId: "MeoMuop3727",
-            facebook: "https://facebook.com/", email: "khoi@example.com" 
+            facebook: "https://www.facebook.com/KMeoPeo", email: "25520896@gm.uit.edu.vn" 
         },
         { 
             name: "Nguyễn Vũ Hoàng Minh", role: "Frontend Developer", githubId: "Pol-d",
-            facebook: "https://facebook.com/", email: "minh@example.com" 
+            facebook: "https://www.facebook.com/nguyen.minh.975755", email: "25521129@gm.uit.edu.vn" 
         },
         { 
             name: "Nguyễn Hùng Quân", role: "Frontend Developer", githubId: "Wadey727",
@@ -46,7 +46,7 @@ export default function Contact() {
         },
         { 
             name: "Phạm Quang Bôn", role: "UI/UX Designer", githubId: "noq-wvyd",
-            facebook: "https://facebook.com/", email: "bon@example.com" 
+            facebook: "https://www.facebook.com/uoq.wvyd", email: "pqbon150107@gmail.com" 
         },
         { 
             name: "Nguyễn Tấn Dũng", role: "UI/UX Designer", githubId: "skibidi07",

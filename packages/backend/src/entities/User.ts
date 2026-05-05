@@ -26,12 +26,21 @@ export class User {
   @Column("varchar", { default: "student" })
   role!: string;
 
+  @Column("varchar", { nullable: true })
+  avatar?: string | null;
+
   @Index()
   @Column("integer", { default: 0 })
   xp!: number;
 
   @Column("integer", { default: 1 })
   level!: number;
+
+  @Column("integer", { default: 0 })
+  peakXp!: number;
+
+  @Column("integer", { default: 1 })
+  peakLevel!: number;
 
   @CreateDateColumn({ type: "datetime" })
   createdAt!: Date;

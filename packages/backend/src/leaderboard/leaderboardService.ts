@@ -17,14 +17,16 @@ export class LeaderboardService {
     }
 
     const users = await userRepo.find({
-      select: ["id", "username", "xp", "level"],
+      select: ["id", "username", "avatar", "xp", "level"],
       order: { xp: "DESC" },
       take: limit,
     });
 
     const formattedData = users.map((user, index) => ({
       rank: index + 1,
+      id: user.id,
       username: user.username,
+      avatar: user.avatar,
       xp: user.xp,
       level: user.level
     }));

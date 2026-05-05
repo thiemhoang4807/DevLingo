@@ -11,6 +11,7 @@ import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 import LearningHistoryPage from './pages/LearningHistoryPage';
 import UserProfilePage from "./pages/UserProfilePage";
+import PublicProfilePage from "./pages/PublicProfilePage";
 import LeaderBoard from './pages/LeaderBoard';
 import TermPageCategoryDetail from './pages/TermPageCategoryDetail';
 import ScrollToTop from './utils/ScrollToTop';
@@ -26,6 +27,8 @@ import AdminLayout from './layouts/AdminLayout';
 import TermManagement from './pages/admin/TermManagement';
 import QuizManagement from './pages/admin/QuizManagement';
 import UserManagement from './pages/admin/UserManagement';
+
+import SearchResultsPage from './pages/SearchResultsPage';
 
 // Layout wrapper to include Header and Footer for inner pages
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
@@ -98,6 +101,7 @@ function App() {
 
         {/*Profile*/}
         <Route path="/profile" element={<MainLayout><UserProfilePage /></MainLayout>} />
+        <Route path="/profile/:userId" element={<MainLayout><PublicProfilePage /></MainLayout>} />
         
         {/* Điều hướng mặc định */}
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -108,6 +112,9 @@ function App() {
 
         {/* Contact */}
         <Route path="/contact" element={<MainLayout><Contact /></MainLayout>} />
+        
+        {/* Search Results */}
+        <Route path="/search" element={<MainLayout><SearchResultsPage /></MainLayout>} />
       </Routes>
     </Router>
   );

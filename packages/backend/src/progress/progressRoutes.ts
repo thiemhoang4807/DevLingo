@@ -7,5 +7,6 @@
     // Phải đăng nhập (có Token) mới được gọi 2 API này
     router.post("/submit", verifyToken, ProgressController.submitQuiz);
     router.get("/me", verifyToken, ProgressController.getProgress);
+    router.get("/history", verifyToken, ProgressController.getHistory);
 
     export default router;

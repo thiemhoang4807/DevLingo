@@ -133,10 +133,11 @@ export default function ActiveQuiz({ onBack, topic, onFinish }: any)
         {
             try
             {
-                await axiosClient.post('/api/progress/quiz', {
+                await axiosClient.post('/api/progress/submit', {
                     lessonId: topic?.id,
                     score: currentScore,
-                    totalQuestions: totalQuestions
+                    totalQuestions: totalQuestions,
+                    answers: updatedHistory
                 });
             }
             catch (error)

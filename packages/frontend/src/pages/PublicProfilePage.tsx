@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { getBadgeUrl } from "../utils/badgeHelper";
-import { CalendarDays, Star, Zap, Trophy, Target, TrendingUp, Camera, Loader2 } from "lucide-react";
+import { CalendarDays, Star, Zap, Trophy, Target, TrendingUp } from "lucide-react";
 import defaultAvatar from "../assets/images/avata.png";
 import axiosClient from '../api/axiosClient';
 
@@ -35,101 +36,37 @@ function getLevelInfo(xp: number) {
   return { current, next, xpInLevel, xpNeeded, progress };
 }
 
-export default function UserProfilePage() {
+export default function PublicProfilePage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const { userId } = useParams<{ userId: string }>();
 
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
   const [progressData, setProgressData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-  const [avatarHover, setAvatarHover] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProfile = async () => {
       try {
-        const [userRes, progressRes]: any[] = await Promise.all([
-          axiosClient.get('/api/users/me'),
-          axiosClient.get('/api/progress/me').catch(() => ({ data: [] }))
-        ]);
-        const userData = userRes.data?.data || userRes.data || userRes;
-        setCurrentUser(userData);
-        const pData = progressRes.data?.data || progressRes.data || progressRes;
-        setProgressData(Array.isArray(pData) ? pData : []);
-      } catch (error) {
-        console.error(error);
+        const response: any = await axiosClient.get(`/api/users/${userId}/profile`);
+        const data = response.data?.data || response.data || response;
+        setUserData(data.user);
+        setProgressData(Array.isArray(data.history) ? data.history : []);
+      } catch (err: any) {
+        setError("User not found");
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchData();
-  }, []);
+    if (userId) fetchProfile();
+  }, [userId]);
 
   const getAvatarUrl = (avatarPath: string) => {
     if (!avatarPath) return defaultAvatar;
     if (avatarPath.startsWith('http')) return avatarPath;
     return `http://localhost:5000${avatarPath}`;
-  };
-
-  const handleAvatarClick = () => {
-    if (!isUploadingAvatar) {
-      fileInputRef.current?.click();
-    }
-  };
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      alert('Chỉ cho phép tải lên file ảnh (JPG, PNG, GIF, WEBP)!');
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File ảnh không được vượt quá 5MB!');
-      return;
-    }
-
-    setIsUploadingAvatar(true);
-
-    try {
-      const formData = new FormData();
-      formData.append('avatar', file);
-
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/users/me/avatar', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setCurrentUser((prev: any) => ({
-          ...prev,
-          avatar: result.data.avatar,
-        }));
-      } else {
-        alert(result.message || 'Đổi avatar thất bại!');
-      }
-    } catch (error) {
-      console.error('Avatar upload error:', error);
-      alert('Có lỗi xảy ra khi tải ảnh lên!');
-    } finally {
-      setIsUploadingAvatar(false);
-      // Reset input để có thể chọn lại cùng file
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    }
   };
 
   if (isLoading) {
@@ -140,16 +77,24 @@ export default function UserProfilePage() {
     );
   }
 
-  const displayName = currentUser?.username || currentUser?.fullName || "User";
-  const displayAvatar = getAvatarUrl(currentUser?.avatar);
-  const userXP = currentUser?.xp || 0;
-  const userLevel = currentUser?.level || 1;
+  if (error || !userData) {
+    return (
+      <div className={`min-h-screen flex flex-col items-center justify-center gap-4 ${isDark ? "bg-[#1A1D21]" : "bg-gray-50"}`}>
+        <p className={`text-[20px] font-bold ${isDark ? "text-gray-400" : "text-gray-500"}`}>User not found</p>
+      </div>
+    );
+  }
+
+  const displayName = userData.username || userData.fullName || "User";
+  const displayAvatar = getAvatarUrl(userData.avatar);
+  const userXP = userData.xp || 0;
+  const userLevel = userData.level || 1;
   const levelInfo = getLevelInfo(userXP);
-  const peakXp = currentUser?.peakXp || userXP;
+  const peakXp = userData.peakXp || userXP;
   const peakLevelInfo = getLevelInfo(peakXp);
   const completedQuizzes = progressData.filter((p: any) => p.status === "completed").length;
-  const joinDate = currentUser?.createdAt
-    ? new Date(currentUser.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  const joinDate = userData.createdAt
+    ? new Date(userData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     : "Unknown";
 
   return (
@@ -157,59 +102,18 @@ export default function UserProfilePage() {
       <div className="container mx-auto max-w-[1184px] pt-10 px-8">
         
         <h1 className={`text-[40px] font-bold font-['Space_Grotesk'] mb-10 ${isDark ? "text-white" : "text-gray-900"}`}>
-          Learning <span className="text-[#3B82F6]">Profile</span>
+          Player <span className="text-[#3B82F6]">Profile</span>
         </h1>
 
         {/* --- USER INFO SECTION --- */}
         <div className="flex flex-col lg:flex-row gap-10 mb-16 items-center lg:items-start w-full">
           
-          {/* Avatar with upload overlay */}
-          <div 
-            className="relative shrink-0 cursor-pointer group"
-            onMouseEnter={() => setAvatarHover(true)}
-            onMouseLeave={() => setAvatarHover(false)}
-            onClick={handleAvatarClick}
-          >
+          {/* Avatar (read-only, no upload) */}
+          <div className="relative shrink-0">
             <img 
               src={displayAvatar} 
               alt="Avatar" 
-              className={`w-[273px] h-[273px] rounded-full object-cover shadow-2xl border-[6px] border-[#3B82F6]/20 bg-white transition-all duration-300 ${
-                avatarHover ? "brightness-75 scale-[1.02]" : ""
-              }`}
-            />
-            
-            {/* Overlay khi hover */}
-            <div 
-              className={`absolute inset-0 rounded-full flex flex-col items-center justify-center transition-all duration-300 ${
-                avatarHover || isUploadingAvatar ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {isUploadingAvatar ? (
-                <Loader2 size={48} className="text-white animate-spin" />
-              ) : (
-                <>
-                  <Camera size={40} className="text-white mb-2 drop-shadow-lg" />
-                  <span className="text-white text-[14px] font-semibold font-['Inter'] drop-shadow-lg tracking-wide">
-                    Đổi Avatar
-                  </span>
-                </>
-              )}
-            </div>
-
-            {/* Badge nhỏ ở góc */}
-            <div className={`absolute bottom-3 right-3 w-[44px] h-[44px] rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-              isDark ? "bg-[#3B82F6]" : "bg-[#2563EB]"
-            } ${avatarHover ? "scale-110" : ""}`}>
-              <Camera size={20} className="text-white" />
-            </div>
-
-            {/* Hidden file input */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/gif,image/webp"
-              className="hidden"
-              onChange={handleAvatarChange}
+              className="w-[273px] h-[273px] rounded-full object-cover shadow-2xl border-[6px] border-[#3B82F6]/20 bg-white"
             />
           </div>
 
@@ -326,7 +230,7 @@ export default function UserProfilePage() {
           </div>
           )}
 
-          {/* Row 6: ACCURACY */}
+          {/* Row 6: BEST QUIZ SCORE */}
           {progressData.length > 0 && (
           <div className="flex items-center justify-between w-full hover:-translate-y-1 transition-transform cursor-pointer group">
             <Target size={72} strokeWidth={1.5} className="text-white ml-12 opacity-80 group-hover:scale-110 transition-transform" />

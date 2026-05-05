@@ -66,4 +66,35 @@ export class UserController {
       return res.status(400).json({ success: false, message });
     }
   }
+
+  static async updateAvatar(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user.id;
+      const file = req.file;
+
+      if (!file) {
+        return res.status(400).json({ success: false, message: "No file uploaded" });
+      }
+
+      const avatarPath = `/uploads/${file.filename}`;
+      const user = await UserService.updateAvatar(userId, avatarPath);
+      const { passwordHash, ...safeUser } = user;
+
+      return res.json({ success: true, data: safeUser });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res.status(400).json({ success: false, message });
+    }
+  }
+
+  static async getPublicProfile(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.params.id;
+      const data = await UserService.getPublicProfile(userId);
+      return res.json({ success: true, data });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      return res.status(404).json({ success: false, message });
+    }
+  }
 }

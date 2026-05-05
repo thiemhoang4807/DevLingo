@@ -4,6 +4,9 @@ import { verifyToken, requireAdmin } from "../middlewares/authMiddleware";
 
 const router = Router();
 
+// 🟢 PUBLIC: Lấy danh sách câu hỏi theo lessonId (để làm bài quiz)
+router.get("/", QuestionController.getQuestionsByLesson);
+
 // 🟢 PUBLIC: Cho phép lấy thông tin câu hỏi (để làm bài test)
 router.get("/:id", QuestionController.getQuestion);
 

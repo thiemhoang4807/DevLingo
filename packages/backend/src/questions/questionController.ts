@@ -3,6 +3,19 @@ import { QuestionService } from "./questionService";
 
 export class QuestionController {
   
+  static async getQuestionsByLesson(req: Request, res: Response) {
+    try {
+      const lessonId = parseInt(req.query.lessonId as string);
+      if (isNaN(lessonId)) {
+        return res.status(400).json({ success: false, message: "lessonId is required" });
+      }
+      const data = await QuestionService.getQuestionsByLessonId(lessonId);
+      return res.status(200).json({ success: true, data });
+    } catch (error: any) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
   static async getQuestion(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id);

@@ -5,6 +5,14 @@ const questionRepo = AppDataSource.getRepository(Question);
 
 export class QuestionService {
 
+  static async getQuestionsByLessonId(lessonId: number) {
+    const questions = await questionRepo.find({
+      where: { lessonId },
+      order: { id: "ASC" }
+    });
+    return questions;
+  }
+
   static async getQuestionById(id: number) {
     const question = await questionRepo.findOne({ where: { id: id } });
     if (!question) throw new Error("Không tìm thấy câu hỏi này");

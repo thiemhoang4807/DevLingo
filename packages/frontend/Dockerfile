@@ -1,0 +1,48 @@
+# ============================================
+# 🐳 DevLingo Frontend - Production Dockerfile
+# ============================================
+
+# --- Stage 1: Build ---
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy workspace root files
+COPY package.json package-lock.json ./
+
+# Copy shared package (frontend có thể cần import types)
+COPY packages/shared ./packages/shared
+
+# Copy frontend package.json
+COPY packages/frontend/package.json ./packages/frontend/
+
+# Install all dependencies (cần devDependencies để build)
+RUN npm ci --workspace=@devlingo/frontend --workspace=@devlingo/shared --include-workspace-root
+
+# Copy frontend source code
+COPY packages/frontend ./packages/frontend
+
+# Nhận biến API URL khi build (sẽ được inject từ docker-compose)
+ARG VITE_API_URL=http://localhost:5000
+ENV VITE_API_URL=${VITE_API_URL}
+
+# Build production bundle
+RUN cd packages/frontend && npm run build
+
+# --- Stage 2: Serve với Nginx ---
+FROM nginx:alpine AS production
+
+# Copy custom nginx config
+COPY packages/frontend/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy built files từ build stage
+COPY --from=builder /app/packages/frontend/dist /usr/share/nginx/html
+
+# Expose port
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:80 || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]

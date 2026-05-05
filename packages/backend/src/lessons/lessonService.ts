@@ -2,8 +2,6 @@ import { AppDataSource } from "../db/dataSource";
 import { Lesson } from "../entities/Lesson";
 import { Term } from "../entities/Term";
 import { Question } from "../entities/Question";
-import fs from "fs";
-import path from "path";
 
 const lessonRepo = AppDataSource.getRepository(Lesson);
 const termRepo = AppDataSource.getRepository(Term);
@@ -11,43 +9,17 @@ const questionRepo = AppDataSource.getRepository(Question);
 
 export class LessonService {
 
-  static async getLessons(search?: string, difficulty?: string, page: number = 1, limit: number = 10) {
-    const queryBuilder = lessonRepo.createQueryBuilder("lesson");
-
-    if (search) {
-      queryBuilder.andWhere("lesson.title LIKE :search", { search: `%${search}%` });
-    }
-    
-    if (difficulty) {
-      queryBuilder.andWhere("lesson.difficulty = :difficulty", { difficulty });
-    }
-
-    const [lessons, total] = await queryBuilder
-      .orderBy("lesson.orderIndex", "ASC")
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getManyAndCount();
-
-    return {
-      lessons,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit)
-    };
-  }
-
   static async getAllPublishedLessons() {
     const lessons = await lessonRepo.find({
       where: { isPublished: true },
-      order: { orderIndex: "ASC" },
-      select: ["id", "title", "category", "difficulty"]
+      order: { orderIndex: "ASC" }
     });
 
     return lessons.map(lesson => ({
       id: lesson.id,
       title: lesson.title,
       name: lesson.category ?? lesson.title,
+      category: lesson.category,
       difficulty: lesson.difficulty
     }));
   }
@@ -55,24 +27,26 @@ export class LessonService {
   static async getLessonDetailById(id: number) {
     const lesson = await lessonRepo.findOne({
       where: { id: id },
-      relations: ["terms", "questions"]
+      relations: ["terms", "questions"] 
     });
 
     if (!lesson) {
       throw new Error("Lesson not found");
     }
-
     return {
-      id: lesson.id,
-      title: lesson.title,
-      category: lesson.category,
-      difficulty: lesson.difficulty,
-      terms: lesson.terms.map(term => ({
-        id: term.id,
-        termName: term.termName,
-        definition: term.definition
-      })),
-      questions: lesson.questions.map(q => ({
+    id: lesson.id,
+    title: lesson.title,
+    name: lesson.category ?? lesson.title,
+    category: lesson.category,
+    difficulty: lesson.difficulty,
+    terms: lesson.terms.map(term => ({
+      id: term.id,
+      termName: term.termName,
+      definition: term.definition
+    })),
+    questions: lesson.questions
+      .sort((a, b) => a.id - b.id)
+      .map(q => ({
         id: q.id,
         questionText: q.questionText,
         optionA: q.optionA,
@@ -82,58 +56,61 @@ export class LessonService {
         correctOption: q.correctOption,
         xpReward: q.xpReward
       }))
-    };
+  };
   }
 
-  static async createLesson(data: any, thumbnailUrl?: string | null): Promise<any> {
-    if (data.title) {
-      const existingLesson = await lessonRepo.findOne({ where: { title: data.title } });
-      if (existingLesson) {
-        throw new Error("Lesson title already exists");
-      }
+  static async createLesson(title: string) {
+    const existingLesson = await lessonRepo.findOne({
+      where: { title: title }
+    });
+
+    if (existingLesson) {
+      throw new Error("Lesson title already exists"); 
     }
 
     const newLesson = lessonRepo.create({
-      ...data,
-      thumbnailUrl: thumbnailUrl
+      title,
+      isPublished: false 
     });
-    await lessonRepo.save(newLesson);
-    return newLesson;
 
+    await lessonRepo.save(newLesson);
+
+    return {
+      id: newLesson.id,
+      title: newLesson.title,
+      isPublished: newLesson.isPublished
+    };
   }
 
+  static async updateLesson(id: number, updateData: { title?: string; isPublished?: boolean }) {
+    const lesson = await lessonRepo.findOne({
+      where: { id: id }
+    });
 
-
-  static async updateLesson(id: number, updateData: any, newThumbnailUrl?: string | null) {
-    const lesson = await lessonRepo.findOne({ where: { id: id } });
     if (!lesson) {
       throw new Error("Lesson not found");
     }
 
     if (updateData.title && updateData.title !== lesson.title) {
-      const existingLesson = await lessonRepo.findOne({ where: { title: updateData.title } });
-      if (existingLesson) throw new Error("Lesson title already exists");
+        const existingLesson = await lessonRepo.findOne({ where: { title: updateData.title } });
+        if (existingLesson) throw new Error("Lesson title already exists");
     }
-    Object.assign(lesson, updateData);
 
-    if (newThumbnailUrl) {
-      lesson.thumbnailUrl = newThumbnailUrl;
-    }
+    Object.assign(lesson, updateData);
     await lessonRepo.save(lesson);
+
     return lesson;
   }
 
   static async deleteLesson(id: number) {
-    const lesson: any = await lessonRepo.findOne({ where: { id: id } });
+    const lesson = await lessonRepo.findOne({
+      where: { id: id }
+    });
+
     if (!lesson) {
       throw new Error("Lesson not found");
     }
-    if (lesson.thumbnailUrl) {
-        const filePath = path.join(__dirname, "../../", lesson.thumbnailUrl);
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-        }
-    }
+
     await lessonRepo.remove(lesson);
     return { message: "Lesson deleted successfully" };
   }

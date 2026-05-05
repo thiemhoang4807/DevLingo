@@ -11,17 +11,21 @@ export class TermController {
   // =========================================================
   static async getTerms(req: Request, res: Response) {
     try {
-      const { lessonId } = req.query;
+      const { lessonId, search } = req.query;
       const termRepo = AppDataSource.getRepository(Term);
-
-      let terms;
-      // Nếu Web Frontend có gửi lessonId lên để yêu cầu lọc
+      
+      const whereConditions: any = {};
       if (lessonId) {
-        terms = await termRepo.find({ where: { lessonId: Number(lessonId) } });
-      } else {
-        // Nếu không gửi thì trả về toàn bộ
-        terms = await termRepo.find();
+        whereConditions.lessonId = Number(lessonId);
       }
+      
+      let terms;
+      if (search && typeof search === 'string') {
+        const { ILike } = require('typeorm');
+        whereConditions.termName = ILike(`%${search}%`);
+      }
+      
+      terms = await termRepo.find({ where: whereConditions });
 
       // Trả về đúng cấu trúc { data: [...] } mà React của bạn đang chờ
       return res.status(200).json({ success: true, data: terms });

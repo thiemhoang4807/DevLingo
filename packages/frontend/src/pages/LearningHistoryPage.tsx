@@ -1,29 +1,55 @@
+import { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
-import { BookOpen, Target, Flame, CheckCircle, AlertCircle, RefreshCcw } from "lucide-react";
-
-// --- MOCK DATA ---
-const statsData = [
-  { id: 1, label: "TOTAL LEARNED", value: "1,284", icon: BookOpen, bgClass: "bg-[#3B82F6]" },
-  { id: 2, label: "ACCURACY", value: "94%", icon: Target, bgClass: "bg-[#10B981]" },
-  { id: 3, label: "STREAK", value: "12 days", icon: Flame, bgClass: "bg-gradient-to-r from-[#EC4899] to-[#F43F5E]" },
-];
-
-const masteredWords = [
-  { word: "Kubernetes", definition: "An open-source system for automating deployment, scaling, and management of containerized applications." },
-  { word: "Idempotency", definition: "The property of certain operations in mathematics and computer science whereby they can be applied multiple times without changing the result." },
-  { word: "CI/CD Pipeline", definition: "A method to frequently deliver apps to customers by introducing automation into the stages of app development." },
-  { word: "Asynchronous", definition: "A design pattern in which the call site is not blocked while waiting for the result of a long-running operation." },
-  { word: "Microservices", definition: "An architectural style that structures an application as a collection of services that are highly maintainable and testable." },
-];
-
-const weakWords = [
-  { word: "Latency", failedCount: 2, lastChoice: "The total capacity of a network link.", correctDef: "The time interval between the stimulation and the response in a system." },
-  { word: "Hot Reload", failedCount: 1, lastChoice: "Restarting the entire virtual machine.", correctDef: "Injecting updated source code files into a running app without losing state." },
-];
+import { BookOpen, Target, Flame, CheckCircle, AlertCircle, RefreshCcw, Loader2 } from "lucide-react";
+import axiosClient from "../api/axiosClient";
+import { useNavigate } from "react-router-dom";
 
 export default function LearningHistoryPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const navigate = useNavigate();
+
+  const [historyData, setHistoryData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response: any = await axiosClient.get('/api/progress/history');
+        const data = response.data?.data || response.data || response;
+        setHistoryData(data);
+      } catch (error) {
+        console.error('Error fetching learning history:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchHistory();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className={`w-full min-h-screen flex items-center justify-center ${isDark ? "bg-[#0F141A]" : "bg-gray-50"}`}>
+        <Loader2 size={40} className="text-blue-500 animate-spin" />
+      </div>
+    );
+  }
+
+  const {
+    masteredTerms = [],
+    weakWords = [],
+    totalAnswered = 0,
+    totalCorrect = 0,
+    quizzesCompleted = 0
+  } = historyData || {};
+
+  const accuracy = totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+
+  const statsData = [
+    { id: 1, label: "TOTAL QUESTIONS ANSWERED", value: totalAnswered.toLocaleString(), icon: BookOpen, bgClass: "bg-[#3B82F6]" },
+    { id: 2, label: "OVERALL ACCURACY", value: `${accuracy}%`, icon: Target, bgClass: "bg-[#10B981]" },
+    { id: 3, label: "QUIZZES COMPLETED", value: quizzesCompleted.toString(), icon: Flame, bgClass: "bg-gradient-to-r from-[#EC4899] to-[#F43F5E]" },
+  ];
 
   return (
     <div className={`w-full min-h-screen font-['Inter'] transition-colors duration-300 py-12 ${isDark ? "bg-[#0F141A]" : "bg-gray-50"}`}>
@@ -86,19 +112,23 @@ export default function LearningHistoryPage() {
             </div>
 
             <div className="flex flex-col gap-4">
-              {masteredWords.map((item, index) => (
-                // Thẻ Card: Cập nhật bo góc rounded-[8px]
-                <div key={index} className={`p-6 rounded-[8px] border flex items-start gap-4 transition-colors ${isDark ? "bg-[#1A1E24] border-[#2A2E36]" : "bg-white border-gray-200 shadow-sm"}`}>
-                  <CheckCircle className="w-5 h-5 text-[#10B981] shrink-0 mt-0.5" />
-                  <div>
-                    <h3 className={`text-[16px] font-bold mb-1 font-['Space_Grotesk'] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>{item.word}</h3>
-                    {/* Chữ định nghĩa: Cập nhật leading-[21px] cực chuẩn */}
-                    <p className={`text-[14px] leading-[21px] ${isDark ? "text-[#A8ABB3]" : "text-gray-600"}`}>
-                      {item.definition}
-                    </p>
+              {masteredTerms.length > 0 ? (
+                masteredTerms.map((item: any, index: number) => (
+                  <div key={index} className={`p-6 rounded-[8px] border flex items-start gap-4 transition-colors ${isDark ? "bg-[#1A1E24] border-[#2A2E36]" : "bg-white border-gray-200 shadow-sm"}`}>
+                    <CheckCircle className="w-5 h-5 text-[#10B981] shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className={`text-[16px] font-bold mb-1 font-['Space_Grotesk'] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>{item.word}</h3>
+                      <p className={`text-[14px] leading-[21px] ${isDark ? "text-[#A8ABB3]" : "text-gray-600"}`}>
+                        {item.definition}
+                      </p>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className={`p-6 rounded-[8px] border text-center ${isDark ? "bg-[#1A1E24] border-[#2A2E36] text-[#A8ABB3]" : "bg-white border-gray-200 text-gray-500"}`}>
+                  You haven't mastered any terms yet. Keep practicing!
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -115,56 +145,61 @@ export default function LearningHistoryPage() {
 
             {/* List Weak Words */}
             <div className="flex flex-col gap-[32px]">
-              {weakWords.map((item, index) => (
-                <div key={index} className="flex flex-col gap-[16px]">
-                  
-                  {/* Word Title & Failed Badge */}
-                  <div className="flex justify-between items-center">
-                    <h3 className={`text-[16px] font-bold font-['Space_Grotesk'] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
-                      {item.word}
-                    </h3>
-                    <span className="text-[#FF6F7E] font-['Manrope'] text-[9px] leading-[13.5px] font-bold border border-[#FF6F7E]/30 bg-transparent px-[8px] py-[2px] rounded-[4px]">
-                      Failed {item.failedCount}x
-                    </span>
-                  </div>
-                  
-                  {/* Definition Boxes */}
-                  <div className="flex flex-col gap-[8px]">
+              {weakWords.length > 0 ? (
+                weakWords.map((item: any, index: number) => (
+                  <div key={index} className="flex flex-col gap-[16px]">
                     
-                    {/* Last Choice */}
-                    <div className={`p-[16px] rounded-[4px] border-l-[2px] flex flex-col gap-[3px] ${isDark ? "bg-[#FF6F7E]/5 border-[#FF6F7E]/40" : "bg-red-50/50 border-red-200"}`}>
-                      <p className="text-[#FF6F7E] font-['Manrope'] text-[10px] font-bold uppercase tracking-[1px] leading-[15px]">
-                        Your last choice
-                      </p>
-                      <p className={`font-['Manrope'] text-[14px] leading-[22.75px] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
-                        "{item.lastChoice}"
-                      </p>
+                    {/* Word Title & Failed Badge */}
+                    <div className="flex justify-between items-center">
+                      <h3 className={`text-[16px] font-bold font-['Space_Grotesk'] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
+                        {item.word}
+                      </h3>
+                      <span className="text-[#FF6F7E] font-['Manrope'] text-[9px] leading-[13.5px] font-bold border border-[#FF6F7E]/30 bg-transparent px-[8px] py-[2px] rounded-[4px]">
+                        Failed {item.failedCount}x
+                      </span>
                     </div>
                     
-                    {/* Correct Def */}
-                    <div className={`p-[16px] rounded-[4px] border-l-[2px] flex flex-col gap-[3px] ${isDark ? "bg-[#69F6B8]/5 border-[#69F6B8]/40" : "bg-green-50/50 border-green-200"}`}>
-                      <p className="text-[#69F6B8] font-['Manrope'] text-[10px] font-bold uppercase tracking-[1px] leading-[15px]">
-                        Correct definition
-                      </p>
-                      <p className={`font-['Manrope'] text-[14px] leading-[22.75px] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
-                        {item.correctDef}
-                      </p>
+                    {/* Definition Boxes */}
+                    <div className="flex flex-col gap-[8px]">
+                      
+                      {/* Last Choice */}
+                      <div className={`p-[16px] rounded-[4px] border-l-[2px] flex flex-col gap-[3px] ${isDark ? "bg-[#FF6F7E]/5 border-[#FF6F7E]/40" : "bg-red-50/50 border-red-200"}`}>
+                        <p className="text-[#FF6F7E] font-['Manrope'] text-[10px] font-bold uppercase tracking-[1px] leading-[15px]">
+                          Your last choice
+                        </p>
+                        <p className={`font-['Manrope'] text-[14px] leading-[22.75px] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
+                          "{item.lastChoice}"
+                        </p>
+                      </div>
+                      
+                      {/* Correct Def */}
+                      <div className={`p-[16px] rounded-[4px] border-l-[2px] flex flex-col gap-[3px] ${isDark ? "bg-[#69F6B8]/5 border-[#69F6B8]/40" : "bg-green-50/50 border-green-200"}`}>
+                        <p className="text-[#69F6B8] font-['Manrope'] text-[10px] font-bold uppercase tracking-[1px] leading-[15px]">
+                          Correct definition
+                        </p>
+                        <p className={`font-['Manrope'] text-[14px] leading-[22.75px] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
+                          {item.correctDef}
+                        </p>
+                      </div>
+                      
                     </div>
-                    
                   </div>
+                ))
+              ) : (
+                <div className={`text-center py-6 font-['Manrope'] text-[14px] ${isDark ? "text-[#A8ABB3]" : "text-gray-500"}`}>
+                  Great job! You don't have any weak words yet.
                 </div>
-              ))}
+              )}
             </div>
 
             {/* ACTION BUTTONS */}
             <div className="flex flex-col gap-[12px] mt-2">
-              <button className="w-full flex items-center justify-center gap-[12px] bg-[#90ABFF] hover:bg-[#7a95eb] text-[#002873] py-[16px] rounded-[8px] font-bold text-[16px] leading-[24px] font-['Manrope'] transition-colors">
+              <button 
+                onClick={() => navigate('/quizzes')}
+                className="w-full flex items-center justify-center gap-[12px] bg-[#90ABFF] hover:bg-[#7a95eb] text-[#002873] py-[16px] rounded-[8px] font-bold text-[16px] leading-[24px] font-['Manrope'] transition-colors"
+              >
                 <RefreshCcw className="w-[18px] h-[18px]" strokeWidth={2.5} />
-                Retake Quiz on Weak Areas
-              </button>
-              
-              <button className={`w-full py-[16px] rounded-[8px] font-bold text-[16px] leading-[24px] font-['Manrope'] transition-opacity hover:opacity-80 ${isDark ? "text-[#7B9CFF]" : "text-blue-600"}`}>
-                View Full Error Log
+                Practice More Quizzes
               </button>
             </div>
 
