@@ -10,10 +10,18 @@ const questionRepo = AppDataSource.getRepository(Question);
 export class LessonService {
 
   static async getAllPublishedLessons() {
-    return await lessonRepo.find({
+    const lessons = await lessonRepo.find({
       where: { isPublished: true },
-      select: ["id", "title"] 
+      order: { orderIndex: "ASC" }
     });
+
+    return lessons.map(lesson => ({
+      id: lesson.id,
+      title: lesson.title,
+      name: lesson.category ?? lesson.title,
+      category: lesson.category,
+      difficulty: lesson.difficulty
+    }));
   }
 
   static async getLessonDetailById(id: number) {
@@ -25,16 +33,20 @@ export class LessonService {
     if (!lesson) {
       throw new Error("Lesson not found");
     }
-
     return {
-      id: lesson.id,
-      title: lesson.title,
-      terms: lesson.terms.map(term => ({
-        id: term.id,
-        termName: term.termName,
-        definition: term.definition
-      })),
-      questions: lesson.questions.map(q => ({
+    id: lesson.id,
+    title: lesson.title,
+    name: lesson.category ?? lesson.title,
+    category: lesson.category,
+    difficulty: lesson.difficulty,
+    terms: lesson.terms.map(term => ({
+      id: term.id,
+      termName: term.termName,
+      definition: term.definition
+    })),
+    questions: lesson.questions
+      .sort((a, b) => a.id - b.id)
+      .map(q => ({
         id: q.id,
         questionText: q.questionText,
         optionA: q.optionA,
@@ -44,7 +56,7 @@ export class LessonService {
         correctOption: q.correctOption,
         xpReward: q.xpReward
       }))
-    };
+  };
   }
 
   static async createLesson(title: string) {

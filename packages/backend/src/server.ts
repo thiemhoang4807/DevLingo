@@ -10,8 +10,13 @@ dotenv.config();
 import adminRoutes from "./routes/adminRoutes";
 
 const app = express();
+import cors from "cors";
 const PORT = 5000;
 
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 app.use(express.json()); // Phải có dòng này để đọc được req.body
 
 // Routes

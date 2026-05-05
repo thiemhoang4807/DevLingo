@@ -18,6 +18,12 @@ export class Lesson {
   @Column("text", { nullable: true })
   description?: string | null;
 
+  @Column("varchar", { nullable: true })
+  category?: string | null;
+
+  @Column("varchar", { default: "Easy" })
+  difficulty!: string;
+
   @Column("integer", { nullable: true })
   orderIndex?: number | null;
 
