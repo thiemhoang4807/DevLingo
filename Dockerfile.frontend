@@ -17,7 +17,7 @@ COPY packages/shared ./packages/shared
 COPY packages/frontend/package.json ./packages/frontend/
 
 # Install all dependencies (cần devDependencies để build)
-RUN npm ci --workspace=@devlingo/frontend --workspace=@devlingo/shared --include-workspace-root
+RUN npm install --workspace=@devlingo/frontend --workspace=@devlingo/shared --include-workspace-root
 
 # Copy frontend source code
 COPY packages/frontend ./packages/frontend
