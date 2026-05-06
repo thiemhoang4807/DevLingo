@@ -76,16 +76,20 @@ AppDataSource.initialize()
   .then(() => {
     console.log("🚀 Data Source has been initialized!");
     logger.info("Data Source has been initialized!");
-
-    app.listen(PORT as number, "0.0.0.0", () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
-      logger.info(`Server is running on port ${PORT}`);
-    });
   }) 
   .catch((error: unknown) => {
     if (error instanceof Error) {
       console.error("❌ Error during Data Source initialization:", error.message);
-      return;
+      logger.error("Error during Data Source initialization: " + error.message);
+    } else {
+      console.error("❌ Unknown error during Data Source initialization");
+      logger.error("Unknown error during Data Source initialization");
     }
-    console.error("❌ Unknown error during Data Source initialization");
+  })
+  .finally(() => {
+    // Luôn luôn khởi động server dù DB có lỗi hay không để Cloud Run không báo lỗi container failed to start
+    app.listen(PORT as number, "0.0.0.0", () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+      logger.info(`Server is running on port ${PORT}`);
+    });
   });
