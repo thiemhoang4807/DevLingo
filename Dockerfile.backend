@@ -29,7 +29,7 @@ COPY packages/backend ./packages/backend
 RUN cd packages/backend && npx tsc
 
 # --- Stage 2: Production ---
-FROM node:20-apine AS production
+FROM node:20-slim AS production
 
 WORKDIR /app
 
