@@ -23,7 +23,7 @@ import leaderboardRoutes from "./leaderboard/leaderboardRoutes";
 import { badgeRoutes } from "./badge/badgeRoutes";
 
 const app = express();
-const PORT = process.env.PORT || 5000; 
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000; 
 
 // ==========================================
 // 🛡️ MIDDLEWARE BẢO MẬT & TIỆN ÍCH
@@ -72,6 +72,14 @@ app.use("/api/badges", badgeRoutes);
 // ==========================================
 // 🗄️ KHỞI ĐỘNG DATABASE & SERVER
 // ==========================================
+
+// Luôn luôn khởi động server ngay lập tức để Cloud Run không báo lỗi container failed to start
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
+});
+
+// Khởi tạo Database chạy ngầm
 AppDataSource.initialize()
   .then(() => {
     console.log("🚀 Data Source has been initialized!");
@@ -85,11 +93,4 @@ AppDataSource.initialize()
       console.error("❌ Unknown error during Data Source initialization");
       logger.error("Unknown error during Data Source initialization");
     }
-  })
-  .finally(() => {
-    // Luôn luôn khởi động server dù DB có lỗi hay không để Cloud Run không báo lỗi container failed to start
-    app.listen(PORT as number, "0.0.0.0", () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
-      logger.info(`Server is running on port ${PORT}`);
-    });
   });
