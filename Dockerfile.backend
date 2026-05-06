@@ -67,5 +67,5 @@ RUN mkdir -p /app/packages/backend/uploads /app/data /app/packages/backend/logs
 # Xoá cấu hình PORT cứng để Cloud Run tự quyết định (mặc định là 8080)
 
 # Chuyển vào thư mục backend và khởi động server
-WORKDIR /app/packages/backend
-CMD ["node", "dist/server.js"]
+WORKDIR /app
+CMD ["node", "packages/backend/dist/server.js"]
