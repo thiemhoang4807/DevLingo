@@ -3,12 +3,12 @@
 # ============================================
 
 # --- Stage 1: Build ---
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Cài đặt build dependencies cho native modules (sqlite3, bcrypt)
-RUN apk add --no-cache python3 make g++
+# Dùng apt-get (Debian) thay vì apk
+RUN apt-get update && apt-get install -y python3 make g++
 
 # Copy workspace root files
 COPY package*.json ./
@@ -19,8 +19,9 @@ COPY packages/shared ./packages/shared
 # Copy backend package
 COPY packages/backend/package.json ./packages/backend/
 
-# Install all dependencies (bao gồm devDependencies để build TypeScript)
-RUN npm ci --workspace=@devlingo/backend --workspace=@devlingo/shared --include-workspace-root
+# Xóa file lock và cài đặt môi trường
+RUN rm -f package-lock.json
+RUN npm install --workspace=@devlingo/backend --workspace=@devlingo/shared --include-workspace-root
 
 # Copy backend source code
 COPY packages/backend ./packages/backend
@@ -29,45 +30,50 @@ COPY packages/backend ./packages/backend
 RUN cd packages/backend && npx tsc
 
 # --- Stage 2: Production ---
-FROM node:20-alpine AS production
+# ĐỒNG BỘ sử dụng slim để tránh lỗi thư viện C++
+FROM node:20-slim AS production
 
 WORKDIR /app
 
-# Cài đặt runtime dependencies cho native modules
-RUN apk add --no-cache python3 make g++
+# Dùng apt-get (Debian) và cài thêm wget cho lệnh HEALTHCHECK
+RUN apt-get update && apt-get install -y python3 make g++ wget
 
-# Copy workspace root files
+# Copy các file config
 COPY package*.json ./
-
-# Copy shared package (cần cho runtime)
 COPY packages/shared ./packages/shared
-
-# Copy backend package.json
 COPY packages/backend/package.json ./packages/backend/
 
-# Install CHỈ production dependencies
-RUN npm ci --workspace=@devlingo/backend --workspace=@devlingo/shared --include-workspace-root --omit=dev
+# 👉 BƯỚC QUAN TRỌNG: Copy file seeder.js vào container
+COPY seeder.js ./
 
-# Xóa build tools sau khi install xong (giảm image size)
-RUN apk del python3 make g++
+# Cài đặt môi trường Production
+RUN rm -f package-lock.json
+RUN npm install --workspace=@devlingo/backend --workspace=@devlingo/shared --include-workspace-root --omit=dev
 
-# Copy compiled JavaScript từ build stage
+# Dọn dẹp rác build tools để giảm dung lượng
+RUN apt-get remove -y python3 make g++ && apt-get clean
+
+# Copy code đã biên dịch từ Stage 1
 COPY --from=builder /app/packages/backend/dist ./packages/backend/dist
 
-# Tạo thư mục cho uploads và database
+# Tạo thư mục dữ liệu
 RUN mkdir -p /app/packages/backend/uploads /app/data
 
-# Expose port
+# 👉 BƯỚC QUAN TRỌNG: Chạy Seeder để nạp sẵn dữ liệu vào file SQLite
+# (Biến môi trường NODE_ENV cần set tạm để seeder nhận diện)
+ENV NODE_ENV=production
+RUN node seeder.js
+
+# Mở cổng
 EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:5000/api/lessons || exit 1
 
-# Set environment variables mặc định
-ENV NODE_ENV=production
+# Set môi trường chạy thực tế
 ENV PORT=5000
 
-# Chạy server
+# Chuyển vào thư mục backend và khởi động server
 WORKDIR /app/packages/backend
 CMD ["node", "dist/server.js"]
