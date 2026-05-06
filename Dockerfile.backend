@@ -60,13 +60,10 @@ RUN apt-get remove -y python3 make g++ && apt-get clean
 # Copy code đã biên dịch từ Stage 1
 COPY --from=builder /app/packages/backend/dist ./packages/backend/dist
 
-# Tạo thư mục dữ liệu
-RUN mkdir -p /app/packages/backend/uploads /app/data
+# Tạo thư mục dữ liệu và logs
+RUN mkdir -p /app/packages/backend/uploads /app/data /app/packages/backend/logs
 
-# 👉 BƯỚC QUAN TRỌNG: Chạy Seeder để nạp sẵn dữ liệu vào file SQLite
-# (Biến môi trường NODE_ENV cần set tạm để seeder nhận diện)
-ENV NODE_ENV=production
-RUN node seeder.js
+# (Bạn có thể tự chạy seeder thủ công sau hoặc khi server đã khởi động)
 
 # Mở cổng
 EXPOSE 5000
