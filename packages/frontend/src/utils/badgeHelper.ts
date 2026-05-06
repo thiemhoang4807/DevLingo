@@ -1,53 +1,53 @@
 // --- IMPORT ASSETS ---
 // Bronze
-import bronze1 from "../assets/badges/Bronze 1.svg";
-import bronze2 from "../assets/badges/Bronze 2.svg";
-import bronze3 from "../assets/badges/Bronze 3.svg";
+import bronze1 from "../assets/badges/bronze1.svg";
+import bronze2 from "../assets/badges/bronze2.svg";
+import bronze3 from "../assets/badges/bronze3.svg";
 
 // Silver
-import silver1 from "../assets/badges/Silver 1.svg";
-import silver2 from "../assets/badges/Silver 2.svg";
-import silver3 from "../assets/badges/Silver 3.svg";
+import silver1 from "../assets/badges/silver1.svg";
+import silver2 from "../assets/badges/silver2.svg";
+import silver3 from "../assets/badges/silver3.svg";
 
 // Gold
-import gold1 from "../assets/badges/Gold 1.svg";
-import gold2 from "../assets/badges/Gold 2.svg";
-import gold3 from "../assets/badges/Gold 3.svg";
+import gold1 from "../assets/badges/gold1.svg";
+import gold2 from "../assets/badges/gold2.svg";
+import gold3 from "../assets/badges/gold3.svg";
 
 // Diamond
-import diamond1 from "../assets/badges/Diamond 1.svg";
-import diamond2 from "../assets/badges/Diamond 2.svg";
-import diamond3 from "../assets/badges/Diamond 3.svg";
+import diamond1 from "../assets/badges/diamond1.svg";
+import diamond2 from "../assets/badges/diamond2.svg";
+import diamond3 from "../assets/badges/diamond3.svg";
 
 // Emerald
-import emerald1 from "../assets/badges/Emerald 1.svg";
-import emerald2 from "../assets/badges/Emerald 2.svg";
-import emerald3 from "../assets/badges/Emerald 3.svg";
+import emerald1 from "../assets/badges/emerald1.svg";
+import emerald2 from "../assets/badges/emerald2.svg";
+import emerald3 from "../assets/badges/emerald3.svg";
 
 // Amethyst
-import amethyst1 from "../assets/badges/Amethyst 1.svg";
-import amethyst2 from "../assets/badges/Amethyst 2.svg";
-import amethyst3 from "../assets/badges/Amethyst 3.svg";
+import amethyst1 from "../assets/badges/amethyst1.svg";
+import amethyst2 from "../assets/badges/amethyst2.svg";
+import amethyst3 from "../assets/badges/amethyst3.svg";
 
 // Ruby
-import ruby1 from "../assets/badges/Ruby 1.svg";
-import ruby2 from "../assets/badges/Ruby 2.svg";
-import ruby3 from "../assets/badges/Ruby 3.svg";
+import ruby1 from "../assets/badges/ruby1.svg";
+import ruby2 from "../assets/badges/ruby2.svg";
+import ruby3 from "../assets/badges/ruby3.svg";
 
 // Quartz
-import quartz1 from "../assets/badges/Quartz 1.svg";
-import quartz2 from "../assets/badges/Quartz 2.svg";
-import quartz3 from "../assets/badges/Quartz 3.svg";
+import quartz1 from "../assets/badges/quartz1.svg";
+import quartz2 from "../assets/badges/quartz2.svg";
+import quartz3 from "../assets/badges/quartz3.svg";
 
 // Sapphire
-import sapphire1 from "../assets/badges/Sapphire 1.svg";
-import sapphire2 from "../assets/badges/Sapphire 2.svg";
-import sapphire3 from "../assets/badges/Sapphire 3.svg";
+import sapphire1 from "../assets/badges/sapphire1.svg";
+import sapphire2 from "../assets/badges/sapphire2.svg";
+import sapphire3 from "../assets/badges/sapphire3.svg";
 
 // Obsidian
-import obsidian1 from "../assets/badges/Obsidian 1.svg";
-import obsidian2 from "../assets/badges/Obsidian 2.svg";
-import obsidian3 from "../assets/badges/Obsidian 3.svg";
+import obsidian1 from "../assets/badges/obsidian1.svg";
+import obsidian2 from "../assets/badges/obsidian2.svg";
+import obsidian3 from "../assets/badges/obsidian3.svg";
 
 // --- EXPORT MAP ---
 export const BADGE_MAP: Record<string, string[]> = {
