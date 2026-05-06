@@ -46,6 +46,8 @@ COPY packages/backend/package.json ./packages/backend/
 # 👉 BƯỚC QUAN TRỌNG: Copy file seeder.js vào container
 COPY seeder.js ./
 
+COPY TermsData ./TermsData
+
 # Cài đặt môi trường Production
 RUN rm -f package-lock.json
 RUN npm install --workspace=@devlingo/backend --workspace=@devlingo/shared --include-workspace-root --omit=dev
