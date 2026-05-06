@@ -12,7 +12,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: packages/backend/Dockerfile
+      dockerfile: Dockerfile.backend
     container_name: devlingo-backend
     restart: unless-stopped
     ports:
@@ -43,7 +43,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: packages/frontend/Dockerfile
+      dockerfile: Dockerfile.frontend
       args:
         # URL API sẽ được resolve qua Nginx reverse proxy
         VITE_API_URL: http://localhost:5000
