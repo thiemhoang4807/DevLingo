@@ -29,12 +29,14 @@ COPY packages/backend ./packages/backend
 RUN cd packages/backend && npx tsc
 
 # --- Stage 2: Production ---
-FROM node:20-slim AS production
+FROM node:20-apine AS production
 
 WORKDIR /app
 
-# Cài đặt runtime dependencies cho native modules
-RUN apk add --no-cache python3 make g++
+# Cài đặt runtime dependencies cho native modules (Debian slim uses apt)
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends python3 make g++ && \
+	rm -rf /var/lib/apt/lists/*
 
 # Copy workspace root files
 COPY package*.json ./
@@ -49,7 +51,9 @@ COPY packages/backend/package.json ./packages/backend/
 RUN npm install --workspace=@devlingo/backend --workspace=@devlingo/shared --include-workspace-root --omit=dev
 
 # Xóa build tools sau khi install xong (giảm image size)
-RUN apk del python3 make g++
+RUN apt-get purge -y python3 make g++ || true && \
+	apt-get autoremove -y || true && \
+	rm -rf /var/lib/apt/lists/* || true
 
 # Copy compiled JavaScript từ build stage
 COPY --from=builder /app/packages/backend/dist ./packages/backend/dist
