@@ -4,8 +4,8 @@ const matter = require('gray-matter');
 const axios = require('axios');
 
 const MOCK_DATA_DIR = path.join(__dirname, 'TermsData'); 
-const API_URL = 'http://localhost:5000/api/terms';       
-const ADMIN_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjczMDUzZWU3LTBhZmMtNDJjNS1hNDRhLThmZGRiMTgwYjQ0OSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3Nzc0NTUyMCwiZXhwIjoxNzc4MzUwMzIwfQ._0rv2u7kIueEI79wdMiY_PLJXX_eLpwvFvqbYnK3C6o'; 
+const API_URL = 'https://devlingo-backend-1075077880290.europe-west1.run.app/api/terms';       
+const ADMIN_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjczMDUzZWU3LTBhZmMtNDJjNS1hNDRhLThmZGRiMTgwYjQ0OSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3Nzk4OTA2OSwiZXhwIjoxNzc4NTkzODY5fQ.2R3YeMVdcXd8iR_W5AMrREwRjGecxAkUMle4FC9BTPE'; 
 
 // BẢNG DỊCH THUẬT
 const categoryToLessonId = {
@@ -20,6 +20,28 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function seedData() {
     console.log("🚀 Bắt đầu quét file .md...");
+
+    // // --- ĐOẠN CODE TỰ ĐỘNG TẠO LESSON ---
+    // const lessonApiUrl = API_URL.replace('/terms', '/lessons'); // Đổi link terms thành lessons
+    // const lessonNames = ["Internet Terms", "Hardware Terms", "Software Terms", "Technical Terms"];
+    
+    // console.log("📦 Đang kiểm tra và khởi tạo các Bài học (Lessons)...");
+    // for (const name of lessonNames) {
+    //     try {
+    //         await axios.post(lessonApiUrl, {
+    //             title: name,
+    //             description: `Học từ vựng chủ đề ${name}`
+    //         }, {
+    //             headers: { 'Authorization': ADMIN_TOKEN }
+    //         });
+    //         console.log(`✅ Đã tạo bài học: ${name}`);
+    //         await delay(300); // Nghỉ 1 xíu
+    //     } catch (err) {
+    //         console.log(`⚠️ Bài học [${name}] có thể đã tồn tại hoặc lỗi:`, err.response?.data?.message || err.message);
+    //     }
+    // }
+    // console.log("-----------------------------------------");
+    // // --- KẾT THÚC ĐOẠN TẠO LESSON ---
 
     const categories = fs.readdirSync(MOCK_DATA_DIR);
 
