@@ -25,3 +25,7 @@ yarn-error.log*
 # Ignore SQLite database files
 *.sqlite
 *.sqlite-journal
+
+logs/
+*.log
+npm-debug.log*

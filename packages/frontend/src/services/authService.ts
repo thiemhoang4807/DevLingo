@@ -1,7 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-// Absolute path to avoid Port mismatch between Vite (5173) and Express (5000)
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = '/api/auth';
 
 export const loginUser = async (username: string, password: string) => {
   try {

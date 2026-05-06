@@ -1,8 +1,17 @@
-import { GraduationCap, Twitter, Github } from "lucide-react";
+import { GraduationCap, Facebook, Github, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
-// Move static data outside to prevent re-creation on every render
-const LEARN_LIST = ["Browse Terms", "Quizzes", "Flashcards"];
-const COMPANY_LIST = ["About Us", "Contact", "Privacy Policy"];
+// Đã chuyển sang mảng Object để chứa được cả Tên và Đường dẫn (Path)
+const LEARN_LIST = [
+    { name: "Browse Terms", path: "/term" },
+    { name: "Quizzes", path: "/quizzes" },
+    { name: "Learning History", path: "/learning-history" }
+];
+
+const TEAM_LIST = [
+    { name: "About Us", path: "/about" },
+    { name: "Contact", path: "/contact" }
+];
 
 export default function Footer() {
     return (
@@ -27,22 +36,22 @@ export default function Footer() {
                     </h3>
                     <ul className="text-left flex flex-col gap-[8px]">
                         {LEARN_LIST.map(el => (
-                            <li key={el} className="list-none hover:text-white transition-colors">
-                                <a href="#"> {el} </a>
+                            <li key={el.name} className="list-none hover:text-white transition-colors">
+                                <Link to={el.path}> {el.name} </Link>
                             </li>
                         ))}
                     </ul>
                 </div>
 
-                {/* Company Links */}
+                {/* Team Links */}
                 <div className="text-[#9CA3AF] w-[280px] flex flex-col justify-between items-start gap-[16px]">
                     <h3 className="font-bold text-[14px] leading-[20px] tracking-[.7px] text-[#FFFFFF] cursor-default"> 
-                        COMPANY 
+                        TEAM 
                     </h3>
                     <ul className="text-left flex flex-col gap-[8px]">
-                        {COMPANY_LIST.map(el => (
-                            <li key={el} className="list-none hover:text-white transition-colors">
-                                <a href="#"> {el} </a>
+                        {TEAM_LIST.map(el => (
+                            <li key={el.name} className="list-none hover:text-white transition-colors">
+                                <Link to={el.path}> {el.name} </Link>
                             </li>
                         ))}
                     </ul>
@@ -56,8 +65,15 @@ export default function Footer() {
                         </h3>
                     </div>
                     <div className="flex flex-row gap-[16px] text-[#9CA3AF]">
-                        <a href="#" className="w-[24px] h-[24px] hover:text-[#3B82F6] transition-colors"> <Twitter /> </a>
-                        <a href="#" className="w-[24px] h-[24px] hover:text-white transition-colors"> <Github /> </a>
+                        <a href="https://www.facebook.com/diamond487/" target="_blank" rel="noopener noreferrer" className="w-[24px] h-[24px] hover:text-[#3B82F6] transition-colors"> 
+                            <Facebook /> 
+                        </a>
+                        <a href="https://github.com/thiemhoang4807" target="_blank" rel="noopener noreferrer" className="w-[24px] h-[24px] hover:text-white transition-colors"> 
+                            <Github /> 
+                        </a>
+                        <a href="mailto:hoanglvt.4807@gmail.com" className="w-[24px] h-[24px] hover:text-[#EA4335] transition-colors" aria-label="Email hoanglvt.4807@gmail.com">
+                            <Mail />
+                        </a>
                     </div>
                 </div>
             </div>

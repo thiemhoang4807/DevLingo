@@ -1,35 +1,150 @@
-import express from "express";
-import { AppDataSource } from "./db/dataSource";
-import authRoutes from "./auth/authRoutes";
-import userRoutes from "./users/userRoutes"; 
-import lessonRoutes from "./lessons/lessonRoutes";
-import questionRoutes from "./questions/questionRoutes";
-import { ApiResponse, User as SharedUser } from "@devlingo/shared";
 import dotenv from "dotenv";
 dotenv.config();
-import adminRoutes from "./routes/adminRoutes";
+
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import path from "path"; 
+import logger from "./utils/logger";
+import { AppDataSource } from "./db/dataSource";
+import { Lesson } from "./entities/Lesson";
+
+// ==========================================
+// 📦 IMPORT CÁC MODULE TÍNH NĂNG (FEATURE-BASED)
+// ==========================================
+import authRoutes from "./auth/authRoutes";
+import userRoutes from "./users/userRoutes"; 
+import lessonRoutes from "./lessons/lessonRoutes"; 
+import questionRoutes from "./questions/questionRoutes";
+import termRoutes from "./terms/termRoutes"; 
+import ContributionRoutes from './contributions/ContributionRoutes'; 
+import progressRoutes from "./progress/progressRoutes";
+import leaderboardRoutes from "./leaderboard/leaderboardRoutes";
+import { badgeRoutes } from "./badge/badgeRoutes";
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000; 
 
-app.use(express.json()); // Phải có dòng này để đọc được req.body
+const defaultLessons = [
+  {
+    id: 1,
+    title: "Internet Terms",
+    description: "Common terms about the internet, web, and network services.",
+    category: "Internet Terms",
+    difficulty: "Easy",
+    orderIndex: 1,
+    isPublished: true
+  },
+  {
+    id: 2,
+    title: "Hardware Terms",
+    description: "Common terms about computer hardware and devices.",
+    category: "Hardware Terms",
+    difficulty: "Easy",
+    orderIndex: 2,
+    isPublished: true
+  },
+  {
+    id: 3,
+    title: "Software Terms",
+    description: "Common terms about software, operating systems, and programming.",
+    category: "Software Terms",
+    difficulty: "Easy",
+    orderIndex: 3,
+    isPublished: true
+  },
+  {
+    id: 4,
+    title: "Technical Terms",
+    description: "Specialized technical terms used across computing fields.",
+    category: "Technical Terms",
+    difficulty: "Easy",
+    orderIndex: 4,
+    isPublished: true
+  }
+];
 
-// Routes
+async function seedDefaultLessons() {
+  const lessonRepo = AppDataSource.getRepository(Lesson);
+
+  for (const defaultLesson of defaultLessons) {
+    const existingLesson = await lessonRepo.findOne({ where: { id: defaultLesson.id } });
+
+    if (existingLesson) {
+      lessonRepo.merge(existingLesson, defaultLesson);
+      await lessonRepo.save(existingLesson);
+      continue;
+    }
+
+    await lessonRepo.save(lessonRepo.create(defaultLesson));
+  }
+}
+
+// ==========================================
+// 🛡️ MIDDLEWARE BẢO MẬT & TIỆN ÍCH
+// ==========================================
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }, // Cho phép frontend load ảnh từ backend
+}));
+
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || "http://localhost:5173", // Link Frontend 
+  credentials: true                
+}));
+
+app.use(express.json()); 
+
+// Cấp quyền truy cập công khai cho thư mục chứa ảnh upload
+app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); 
+
+// 🛑 KHIÊN CHỐNG SPAM (Rate Limiter)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 phút
+  max: 1000, // Giới hạn 100 requests / 1 IP
+  message: { success: false, message: "Spam ít thôi bro" }
+});
+app.use("/api", limiter); 
+
+// 📝 LOGGER: Ghi nhận mọi request gửi tới
+app.use((req, res, next) => {
+  logger.info(`[${req.method}] ${req.url}`);
+  next();
+});
+
+// ==========================================
+// 🚀 ĐĂNG KÝ TUYẾN ĐƯỜNG (ROUTER MOUNTING)
+// ==========================================
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/questions", questionRoutes);
-// Gắn bộ Router Admin vào
-app.use("/api/admin", adminRoutes);
+app.use("/api/terms", termRoutes); 
+app.use("/api/contributions", ContributionRoutes);
+app.use("/api/progress", progressRoutes);
+app.use("/api/leaderboard", leaderboardRoutes); 
+app.use("/api/badges", badgeRoutes);
 
-// Khởi tạo Database rồi chạy Server
+// ==========================================
+// 🗄️ KHỞI ĐỘNG DATABASE & SERVER
+// ==========================================
 AppDataSource.initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!");
+  .then(async () => {
+    console.log("🚀 Data Source has been initialized!");
+    logger.info("Data Source has been initialized!");
+
+    await seedDefaultLessons();
+    logger.info("Default lessons have been seeded!");
+
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`🚀 Server is running on port ${PORT}`);
+      logger.info(`Server is running on port ${PORT}`);
     });
-  })
-  .catch((error) => {
-    console.error("❌ Error during Data Source initialization:", error);
+  }) 
+  .catch((error: unknown) => {
+    if (error instanceof Error) {
+      console.error("❌ Error during Data Source initialization:", error.message);
+      return;
+    }
+    console.error("❌ Unknown error during Data Source initialization");
   });

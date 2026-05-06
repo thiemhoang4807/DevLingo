@@ -3,5 +3,7 @@ export * from "./Lesson";
 export * from "./Term";
 export * from "./Question";
 export * from "./UserProgress";
+export * from "./UserAnswer";
 export * from "./Badge";
 export * from "./UserBadge";
+export * from "./Contribution";

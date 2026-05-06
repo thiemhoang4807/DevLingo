@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import TopicCard from '../components/TopicCard';
+import axiosClient from '../api/axiosClient';
 import type { TopicData, UserAnswerHistory } from '../types/quiz';
 
 interface QuizResultProps {
@@ -10,23 +11,43 @@ interface QuizResultProps {
   onTryAnother: (topic?: TopicData) => void;
 }
 
-// Mock topics for the "Try another quiz" section
-const topicsList: TopicData[] = [
-  { id: 1, name: 'Topic 1', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
-  { id: 2, name: 'Topic 1', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
-  { id: 3, name: 'Topic 1', difficulty: 'Easy', borderColor: 'border-[#0ABD5A]', badgeBg: 'bg-[#0ABD5A]' },
-  { id: 4, name: 'Topic 1', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
-  { id: 5, name: 'Topic 1', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
-  { id: 6, name: 'Topic 1', difficulty: 'Medium', borderColor: 'border-[#DFA700]', badgeBg: 'bg-[#DFA700]' },
-  { id: 7, name: 'Topic 1', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
-  { id: 8, name: 'Topic 1', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
-  { id: 9, name: 'Topic 1', difficulty: 'Hard', borderColor: 'border-[#BD160A]', badgeBg: 'bg-[#BD160A]' },
-  { id: 10, name: 'Topic 1', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
-  { id: 11, name: 'Topic 1', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
-  { id: 12, name: 'Topic 1', difficulty: 'Extreme', borderColor: 'border-[#780ABD]', badgeBg: 'bg-[#780ABD]' },
-];
+const capitalize = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Easy';
 
 const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, history = [], onTryAnother }) => {
+  const [topicsList, setTopicsList] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const response: any = await axiosClient.get('/api/lessons');
+        const data = response.data?.data || response.data || response;
+
+        let filtered = data.filter((lesson: any) => {
+          if (!lesson.title) return false;
+          return ['Internet', 'Hardware', 'Software'].some(keyword =>
+            lesson.title.toLowerCase().includes(keyword.toLowerCase())
+          );
+        });
+
+        const orderMap: any = { 'internet': 1, 'hardware': 2, 'software': 3 };
+        const diffMap: any = { 'easy': 1, 'medium': 2, 'hard': 3, 'extreme': 4 };
+
+        filtered.sort((a: any, b: any) => {
+          const aName = a.title.toLowerCase().replace(' term', '');
+          const bName = b.title.toLowerCase().replace(' term', '');
+          const aDiff = a.difficulty?.toLowerCase() || 'easy';
+          const bDiff = b.difficulty?.toLowerCase() || 'easy';
+          if (orderMap[aName] !== orderMap[bName]) return orderMap[aName] - orderMap[bName];
+          return diffMap[aDiff] - diffMap[bDiff];
+        });
+
+        setTopicsList(filtered);
+      } catch (error) {
+        console.error('Error fetching topics:', error);
+      }
+    };
+    fetchTopics();
+  }, []);
   const percentage = Math.round((score / totalQuestions) * 100) || 0;
   const incorrectCount = totalQuestions - score;
 
@@ -43,15 +64,27 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
       <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-center gap-[40px]">
         
         {/* --- 1. BADGE TOPIC --- */}
-        {/* Updated badge layout to match Figma perfectly */}
-        <div className={`flex items-center w-[378px] h-[44px] border-[1.5px] ${topic.borderColor} ${topic.badgeBg} rounded-[100px] shrink-0 overflow-hidden`}>
-          <div className="bg-[#FFFFFF] text-[#1D4ED8] pl-[20px] flex items-center justify-start font-[700] text-[16px] w-[65%] h-full">
-            {topic.name}
-          </div>
-          <div className="text-[#FFFFFF] flex items-center justify-center font-[600] text-[15px] flex-1 uppercase tracking-wide h-full">
-            {topic.difficulty}
-          </div>
-        </div>
+        {(() => {
+          const diff = (topic.difficulty || 'easy').toLowerCase();
+          const colorMap: Record<string, string> = {
+            easy: 'border-[#0ABD5A] bg-[#0ABD5A]',
+            medium: 'border-[#7C3AED] bg-[#7C3AED]',
+            hard: 'border-[#BD160A] bg-[#BD160A]',
+            extreme: 'border-[#780ABD] bg-[#780ABD]',
+          };
+          const colors = colorMap[diff] || colorMap['easy'];
+          const topicName = (topic as any).title || topic.name;
+          return (
+            <div className={`flex items-center w-[378px] h-[44px] border-[1.5px] ${colors} rounded-[100px] shrink-0 overflow-hidden`}>
+              <div className="bg-[#FFFFFF] text-[#1D4ED8] pl-[20px] flex items-center justify-start font-[700] text-[16px] w-[65%] h-full">
+                {topicName}
+              </div>
+              <div className="text-[#FFFFFF] flex items-center justify-center font-[600] text-[15px] flex-1 uppercase tracking-wide h-full">
+                {capitalize(topic.difficulty)}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* --- 2. STATISTIC --- */}
         <div className="flex flex-col items-center w-full">
@@ -133,17 +166,16 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
         <div className="w-full flex flex-col items-center gap-[24px] mt-[8px]">
           <h2 className="text-[20px] font-[700] text-[#E5E7EB] w-full text-center">Try another quiz</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] w-full">
-            {topicsList.map((t, idx) => (
+            {topicsList.map((t: any) => (
               <div 
-                key={idx} 
+                key={t.id} 
                 onClick={() => onTryAnother(t)} 
                 className="cursor-pointer transition-transform hover:scale-[1.02]"
               >
                 <TopicCard 
-                  name={t.name}
-                  difficulty={t.difficulty}
-                  borderColor={t.borderColor}
-                  badgeBg={t.badgeBg}
+                  name={t.title}
+                  difficulty={capitalize(t.difficulty)}
+                  description="Test your knowledge with these specialized questions."
                 />
               </div>
             ))}
