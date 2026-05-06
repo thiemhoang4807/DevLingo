@@ -8,6 +8,7 @@ import rateLimit from "express-rate-limit";
 import path from "path"; 
 import logger from "./utils/logger";
 import { AppDataSource } from "./db/dataSource";
+import { Lesson } from "./entities/Lesson";
 
 // ==========================================
 // 📦 IMPORT CÁC MODULE TÍNH NĂNG (FEATURE-BASED)
@@ -24,6 +25,61 @@ import { badgeRoutes } from "./badge/badgeRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 5000; 
+
+const defaultLessons = [
+  {
+    id: 1,
+    title: "Internet Terms",
+    description: "Common terms about the internet, web, and network services.",
+    category: "Internet Terms",
+    difficulty: "Easy",
+    orderIndex: 1,
+    isPublished: true
+  },
+  {
+    id: 2,
+    title: "Hardware Terms",
+    description: "Common terms about computer hardware and devices.",
+    category: "Hardware Terms",
+    difficulty: "Easy",
+    orderIndex: 2,
+    isPublished: true
+  },
+  {
+    id: 3,
+    title: "Software Terms",
+    description: "Common terms about software, operating systems, and programming.",
+    category: "Software Terms",
+    difficulty: "Easy",
+    orderIndex: 3,
+    isPublished: true
+  },
+  {
+    id: 4,
+    title: "Technical Terms",
+    description: "Specialized technical terms used across computing fields.",
+    category: "Technical Terms",
+    difficulty: "Easy",
+    orderIndex: 4,
+    isPublished: true
+  }
+];
+
+async function seedDefaultLessons() {
+  const lessonRepo = AppDataSource.getRepository(Lesson);
+
+  for (const defaultLesson of defaultLessons) {
+    const existingLesson = await lessonRepo.findOne({ where: { id: defaultLesson.id } });
+
+    if (existingLesson) {
+      lessonRepo.merge(existingLesson, defaultLesson);
+      await lessonRepo.save(existingLesson);
+      continue;
+    }
+
+    await lessonRepo.save(lessonRepo.create(defaultLesson));
+  }
+}
 
 // ==========================================
 // 🛡️ MIDDLEWARE BẢO MẬT & TIỆN ÍCH
@@ -73,9 +129,12 @@ app.use("/api/badges", badgeRoutes);
 // 🗄️ KHỞI ĐỘNG DATABASE & SERVER
 // ==========================================
 AppDataSource.initialize()
-  .then(() => {
+  .then(async () => {
     console.log("🚀 Data Source has been initialized!");
     logger.info("Data Source has been initialized!");
+
+    await seedDefaultLessons();
+    logger.info("Default lessons have been seeded!");
 
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);

@@ -70,7 +70,7 @@ export default function TermDetailPage() {
                     {/* Xử lý Ảnh xịn xò (không bị lỗi URL) */}
                     {objTerm.imageUrl && (
                         <img
-                            src={objTerm.imageUrl.startsWith('http') ? objTerm.imageUrl : `http://localhost:5000${objTerm.imageUrl}`}
+                            src={objTerm.imageUrl.startsWith('http') ? objTerm.imageUrl : objTerm.imageUrl}
                             alt={objTerm.termName}
                             // object-contain giúp ảnh giữ đúng tỷ lệ, không bị méo
                             className="w-full max-h-[400px] object-contain rounded-[8px] mb-8 bg-gray-50 dark:bg-gray-800/50" 

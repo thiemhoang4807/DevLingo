@@ -17,7 +17,14 @@ COPY packages/shared ./packages/shared
 COPY packages/frontend/package.json ./packages/frontend/
 
 # Install all dependencies (cần devDependencies để build)
-RUN npm install --workspace=@devlingo/frontend --workspace=@devlingo/shared --include-workspace-root
+# Các package native optional của Vite/Rollup/Tailwind đôi khi bị npm workspace bỏ sót
+# khi lockfile được tạo trên OS khác. Cài rõ binary Linux cho image node:slim.
+RUN npm install --workspace=@devlingo/frontend --workspace=@devlingo/shared --include-workspace-root \
+    && npm install --no-save \
+      @rollup/rollup-linux-x64-gnu@4.59.0 \
+      @tailwindcss/oxide-linux-x64-gnu@4.2.1 \
+      @esbuild/linux-x64@0.27.3 \
+      lightningcss-linux-x64-gnu@1.31.1
 
 # Copy frontend source code
 COPY packages/frontend ./packages/frontend
@@ -43,6 +50,6 @@ EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:80 || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:80 || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]

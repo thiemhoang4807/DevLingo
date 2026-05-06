@@ -14,7 +14,7 @@ const correctAnswerIndex = 0;
 function getAvatarUrl(avatarPath: string | null) {
   if (!avatarPath) return defaultAvatar;
   if (avatarPath.startsWith('http')) return avatarPath;
-  return `http://localhost:5000${avatarPath}`;
+  return avatarPath;
 }
 
 export default function LandingPage() {
@@ -161,7 +161,7 @@ export default function LandingPage() {
                   <div className="flex flex-col sm:flex-row gap-6 items-start">
                     <div className="flex h-32 w-40 shrink-0 items-center justify-center bg-[#1E293B] rounded-sm">
                       {termOfTheDay.imageUrl ? (
-                        <img src={termOfTheDay.imageUrl.startsWith('http') ? termOfTheDay.imageUrl : `http://localhost:5000${termOfTheDay.imageUrl}`} alt={termOfTheDay.termName} className="max-h-full max-w-full object-contain" />
+                        <img src={termOfTheDay.imageUrl.startsWith('http') ? termOfTheDay.imageUrl : termOfTheDay.imageUrl} alt={termOfTheDay.termName} className="max-h-full max-w-full object-contain" />
                       ) : (
                         <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
                           <span className="text-[#2563EB] text-2xl font-bold">{termOfTheDay.termName?.charAt(0)}</span>

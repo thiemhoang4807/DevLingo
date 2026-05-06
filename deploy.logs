@@ -1,0 +1,152 @@
+thefless@thefless:~/Documents/TEST_web/DevLingo$ docker-compose up -d --build
+Creating network "devlingo_devlingo-network" with driver "bridge"
+Creating volume "devlingo_backend-data" with local driver
+Creating volume "devlingo_backend-uploads" with local driver
+Building backend
+[+] Building 25.6s (19/19) FINISHED                                                                                                                                                          docker:default
+ => [internal] load build definition from Dockerfile.backend                                                                                                                                           0.0s
+ => => transferring dockerfile: 2.08kB                                                                                                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/node:20-alpine                                                                                                                                      3.2s
+ => [internal] load .dockerignore                                                                                                                                                                      0.0s
+ => => transferring context: 594B                                                                                                                                                                      0.0s
+ => [internal] load build context                                                                                                                                                                      0.0s
+ => => transferring context: 323.87kB                                                                                                                                                                  0.0s
+ => [builder 1/9] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293                                                                        7.9s
+ => => resolve docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293                                                                                0.0s
+ => => sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 7.67kB / 7.67kB                                                                                                         0.0s
+ => => sha256:afdf98210b07b586eb71fa22ba2e432e058e4cd1304d31ed60888755b8c865fb 1.72kB / 1.72kB                                                                                                         0.0s
+ => => sha256:11cedc39e663e7c5d5cb9cc77a461a0d2adc25537b94e6831a6108f09cb2001b 6.52kB / 6.52kB                                                                                                         0.0s
+ => => sha256:6a0ac1617861a677b045b7ff88545213ec31c0ff08763195a70a4a5adda577bb 3.86MB / 3.86MB                                                                                                         1.2s
+ => => sha256:4feea04c154301db6f4a496efa397b3db96603b1c009c797cfdde77bea8b3287 43.23MB / 43.23MB                                                                                                       7.0s
+ => => sha256:b2cbbfe903b0821005780971ddc5892edcc4ce74c5a48d82e1d2b382edac3122 1.26MB / 1.26MB                                                                                                         2.2s
+ => => extracting sha256:6a0ac1617861a677b045b7ff88545213ec31c0ff08763195a70a4a5adda577bb                                                                                                              0.1s
+ => => sha256:fff4e2c1b189bf87d63ad8bd07f7f4eb288d6f2b6a07a8bb44c60e8c075d2096 445B / 445B                                                                                                             2.0s
+ => => extracting sha256:4feea04c154301db6f4a496efa397b3db96603b1c009c797cfdde77bea8b3287                                                                                                              0.7s
+ => => extracting sha256:b2cbbfe903b0821005780971ddc5892edcc4ce74c5a48d82e1d2b382edac3122                                                                                                              0.0s
+ => => extracting sha256:fff4e2c1b189bf87d63ad8bd07f7f4eb288d6f2b6a07a8bb44c60e8c075d2096                                                                                                              0.0s
+ => [builder 2/9] WORKDIR /app                                                                                                                                                                         0.1s
+ => [builder 3/9] RUN apk add --no-cache python3 make g++                                                                                                                                              4.1s
+ => [builder 4/9] COPY package*.json ./                                                                                                                                                                0.0s 
+ => [builder 5/9] COPY packages/shared ./packages/shared                                                                                                                                               0.0s 
+ => [builder 6/9] COPY packages/backend/package.json ./packages/backend/                                                                                                                               0.0s 
+ => [builder 7/9] RUN npm ci --workspace=@devlingo/backend --workspace=@devlingo/shared --include-workspace-root                                                                                       6.6s 
+ => [production  7/11] RUN npm ci --workspace=@devlingo/backend --workspace=@devlingo/shared --include-workspace-root --omit=dev                                                                       6.6s 
+ => [builder 8/9] COPY packages/backend ./packages/backend                                                                                                                                             0.0s 
+ => [production  8/11] RUN apk del python3 make g++                                                                                                                                                    0.4s
+ => [builder 9/9] RUN cd packages/backend && npx tsc                                                                                                                                                   1.9s
+ => [production  9/11] COPY --from=builder /app/packages/backend/dist ./packages/backend/dist                                                                                                          0.0s 
+ => [production 10/11] RUN mkdir -p /app/packages/backend/uploads /app/data                                                                                                                            0.2s 
+ => [production 11/11] WORKDIR /app/packages/backend                                                                                                                                                   0.0s 
+ => exporting to image                                                                                                                                                                                 1.3s 
+ => => exporting layers                                                                                                                                                                                1.3s 
+ => => writing image sha256:8c2f37be24651e2c7d76347230a0f546f2f54b71aeaa62a252383e84ff2d8083                                                                                                           0.0s 
+ => => naming to docker.io/library/devlingo_backend                                                                                                                                                    0.0s 
+Building frontend                                                                                                                                                                                           
+[+] Building 21.8s (15/16)                                                                                                                                                                   docker:default 
+ => [internal] load build definition from Dockerfile.frontend                                                                                                                                          0.0s
+ => => transferring dockerfile: 1.45kB                                                                                                                                                                 0.0s
+ => [internal] load metadata for docker.io/library/nginx:alpine                                                                                                                                        3.1s
+ => [internal] load metadata for docker.io/library/node:20-slim                                                                                                                                        1.6s
+ => [internal] load .dockerignore                                                                                                                                                                      0.0s
+ => => transferring context: 594B                                                                                                                                                                      0.0s
+ => [builder 1/8] FROM docker.io/library/node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0                                                                         11.8s
+ => => resolve docker.io/library/node:20-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0                                                                                  0.0s
+ => => sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0 6.49kB / 6.49kB                                                                                                         0.0s
+ => => sha256:3d0f05455dea2c82e2f76e7e2543964c30f6b7d673fc1a83286736d44fe4c41c 1.93kB / 1.93kB                                                                                                         0.0s
+ => => sha256:9da6b4e352d0d5c94963eba1832408f5b7b08839cd8be9b6610c05de5118c704 6.88kB / 6.88kB                                                                                                         0.0s
+ => => sha256:ff86ea2e5edce334d19a34fbc65d1a511aa1fc823dba1110422f991aa56b44d4 28.24MB / 28.24MB                                                                                                      10.3s
+ => => sha256:e54aec64c365815cd7b91e718f00ac6e625562b1de09036b38614621b42c7582 3.31kB / 3.31kB                                                                                                         1.0s
+ => => sha256:804d4d68057cbb26cbcde9a735148ebc6589911bad32cf9dbddb5b0ba878bf1f 41.42MB / 41.42MB                                                                                                       7.5s
+ => => sha256:64cfb949317c9824fd081d55c59a7225bfe1f650c6395ba42d7ed0ccf51993d2 1.71MB / 1.71MB                                                                                                         2.5s
+ => => sha256:3c02fd806613748139b8b8a14a69ae3518a1b0e863c57c35aada3b92ed87fb31 447B / 447B                                                                                                             3.3s
+ => => extracting sha256:ff86ea2e5edce334d19a34fbc65d1a511aa1fc823dba1110422f991aa56b44d4                                                                                                              0.6s
+ => => extracting sha256:e54aec64c365815cd7b91e718f00ac6e625562b1de09036b38614621b42c7582                                                                                                              0.0s
+ => => extracting sha256:804d4d68057cbb26cbcde9a735148ebc6589911bad32cf9dbddb5b0ba878bf1f                                                                                                              0.6s
+ => => extracting sha256:64cfb949317c9824fd081d55c59a7225bfe1f650c6395ba42d7ed0ccf51993d2                                                                                                              0.0s
+ => => extracting sha256:3c02fd806613748139b8b8a14a69ae3518a1b0e863c57c35aada3b92ed87fb31                                                                                                              0.0s
+ => [production 1/3] FROM docker.io/library/nginx:alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de                                                                      13.8s
+ => => resolve docker.io/library/nginx:alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de                                                                                  0.0s
+ => => sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de 10.33kB / 10.33kB                                                                                                       0.0s
+ => => sha256:3bcf852aed06467cf075c6105892e4d5a6ebbbafa0ce22d35062db9e90ddef4c 2.50kB / 2.50kB                                                                                                         0.0s
+ => => sha256:812d47f806db497c53f9b47e76bdab38bcf5d724c69d3986df5ee4336c210559 12.32kB / 12.32kB                                                                                                       0.0s
+ => => sha256:82736a35d0e7f1309edc13d09115410b81542cf8b91afff80deeace02b6f2f26 1.87MB / 1.87MB                                                                                                         6.0s
+ => => extracting sha256:82736a35d0e7f1309edc13d09115410b81542cf8b91afff80deeace02b6f2f26                                                                                                              0.1s
+ => => sha256:583599bb7d382e9e986a9ff65204981307bfa71670a29f4190eedae93c4858be 627B / 627B                                                                                                             6.7s
+ => => extracting sha256:583599bb7d382e9e986a9ff65204981307bfa71670a29f4190eedae93c4858be                                                                                                              0.0s
+ => => sha256:aee4e54b3865ee4d98545b6b49f9e8ab3b9b6ed114a2eafedc7a22e984ea5a68 956B / 956B                                                                                                             7.4s
+ => => extracting sha256:aee4e54b3865ee4d98545b6b49f9e8ab3b9b6ed114a2eafedc7a22e984ea5a68                                                                                                              0.0s
+ => => sha256:781ff50d2644f74714c0d5a4ffa3447bbfd4b293cfb1dc6a637722ae24c89241 404B / 404B                                                                                                             7.9s
+ => => sha256:453da7dbc73e7338c4e201ec3f3c4a5f7751adbf5a6f127792c1cd001a780721 1.21kB / 1.21kB                                                                                                         8.2s
+ => => extracting sha256:781ff50d2644f74714c0d5a4ffa3447bbfd4b293cfb1dc6a637722ae24c89241                                                                                                              0.0s
+ => => sha256:4a8b0b2a5b1937755263ac7ac4ee26db2906c13a5d70f1fb1875ba8e370cdd8f 1.40kB / 1.40kB                                                                                                         8.5s
+ => => extracting sha256:453da7dbc73e7338c4e201ec3f3c4a5f7751adbf5a6f127792c1cd001a780721                                                                                                              0.0s
+ => => sha256:612c0c1df4c55a0bf145f84df03cb28de505e6a52fb8e49c9da7b143fc00ad2d 20.25MB / 20.25MB                                                                                                      13.4s
+ => => extracting sha256:4a8b0b2a5b1937755263ac7ac4ee26db2906c13a5d70f1fb1875ba8e370cdd8f                                                                                                              0.0s
+ => => extracting sha256:612c0c1df4c55a0bf145f84df03cb28de505e6a52fb8e49c9da7b143fc00ad2d                                                                                                              0.2s
+ => [internal] load build context                                                                                                                                                                      0.0s
+ => => transferring context: 3.84MB                                                                                                                                                                    0.0s
+ => [builder 2/8] WORKDIR /app                                                                                                                                                                         0.2s
+ => [builder 3/8] COPY package*.json ./                                                                                                                                                                0.0s
+ => [builder 4/8] COPY packages/shared ./packages/shared                                                                                                                                               0.0s
+ => [builder 5/8] COPY packages/frontend/package.json ./packages/frontend/                                                                                                                             0.0s
+ => [builder 6/8] RUN npm install --workspace=@devlingo/frontend --workspace=@devlingo/shared --include-workspace-root                                                                                 6.1s
+ => [production 2/3] COPY packages/frontend/nginx.conf /etc/nginx/conf.d/default.conf                                                                                                                  0.1s
+ => [builder 7/8] COPY packages/frontend ./packages/frontend                                                                                                                                           0.0s 
+ => ERROR [builder 8/8] RUN cd packages/frontend && npm run build                                                                                                                                      0.4s 
+------                                                                                                                                                                                                      
+ > [builder 8/8] RUN cd packages/frontend && npm run build:
+0.246 
+0.246 > @devlingo/frontend@0.0.0 build
+0.246 > vite build
+0.246 
+0.344 /app/node_modules/rollup/dist/native.js:115
+0.344 		throw new Error(
+0.344 		      ^
+0.344 
+0.344 Error: Cannot find module @rollup/rollup-linux-x64-gnu. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+0.344     at requireWithFriendlyError (/app/node_modules/rollup/dist/native.js:115:9)
+0.344     at Object.<anonymous> (/app/node_modules/rollup/dist/native.js:124:76)
+0.344     ... 3 lines matching cause stack trace ...
+0.344     at Module._load (node:internal/modules/cjs/loader:1091:12)
+0.344     at cjsLoader (node:internal/modules/esm/translators:298:15)
+0.344     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:240:7)
+0.344     at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+0.344     at async ModuleLoader.import (node:internal/modules/esm/loader:606:24) {
+0.344   [cause]: Error: Cannot find module '@rollup/rollup-linux-x64-gnu'
+0.344   Require stack:
+0.344   - /app/node_modules/rollup/dist/native.js
+0.344       at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+0.344       at Module._load (node:internal/modules/cjs/loader:1038:27)
+0.344       at Module.require (node:internal/modules/cjs/loader:1289:19)
+0.344       at require (node:internal/modules/helpers:182:18)
+0.344       at requireWithFriendlyError (/app/node_modules/rollup/dist/native.js:97:10)
+0.344       at Object.<anonymous> (/app/node_modules/rollup/dist/native.js:124:76)
+0.344       at Module._compile (node:internal/modules/cjs/loader:1521:14)
+0.344       at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+0.344       at Module.load (node:internal/modules/cjs/loader:1266:32)
+0.344       at Module._load (node:internal/modules/cjs/loader:1091:12) {
+0.344     code: 'MODULE_NOT_FOUND',
+0.344     requireStack: [ '/app/node_modules/rollup/dist/native.js' ]
+0.344   }
+0.344 }
+0.344 
+0.344 Node.js v20.20.2
+0.363 npm error Lifecycle script `build` failed with error:
+0.363 npm error code 1
+0.363 npm error path /app/packages/frontend
+0.363 npm error workspace @devlingo/frontend@0.0.0
+0.363 npm error location /app/packages/frontend
+0.364 npm error command failed
+0.364 npm error command sh -c vite build
+------
+Dockerfile.frontend:30
+--------------------
+  28 |     
+  29 |     # Build production bundle
+  30 | >>> RUN cd packages/frontend && npm run build
+  31 |     
+  32 |     # --- Stage 2: Serve với Nginx ---
+--------------------
+ERROR: failed to solve: process "/bin/sh -c cd packages/frontend && npm run build" did not complete successfully: exit code: 1
+ERROR: Service 'frontend' failed to build : Build failed
+thefless@thefless:~/Documents/TEST_web/DevLingo$

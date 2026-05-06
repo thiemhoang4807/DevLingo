@@ -51,7 +51,7 @@ export default function Header() {
         if (avatarPath.startsWith('http')) {
             return avatarPath;
         }
-        return `http://localhost:5000${avatarPath}`;
+        return avatarPath;
     };
 
     const handleLogout = () => {

@@ -99,7 +99,7 @@ export default function TermPageCategorySpecializedLetter()
                             {/* Hiển thị ảnh nếu có */}
                             {term.imageUrl && (
                                 <img
-                                    src={term.imageUrl.startsWith('http') ? term.imageUrl : `http://localhost:5000${term.imageUrl}`}
+                                    src={term.imageUrl.startsWith('http') ? term.imageUrl : term.imageUrl}
                                     alt={term.termName}
                                     className="w-full h-32 object-cover rounded-[8px] mb-4 bg-gray-50 dark:bg-gray-800/50"
                                 />

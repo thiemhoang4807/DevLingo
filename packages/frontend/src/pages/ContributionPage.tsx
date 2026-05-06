@@ -45,7 +45,7 @@ export default function ContributionPage() {
       // 🚀 2. Gọi API thực tế (Đang bọc comment, sếp mở ra khi nối API)
       /*
       const token = localStorage.getItem("token"); // Hoặc lấy từ Context/Redux
-      const response = await axios.post("http://localhost:5000/api/contributions", formData, {
+      const response = await axios.post("/api/contributions", formData, {
         headers: { 
           "Content-Type": "multipart/form-data",
           "Authorization": `Bearer ${token}` // Truyền token để biết ai đóng góp
