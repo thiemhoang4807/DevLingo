@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { loginUser } from '../services/authService';
+import logo from '../assets/logo.svg';
+import eyeOpen from '../assets/eye.svg';
+import eyeOff from '../assets/eyeoff.svg';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -33,7 +36,7 @@ const LoginPage = () => {
     <div className="flex w-full min-h-screen overflow-hidden font-sans">
       {/* Left Side - Logo Section */}
       <div className="w-3/5 bg-[#000A26] flex flex-col items-center justify-center text-white">
-        <img src="src/assets/logo.svg" alt="DevLingo Logo" className="w-[177px] h-[143px] mb-4" />
+        <img src={logo} alt="DevLingo Logo" className="w-[177px] h-[143px] mb-4" />
         <h1 className="text-5xl font-bold tracking-tight">DevLingo</h1>
       </div>
 
@@ -78,7 +81,7 @@ const LoginPage = () => {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  <img src={showPassword ? "src/assets/eye.svg" : "src/assets/eye-off.svg"} alt="toggle password" />
+                  <img src={showPassword ? eyeOpen : eyeOff} alt="toggle password" />
                 </button>
               </div>
             </div>
