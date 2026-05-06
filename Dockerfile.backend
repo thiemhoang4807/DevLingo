@@ -50,6 +50,8 @@ COPY seeder.js ./
 RUN rm -f package-lock.json
 RUN npm install --workspace=@devlingo/backend --workspace=@devlingo/shared --include-workspace-root --omit=dev
 
+RUN npm install axios
+
 # Dọn dẹp rác build tools để giảm dung lượng
 RUN apt-get remove -y python3 make g++ && apt-get clean
 
