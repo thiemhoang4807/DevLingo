@@ -25,8 +25,7 @@ RUN npm install --workspace=@devlingo/frontend --workspace=@devlingo/shared --in
 COPY packages/frontend ./packages/frontend
 
 # Nhận biến API URL khi build (sẽ được inject từ docker-compose)
-ARG VITE_API_URL=https://devlingo-backend-1075077880290.europe-west1.run.app
-ENV VITE_API_URL=${VITE_API_URL}
+RUN echo "VITE_API_URL=https://devlingo-backend-1075077880290.europe-west1.run.app" > packages/frontend/.env.production
 
 # Build production bundle
 RUN cd packages/frontend && npm run build
