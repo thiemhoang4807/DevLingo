@@ -66,7 +66,7 @@ export default function PublicProfilePage() {
   const getAvatarUrl = (avatarPath: string) => {
     if (!avatarPath) return defaultAvatar;
     if (avatarPath.startsWith('http')) return avatarPath;
-    return `http://localhost:5000${avatarPath}`;
+    return `https://devlingo-backend-vercel-1075077880290.europe-west1.run.app${avatarPath}`;
   };
 
   if (isLoading) {

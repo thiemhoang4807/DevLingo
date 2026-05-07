@@ -105,7 +105,7 @@ export default function TermPageCategoryDetail()
                             {objTerm.imageUrl &&
                             (
                                 <img 
-                                    src={objTerm.imageUrl.startsWith('http') ? objTerm.imageUrl : `http://localhost:5000${objTerm.imageUrl}`} 
+                                    src={objTerm.imageUrl.startsWith('http') ? objTerm.imageUrl : `https://devlingo-backend-vercel-1075077880290.europe-west1.run.app${objTerm.imageUrl}`} 
                                     alt={objTerm.termName} 
                                     className="w-full h-32 object-cover rounded-[8px] mb-4" 
                                 />

@@ -32,7 +32,7 @@ function getRankName(xp: number) {
 function getAvatarUrl(avatarPath: string | null) {
     if (!avatarPath) return defaultAvatar;
     if (avatarPath.startsWith('http')) return avatarPath;
-    return `http://localhost:5000${avatarPath}`;
+    return `https://devlingo-backend-vercel-1075077880290.europe-west1.run.app${avatarPath}`;
 }
 
 const trophies = [top2, top1, top3];

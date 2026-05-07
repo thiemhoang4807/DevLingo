@@ -69,7 +69,7 @@ export default function UserProfilePage() {
   const getAvatarUrl = (avatarPath: string) => {
     if (!avatarPath) return defaultAvatar;
     if (avatarPath.startsWith('http')) return avatarPath;
-    return `http://localhost:5000${avatarPath}`;
+    return `https://devlingo-backend-vercel-1075077880290.europe-west1.run.app${avatarPath}`;
   };
 
   const handleAvatarClick = () => {
@@ -102,7 +102,7 @@ export default function UserProfilePage() {
       formData.append('avatar', file);
 
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/users/me/avatar', {
+      const response = await fetch('https://devlingo-backend-vercel-1075077880290.europe-west1.run.app/api/users/me/avatar', {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

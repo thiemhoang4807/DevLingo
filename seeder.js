@@ -4,7 +4,7 @@ const matter = require('gray-matter');
 const axios = require('axios');
 
 const MOCK_DATA_DIR = path.join(__dirname, 'TermsData'); 
-const API_URL = 'https://devlingo-backend-vercel-1075077880290.europe-west1.run.app';       
+const API_URL = 'https://devlingo-backend-vercel-1075077880290.europe-west1.run.app/api/terms';  
 const ADMIN_TOKEN = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjczMDUzZWU3LTBhZmMtNDJjNS1hNDRhLThmZGRiMTgwYjQ0OSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc3Nzk4OTA2OSwiZXhwIjoxNzc4NTkzODY5fQ.2R3YeMVdcXd8iR_W5AMrREwRjGecxAkUMle4FC9BTPE'; 
 
 // BẢNG DỊCH THUẬT
