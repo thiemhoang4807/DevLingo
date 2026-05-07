@@ -57,6 +57,7 @@ RUN apt-get purge -y python3 make g++ || true && \
 
 # Copy compiled JavaScript từ build stage
 COPY --from=builder /app/packages/backend/dist ./packages/backend/dist
+COPY --from=builder /app/packages/backend/src/db/mockQuizData.sql ./packages/backend/dist/db/mockQuizData.sql
 
 # Copy seed script và dữ liệu thuật ngữ để có thể chạy seed trong Docker
 COPY seeder.js ./seeder.js

@@ -4,31 +4,24 @@ import QuestionCard from '../components/QuestionCard';
 import axiosClient from '../api/axiosClient';
 import { useTheme } from "../context/ThemeContext";
 
-interface QuizPageProps
-{
+interface QuizPageProps {
     onStart: (topic: any) => void;
 }
 
-export default function QuizPage({ onStart }: QuizPageProps)
-{
+export default function QuizPage({ onStart }: QuizPageProps) {
     const { theme } = useTheme();
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [isAnswered, setIsAnswered] = useState<boolean>(false);
     const [topics, setTopics] = useState<any[]>([]);
 
-    useEffect(() =>
-    {
-        const fetchTopics = async () =>
-        {
-            try
-            {
+    useEffect(() => {
+        const fetchTopics = async () => {
+            try {
                 const response: any = await axiosClient.get('/api/lessons');
                 const data = response.data?.data || response.data || response;
 
-                let filtered = data.filter((lesson: any) =>
-                {
-                    if (!lesson.title)
-                    {
+                let filtered = data.filter((lesson: any) => {
+                    if (!lesson.title) {
                         return false;
                     }
                     return ['Internet', 'Hardware', 'Software'].some(keyword =>
@@ -39,15 +32,13 @@ export default function QuizPage({ onStart }: QuizPageProps)
                 const orderMap: any = { 'internet': 1, 'hardware': 2, 'software': 3 };
                 const diffMap: any = { 'easy': 1, 'medium': 2, 'hard': 3, 'extreme': 4 };
 
-                filtered.sort((a: any, b: any) =>
-                {
+                filtered.sort((a: any, b: any) => {
                     const aName = a.title.toLowerCase().replace(' term', '');
                     const bName = b.title.toLowerCase().replace(' term', '');
                     const aDiff = a.difficulty?.toLowerCase() || 'easy';
                     const bDiff = b.difficulty?.toLowerCase() || 'easy';
 
-                    if (orderMap[aName] !== orderMap[bName])
-                    {
+                    if (orderMap[aName] !== orderMap[bName]) {
                         return orderMap[aName] - orderMap[bName];
                     }
                     return diffMap[aDiff] - diffMap[bDiff];
@@ -55,8 +46,7 @@ export default function QuizPage({ onStart }: QuizPageProps)
 
                 setTopics(filtered);
             }
-            catch (error)
-            {
+            catch (error) {
                 console.error(error);
             }
         };
@@ -91,10 +81,8 @@ export default function QuizPage({ onStart }: QuizPageProps)
                         selectedOption={selectedOption}
                         correctAnswer={randomQuestion.correctAnswer}
                         isAnswered={isAnswered}
-                        onSelect={(idx: number) =>
-                        {
-                            if (!isAnswered)
-                            {
+                        onSelect={(idx: number) => {
+                            if (!isAnswered) {
                                 setSelectedOption(idx);
                                 setIsAnswered(true);
                             }

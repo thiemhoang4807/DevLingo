@@ -22,17 +22,34 @@ export async function runSeeder() {
 
         // 2. Tạo Lessons và lưu lại Map ID
         const categoryToLessonIdMap: Record<string, number> = {};
-        const lessonNames = ["Internet Terms", "Hardware Terms", "Software Terms", "Technical Terms"];
-        
-        for (const name of lessonNames) {
+
+        // 10 Lessons để hỗ trợ 3 mức độ (Easy, Medium, Hard) cho Quizzes
+        const lessonsToCreate = [
+            { title: "Internet Terms", difficulty: "Easy", category: "Internet Terms" },
+            { title: "Internet Terms", difficulty: "Medium", category: "Internet Terms" },
+            { title: "Internet Terms", difficulty: "Hard", category: "Internet Terms" },
+            { title: "Hardware Terms", difficulty: "Easy", category: "Hardware Terms" },
+            { title: "Hardware Terms", difficulty: "Medium", category: "Hardware Terms" },
+            { title: "Hardware Terms", difficulty: "Hard", category: "Hardware Terms" },
+            { title: "Software Terms", difficulty: "Easy", category: "Software Terms" },
+            { title: "Software Terms", difficulty: "Medium", category: "Software Terms" },
+            { title: "Software Terms", difficulty: "Hard", category: "Software Terms" },
+        ];
+
+        for (const l of lessonsToCreate) {
             const lesson = new Lesson();
-            lesson.title = name;
-            lesson.description = `Học từ vựng chủ đề ${name}`;
-            lesson.category = name;
+            lesson.title = l.title;
+            lesson.description = `Test your knowledge with these specialized questions.`;
+            lesson.category = l.category;
+            lesson.difficulty = l.difficulty;
             lesson.isPublished = true;
             const savedLesson = await lessonRepo.save(lesson);
-            categoryToLessonIdMap[name] = savedLesson.id;
-            logger.info(`✅ Created lesson: ${name}`);
+
+            // Map the "Easy" version of each category for the terms to attach to
+            if (l.difficulty === "Easy") {
+                categoryToLessonIdMap[l.category] = savedLesson.id;
+            }
+            logger.info(`✅ Created lesson: ${l.title} (${l.difficulty})`);
         }
 
         // 3. Tìm thư mục TermsData
@@ -71,10 +88,10 @@ export async function runSeeder() {
 
                 const filePath = path.join(categoryPath, file);
                 const fileContent = fs.readFileSync(filePath, 'utf-8');
-                
-                const parsed = matter(fileContent); 
+
+                const parsed = matter(fileContent);
                 const data = parsed.data;
-                const content = parsed.content; 
+                const content = parsed.content;
 
                 // Lấy lessonId dựa trên category từ markdown frontmatter
                 const mappedLessonId = categoryToLessonIdMap[data.category] || Object.values(categoryToLessonIdMap)[0];
@@ -91,6 +108,17 @@ export async function runSeeder() {
                 logger.info(`✅ Seeded term: ${data.title}`);
             }
         }
+
+        // 5. Nạp dữ liệu Quiz Questions từ mockQuizData.sql
+        const sqlFilePath = path.join(__dirname, "mockQuizData.sql");
+        if (fs.existsSync(sqlFilePath)) {
+            const sqlContent = fs.readFileSync(sqlFilePath, 'utf-8');
+            await AppDataSource.query(sqlContent);
+            logger.info("✅ Seeded mock quiz data from mockQuizData.sql");
+        } else {
+            logger.warn("⚠️ mockQuizData.sql not found! Skipping quiz data seeding.");
+        }
+
         logger.info("🎉 Database seeding completed successfully!");
     } catch (error) {
         logger.error("❌ Error during seeding: " + error);
