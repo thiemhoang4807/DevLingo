@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Outlet, Link } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 
-function load_menu(title: string, list_menu: any[]) {
+function load_menu(title: string, list_menu: any[], isLoading: boolean) {
     return (
         <div className="inter h-[265px] p-[20px]">
             <h3 className="border-b border-[#374151] dark:border-gray-600 pb-[12px] w-[344px] font-[700] font-bold text-[18px] leading-[28px] text-[#000000] dark:text-[#FFFFFF] text-left cursor-default"> 
@@ -10,12 +10,16 @@ function load_menu(title: string, list_menu: any[]) {
             </h3>
             <div className="text-left">
                 <ol className="list-decimal list-inside mt-2">
-                    {list_menu.length > 0 ? list_menu.map(term => (
-                        <li key={term.id} className="font-[500] font-medium text-[16px] leading-[24px] pt-[12px] marker:text-[#6B7280]">
-                            <Link to={`/term/detail/${term.id}`} className="text-[#3B82F6] hover:underline pl-[12px]"> {term.termName} </Link>
-                        </li>
-                    )) : (
-                        <p className="text-gray-500 text-sm italic mt-4">Loading...</p>
+                    {isLoading ? (
+                        <p className="text-gray-500 text-sm italic mt-4 animate-pulse">Loading...</p>
+                    ) : list_menu.length > 0 ? (
+                        list_menu.map(term => (
+                            <li key={term.id} className="font-[500] font-medium text-[16px] leading-[24px] pt-[12px] marker:text-[#6B7280]">
+                                <Link to={`/term/detail/${term.id}`} className="text-[#3B82F6] hover:underline pl-[12px]"> {term.termName} </Link>
+                            </li>
+                        ))
+                    ) : (
+                        <p className="text-gray-500 text-sm italic mt-4">No terms found</p>
                     )}
                 </ol>
             </div>
@@ -26,19 +30,24 @@ function load_menu(title: string, list_menu: any[]) {
 export default function Body() {
     const [recentTerms, setRecentTerms] = useState<any[]>([]);
     const [trendingTerms, setTrendingTerms] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [recentRes, trendingRes]: any = await Promise.all([
-                    axiosClient.get('/api/terms/recent?limit=5'),
-                    axiosClient.get('/api/terms/trending?limit=5')
-                ]);
+                // Đồng bộ hóa với logic của LandingPage.tsx
+                const response: any = await axiosClient.get('/api/terms');
+                const allTerms = response.data?.data || response.data || [];
                 
-                setRecentTerms(recentRes.data?.data || recentRes.data || []);
-                setTrendingTerms(trendingRes.data?.data || trendingRes.data || []);
+                if (Array.isArray(allTerms)) {
+                    // Lấy 5 mục cuối làm "mới nhất" và 5 mục đầu làm "trending" (giống LandingPage)
+                    setRecentTerms(allTerms.slice(-5).reverse());
+                    setTrendingTerms(allTerms.slice(0, 5));
+                }
             } catch (error) {
                 console.error("Error fetching menu data:", error);
+            } finally {
+                setIsLoading(false);
             }
         };
         fetchData();
@@ -55,8 +64,8 @@ export default function Body() {
 
                 {/* KHU VỰC BÊN PHẢI: Thanh Menu */}
                 <div className="menu w-[384px] h-[562px] flex flex-col gap-[32px]">
-                    {load_menu("Recently Added Terms", recentTerms)}
-                    {load_menu("Trending Terms", trendingTerms)}
+                    {load_menu("Recently Added Terms", recentTerms, isLoading)}
+                    {load_menu("Trending Terms", trendingTerms, isLoading)}
                 </div>
 
             </div>
