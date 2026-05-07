@@ -12,24 +12,28 @@ import { Badge } from "../entities/Badge";
 import { UserBadge } from "../entities/UserBadge";
 import { Contribution } from "../entities/Contribution";
 
-const dbPath = process.env.DB_PATH || "devLingoDb.sqlite";
-
 export const AppDataSource = new DataSource({
-  type: "sqlite",
-  database: dbPath,
-  synchronize: true,
+  type: "postgres", // Đã chuyển sang dùng PostgreSQL
+  url: process.env.DATABASE_URL, // Lấy đường link kết nối từ biến môi trường
+  ssl: true, // Bắt buộc bật SSL khi dùng Database trên mây (Render)
+  extra: {
+    ssl: {
+      rejectUnauthorized: false, // Bỏ qua lỗi tự chứng thực chứng chỉ SSL
+    },
+  },
+  synchronize: true, // Vẫn giữ true để TypeORM tự động tạo bảng cho sếp
   logging: false,
   entities: [
-  User,
-  Lesson,
-  Term,
-  Question,
-  UserProgress,
-  UserAnswer,
-  Badge,
-  UserBadge,
-  Contribution
-],
+    User,
+    Lesson,
+    Term,
+    Question,
+    UserProgress,
+    UserAnswer,
+    Badge,
+    UserBadge,
+    Contribution
+  ],
   migrations: ["src/migrations/**/*.ts"],
   subscribers: [],
 });
