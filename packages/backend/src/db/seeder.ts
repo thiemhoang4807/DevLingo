@@ -115,6 +115,12 @@ export async function runSeeder() {
         if (fs.existsSync(sqlFilePath)) {
             const sqlContent = fs.readFileSync(sqlFilePath, 'utf-8');
             await AppDataSource.query(sqlContent);
+            
+            // PostgreSQL fix: Reset sequence for 'questions' table since we manually inserted IDs
+            if (AppDataSource.options.type === "postgres") {
+                await AppDataSource.query("SELECT setval('questions_id_seq', (SELECT MAX(id) FROM questions))");
+            }
+            
             logger.info("✅ Seeded mock quiz data from mockQuizData.sql");
         } else {
             logger.warn("⚠️ mockQuizData.sql not found! Skipping quiz data seeding.");

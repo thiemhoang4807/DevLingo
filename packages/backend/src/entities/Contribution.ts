@@ -40,13 +40,13 @@ export class Contribution {
   @Column("varchar", { nullable: true })
   reviewedBy?: string | null;
 
-  @Column("datetime", { nullable: true })
+  @Column("timestamp", { nullable: true })
   reviewedAt?: Date | null;
 
-  @CreateDateColumn({ type: "datetime" })
+  @CreateDateColumn({ type: "timestamp" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "datetime" })
+  @UpdateDateColumn({ type: "timestamp" })
   updatedAt!: Date;
 
   @ManyToOne(() => Lesson, { nullable: false, onDelete: "CASCADE" })

@@ -24,7 +24,7 @@ export class UserBadge {
   @Column("integer", { nullable: false })
   badgeId!: number;
 
-  @CreateDateColumn({ type: "datetime" })
+  @CreateDateColumn({ type: "timestamp" })
   unlockedAt!: Date;
 
   // Foreign keys

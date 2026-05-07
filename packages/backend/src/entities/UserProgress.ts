@@ -29,7 +29,7 @@ export class UserProgress {
   @Column("varchar", { default: "learning" })
   status!: string;
 
-  @Column("datetime", { nullable: true })
+  @Column("timestamp", { nullable: true })
   completedAt?: Date | null;
 
   // Foreign keys

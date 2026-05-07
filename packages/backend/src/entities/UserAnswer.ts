@@ -26,7 +26,7 @@ export class UserAnswer {
   @Column("boolean", { default: false })
   isCorrect!: boolean;
 
-  @Column("datetime", { default: () => "CURRENT_TIMESTAMP" })
+  @Column("timestamp", { default: () => "CURRENT_TIMESTAMP" })
   answeredAt!: Date;
 
   // Relations

@@ -63,8 +63,8 @@ COPY --from=builder /app/packages/backend/src/db/mockQuizData.sql ./packages/bac
 COPY seeder.js ./seeder.js
 COPY TermsData ./TermsData
 
-# Tạo thư mục cho uploads và database
-RUN mkdir -p /app/packages/backend/uploads /app/data
+# Tạo thư mục cho uploads
+RUN mkdir -p /app/packages/backend/uploads
 
 # Expose port
 EXPOSE 5000

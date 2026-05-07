@@ -42,7 +42,7 @@ export class User {
   @Column("integer", { default: 1 })
   peakLevel!: number;
 
-  @CreateDateColumn({ type: "datetime" })
+  @CreateDateColumn({ type: "timestamp" })
   createdAt!: Date;
 
   // ✅ BỔ SUNG: Để có thể truy xuất huy hiệu từ User
