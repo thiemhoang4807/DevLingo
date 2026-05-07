@@ -8,6 +8,7 @@ import rateLimit from "express-rate-limit";
 import path from "path"; 
 import logger from "./utils/logger";
 import { AppDataSource } from "./db/dataSource";
+import { runSeeder } from "./db/seeder";
 
 // ==========================================
 // 📦 IMPORT CÁC MODULE TÍNH NĂNG (FEATURE-BASED)
@@ -81,9 +82,12 @@ app.listen(PORT, "0.0.0.0", () => {
 
 // Khởi tạo Database chạy ngầm
 AppDataSource.initialize()
-  .then(() => {
+  .then(async () => {
     console.log("🚀 Data Source has been initialized!");
     logger.info("Data Source has been initialized!");
+    
+    // Tự động chạy seeder để nạp dữ liệu mẫu nếu DB trống
+    await runSeeder();
   })
   .catch((error: unknown) => {
     if (error instanceof Error) {
