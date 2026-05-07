@@ -4,6 +4,8 @@ import {
   Column, 
   ManyToOne, 
   JoinColumn, 
+  CreateDateColumn,
+  UpdateDateColumn,
   type Relation 
 } from "typeorm";
 import type { Lesson } from "./Lesson";
@@ -30,6 +32,15 @@ export class Term {
 
   @Column("text", { nullable: true })
   example?: string | null;
+
+  @Column("integer", { default: 0 })
+  viewCount!: number;
+
+  @CreateDateColumn({ type: "timestamp" })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ type: "timestamp" })
+  updatedAt!: Date;
 
   // Many terms belong to one lesson
   @ManyToOne("Lesson", "terms")

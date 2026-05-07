@@ -8,6 +8,8 @@ const router = Router();
 // ✅ KHU VỰC PUBLIC: Ai cũng vào xem được (Không cần đăng nhập/Admin)
 // =================================================================
 router.get("/", TermController.getTerms);       // Lấy danh sách từ vựng
+router.get("/recent", TermController.getRecent);     // Lấy từ mới nhất
+router.get("/trending", TermController.getTrending); // Lấy từ đang hot
 router.get("/:id", TermController.getTermById); // Lấy chi tiết 1 từ vựng
 
 // =================================================================

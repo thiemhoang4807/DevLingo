@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import QuestionCard from '../components/QuestionCard';
 import axiosClient from '../api/axiosClient';
+import { useTheme } from "../context/ThemeContext";
 
 export default function ActiveQuiz({ onBack, topic, onFinish }: any) {
+    const { theme } = useTheme();
     const [currentStep, setCurrentStep] = useState(0);
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
@@ -62,7 +64,7 @@ export default function ActiveQuiz({ onBack, topic, onFinish }: any) {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-[#121212] flex items-center justify-center">
+            <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#121212]' : 'bg-gray-50'}`}>
                 <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
@@ -70,7 +72,7 @@ export default function ActiveQuiz({ onBack, topic, onFinish }: any) {
 
     if (quizData.length === 0) {
         return (
-            <div className="min-h-screen bg-[#121212] text-white flex flex-col items-center justify-center gap-6">
+            <div className={`min-h-screen flex flex-col items-center justify-center gap-6 ${theme === 'dark' ? 'bg-[#121212] text-white' : 'bg-gray-50 text-black'}`}>
                 <p className="text-xl text-gray-400">Chủ đề này chưa có câu hỏi nào!</p>
                 <button
                     onClick={onBack}
@@ -137,7 +139,7 @@ export default function ActiveQuiz({ onBack, topic, onFinish }: any) {
     };
 
     return (
-        <div className="min-h-screen bg-[#121212] text-white pt-[40px] pb-12 flex flex-col items-center font-['Inter']">
+        <div className={`min-h-screen pt-[40px] pb-12 flex flex-col items-center font-['Inter'] transition-colors duration-300 ${theme === 'dark' ? 'bg-[#121212] text-white' : 'bg-white text-black'}`}>
             <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-start gap-[40px]">
 
                 <div className="flex w-full gap-[21px] h-[33px] items-start">
@@ -151,12 +153,12 @@ export default function ActiveQuiz({ onBack, topic, onFinish }: any) {
                     </div>
 
                     <div className="flex flex-col justify-between h-full w-full flex-1">
-                        <span className="text-[12px] font-semibold text-white">
+                        <span className={`text-[12px] font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-600'}`}>
                             Question {currentStep + 1} of {totalQuestions}
                         </span>
                         <div className="flex gap-[7px] w-full h-[18px]">
                             {[...Array(totalQuestions)].map((_, index) => {
-                                let segmentColor = 'bg-[#4A4A4A]';
+                                let segmentColor = theme === 'dark' ? 'bg-[#4A4A4A]' : 'bg-gray-200';
                                 if (index < currentStep) {
                                     segmentColor = 'bg-[#1D4ED8]';
                                 }

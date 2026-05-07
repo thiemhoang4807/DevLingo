@@ -22,4 +22,18 @@ export class TermService {
     await termRepo.remove(term);
     return { message: "Term deleted successfully" };
   }
+
+  static async getRecentTerms(limit: number = 5) {
+    return await termRepo.find({
+      order: { createdAt: "DESC" },
+      take: limit
+    });
+  }
+
+  static async getTrendingTerms(limit: number = 5) {
+    return await termRepo.find({
+      order: { viewCount: "DESC", termName: "ASC" },
+      take: limit
+    });
+  }
 }

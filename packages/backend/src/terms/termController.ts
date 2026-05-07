@@ -44,7 +44,31 @@ export class TermController {
         return res.status(404).json({ success: false, message: "Không tìm thấy từ vựng" });
       }
 
+      // 📈 Bổ sung: Tăng viewCount mỗi khi click vào xem chi tiết
+      term.viewCount = (term.viewCount || 0) + 1;
+      await termRepo.save(term);
+
       return res.status(200).json({ success: true, data: term });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  static async getRecent(req: Request, res: Response) {
+    try {
+      const limit = Number(req.query.limit) || 5;
+      const terms = await TermService.getRecentTerms(limit);
+      return res.status(200).json({ success: true, data: terms });
+    } catch (error: any) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  static async getTrending(req: Request, res: Response) {
+    try {
+      const limit = Number(req.query.limit) || 5;
+      const terms = await TermService.getTrendingTerms(limit);
+      return res.status(200).json({ success: true, data: terms });
     } catch (error: any) {
       return res.status(500).json({ success: false, message: error.message });
     }

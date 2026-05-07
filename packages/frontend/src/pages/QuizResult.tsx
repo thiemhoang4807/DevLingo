@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TopicCard from '../components/TopicCard';
 import axiosClient from '../api/axiosClient';
 import type { TopicData, UserAnswerHistory } from '../types/quiz';
+import { useTheme } from "../context/ThemeContext";
 
 interface QuizResultProps {
   topic: TopicData;
@@ -15,6 +16,7 @@ interface QuizResultProps {
 const capitalize = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Easy';
 
 const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, history = [], earnedXP = 0, onTryAnother }) => {
+  const { theme } = useTheme();
   const [topicsList, setTopicsList] = useState<any[]>([]);
 
   useEffect(() => {
@@ -61,7 +63,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
   const incorrectTerms = history.filter(h => !h.isCorrect);
 
   return (
-    <div className="w-full flex flex-col items-center pt-[40px] pb-[100px] bg-[#212121] text-white font-['Inter']">
+    <div className={`w-full flex flex-col items-center pt-[40px] pb-[100px] transition-colors duration-300 font-['Inter'] ${theme === 'dark' ? 'bg-[#212121] text-white' : 'bg-white text-black'}`}>
       <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-center gap-[40px]">
 
         {/* --- 1. BADGE TOPIC --- */}
@@ -89,7 +91,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
 
         {/* --- 2. STATISTIC --- */}
         <div className="flex flex-col items-center w-full">
-          <h2 className="text-[24px] font-[700] leading-[32px] text-[#E5E7EB] text-center mb-[24px]">
+          <h2 className={`text-[24px] font-[700] leading-[32px] text-center mb-[24px] ${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-800'}`}>
             Statistic
           </h2>
 
@@ -138,11 +140,11 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
         {/* --- 3. INCORRECT TERMS --- */}
         {incorrectTerms.length > 0 && (
           <div className="w-full flex flex-col gap-[16px]">
-            <h3 className="text-[18px] font-[700] text-[#E5E7EB]">Incorrect Terms</h3>
+            <h3 className={`text-[18px] font-[700] ${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-800'}`}>Incorrect Terms</h3>
             <div className="flex flex-col gap-[12px] w-full">
               {incorrectTerms.map((term, i) => (
-                <div key={`inc-${i}`} className="flex justify-between items-center w-full bg-[#3F0500] border-[1.5px] border-[#9B0000] rounded-[8px] p-[16px] hover:bg-[#4d0700] transition-colors">
-                  <span className="text-[#E5E7EB] text-[14px] font-[500] truncate pr-4">{term.questionText}</span>
+                <div key={`inc-${i}`} className={`flex justify-between items-center w-full rounded-[8px] p-[16px] transition-colors ${theme === 'dark' ? 'bg-[#3F0500] border-[1.5px] border-[#9B0000]' : 'bg-red-50 border-[1.5px] border-red-200'}`}>
+                  <span className={`${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-700'} text-[14px] font-[500] truncate pr-4`}>{term.questionText}</span>
                   <button className="bg-[#3B82F6] hover:bg-blue-600 text-white text-[14px] font-[500] px-[16px] py-[8px] rounded-[6px] transition-all whitespace-nowrap cursor-pointer">
                     View more...
                   </button>
@@ -155,11 +157,11 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
         {/* --- 4. CORRECT TERMS --- */}
         {correctTerms.length > 0 && (
           <div className="w-full flex flex-col gap-[16px]">
-            <h3 className="text-[18px] font-[700] text-[#E5E7EB]">Correct Terms</h3>
+            <h3 className={`text-[18px] font-[700] ${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-800'}`}>Correct Terms</h3>
             <div className="flex flex-col gap-[12px] w-full">
               {correctTerms.map((term, i) => (
-                <div key={`cor-${i}`} className="flex justify-between items-center w-full bg-[#0ABD5A]/10 border-[1.5px] border-[#0ABD5A] rounded-[8px] p-[16px] hover:bg-[#0abd5a]/20 transition-colors">
-                  <span className="text-[#E5E7EB] text-[14px] font-[500] truncate pr-4">{term.questionText}</span>
+                <div key={`cor-${i}`} className={`flex justify-between items-center w-full rounded-[8px] p-[16px] transition-colors ${theme === 'dark' ? 'bg-[#0ABD5A]/10 border-[1.5px] border-[#0ABD5A]' : 'bg-green-50 border-[1.5px] border-green-200'}`}>
+                  <span className={`${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-700'} text-[14px] font-[500] truncate pr-4`}>{term.questionText}</span>
                   <button className="bg-[#3B82F6] hover:bg-blue-600 text-white text-[14px] font-[500] px-[16px] py-[8px] rounded-[6px] transition-all whitespace-nowrap cursor-pointer">
                     View more...
                   </button>
@@ -171,7 +173,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
 
         {/* --- 5. TRY ANOTHER QUIZ --- */}
         <div className="w-full flex flex-col items-center gap-[24px] mt-[8px]">
-          <h2 className="text-[20px] font-[700] text-[#E5E7EB] w-full text-center">Try another quiz</h2>
+          <h2 className={`text-[20px] font-[700] w-full text-center ${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-800'}`}>Try another quiz</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] w-full">
             {topicsList.map((t: any) => (
               <div
