@@ -6,7 +6,7 @@ import { useTheme } from "../../context/ThemeContext";
 import axiosClient from '../../api/axiosClient';
 import { useNavigate } from "react-router-dom";
 
-const TABS = ["Terms", "Quizzes", "Contribution", "Contact"];
+const TABS = ["Terms", "Quizzes", "Contribution", "Contact", "About"];
 
 export default function Header() {
     const { theme, toggleTheme } = useTheme();
@@ -78,6 +78,9 @@ export default function Header() {
         }
         else if (tab === "Contact") {
             navigate("/contact");
+        }
+        else if (tab === "About") {
+            navigate("/about");
         }
     };
 
