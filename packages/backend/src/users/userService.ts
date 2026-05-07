@@ -11,7 +11,7 @@ export class UserService {
   static async getMe(userId: string) {
     return userRepo.findOne({
       where: { id: userId },
-      select: ["id", "username", "fullName", "role", "xp", "level", "createdAt"]
+      select: ["id", "username", "fullName", "role", "avatar", "xp", "level", "peakXp", "peakLevel", "createdAt"]
     });
   }
 
@@ -36,7 +36,7 @@ export class UserService {
   }
   static async getAllUsers() {
   return userRepo.find({
-    select: ["id", "username", "role", "xp", "level", "createdAt"]
+    select: ["id", "username", "role", "avatar", "xp", "level", "peakXp", "peakLevel", "createdAt"]
   });
   } 
 
@@ -46,5 +46,31 @@ export class UserService {
       relations: ["lesson"], 
       order: { completedAt: "DESC" }
     });
+  }
+
+  static async updateAvatar(userId: string, avatarPath: string) {
+    const user = await userRepo.findOneBy({ id: userId });
+    if (!user) throw new Error("User not found");
+
+    user.avatar = avatarPath;
+    await userRepo.save(user);
+
+    return user;
+  }
+
+  static async getPublicProfile(userId: string) {
+    const user = await userRepo.findOne({
+      where: { id: userId },
+      select: ["id", "username", "fullName", "avatar", "xp", "level", "peakXp", "peakLevel", "createdAt"]
+    });
+    if (!user) throw new Error("User not found");
+
+    const history = await progressRepo.find({
+      where: { userId },
+      relations: ["lesson"],
+      order: { completedAt: "DESC" }
+    });
+
+    return { user, history };
   }
 }

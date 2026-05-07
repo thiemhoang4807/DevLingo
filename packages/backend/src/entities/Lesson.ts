@@ -1,8 +1,8 @@
-import { 
-  Entity, 
-  PrimaryGeneratedColumn, 
-  Column, 
-  OneToMany 
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany
 } from "typeorm";
 import type { Term } from "./Term";
 import type { Question } from "./Question";
@@ -18,15 +18,24 @@ export class Lesson {
   @Column("text", { nullable: true })
   description?: string | null;
 
+  @Column("varchar", { nullable: true })
+  category?: string | null;
+
+  @Column("varchar", { default: "Easy" })
+  difficulty!: string;
+
   @Column("integer", { nullable: true })
   orderIndex?: number | null;
 
   @Column("boolean", { default: false })
   isPublished!: boolean;
 
+  @Column("varchar", { nullable: true })
+  thumbnailUrl?: string | null;
+
   @OneToMany("Term", "lesson")
   terms!: Term[];
 
   @OneToMany("Question", "lesson")
   questions!: Question[];
-}
+} 

@@ -5,8 +5,14 @@ import { User } from "../entities/User";
 
 const userRepo = AppDataSource.getRepository(User);
 
-// Lấy secret từ biến môi trường, nếu chưa có thì dùng chuỗi mặc định
-const JWT_SECRET = process.env.JWT_SECRET || "devlingo_secret";
+// 🛡️ BẢO MẬT: Chỉ lấy từ .env, KHÔNG DÙNG chuỗi mặc định nữa
+const JWT_SECRET = process.env.JWT_SECRET;
+
+// Báo lỗi đỏ lòm và dừng server ngay lập tức nếu quên cấu hình .env
+if (!JWT_SECRET) {
+  console.error("🚨 CRITICAL ERROR: Thiếu biến môi trường JWT_SECRET!");
+  process.exit(1); // Ép server dừng hoạt động
+}
 
 export class AuthService {
 
@@ -60,10 +66,19 @@ export class AuthService {
         id: user.id,
         role: user.role
       },
-      JWT_SECRET,
+      JWT_SECRET as string, 
       { expiresIn: "7d" }
     );
 
-    return { token };
+    return { 
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        xp: user.xp,
+        level: user.level
+      }
+    };
   }
 }

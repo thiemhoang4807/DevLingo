@@ -1,0 +1,38 @@
+# ============================================
+# 🐳 Docker Ignore - Loại bỏ file không cần thiết
+# ============================================
+
+# Dependencies
+**/node_modules
+
+# Git
+.git
+.gitignore
+
+# Build outputs
+**/dist
+**/build
+
+# Environment files (sẽ dùng biến từ docker-compose)
+**/.env
+**/.env.*
+
+# Logs
+**/logs
+**/*.log
+
+# Database files (sẽ dùng volume)
+**/*.sqlite
+**/*.sqlite-journal
+
+# IDE
+.vscode
+.idea
+**/.DS_Store
+
+# Documentation (không cần trong container)
+*.md
+!packages/shared/**/*.md
+
+# OS files
+Thumbs.db

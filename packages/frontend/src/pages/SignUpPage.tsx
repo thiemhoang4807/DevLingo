@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from '../services/authService';
+import logo from '../assets/logo.svg';
+import eyeOpen from '../assets/eye.svg';
+import eyeOff from '../assets/eyeoff.svg';
+import checkIcon from '../assets/check.svg';
 
 const SignUpPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -9,14 +13,14 @@ const SignUpPage: React.FC = () => {
     password: '',
     confirmPassword: ''
   });
-  
+
   const isFormValid =
     formData.username.trim() !== '' &&
     formData.fullName.trim() !== '' &&
     formData.password.trim() !== '' &&
     formData.confirmPassword.trim() !== '' &&
     formData.password === formData.confirmPassword;
-    
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
@@ -54,7 +58,7 @@ const SignUpPage: React.FC = () => {
     <div className="flex w-full min-h-screen flex-col items-center justify-center bg-[#000A26] font-sans">
       {/* Logo Section */}
       <div className="flex items-center py-[25px]">
-        <img src="src/assets/logo.svg" alt="DevLingo" className="w-[87px] h-[71px]" />
+        <img src={logo} alt="DevLingo" className="w-[87px] h-[71px]" />
         <h1 className="text-5xl font-bold text-[#E5E7EB] tracking-wide pl-[34px]">DevLingo</h1>
       </div>
 
@@ -106,7 +110,7 @@ const SignUpPage: React.FC = () => {
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                <img src={showPassword ? "src/assets/eye.svg" : "src/assets/eye-off.svg"} alt="toggle password" />
+                <img src={showPassword ? eyeOpen : eyeOff} alt="toggle password" />
               </button>
             </div>
           </div>
@@ -124,7 +128,7 @@ const SignUpPage: React.FC = () => {
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
                 {formData.confirmPassword.length > 0 && formData.confirmPassword === formData.password && (
                   <img
-                    src="src/assets/check.svg"
+                    src={checkIcon}
                     alt="matched"
                     className="w-[21px] h-[21px] object-contain"
                   />
@@ -135,7 +139,7 @@ const SignUpPage: React.FC = () => {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   <img
-                    src={showConfirmPassword ? "src/assets/eye.svg" : "src/assets/eye-off.svg"}
+                    src={showConfirmPassword ? eyeOpen : eyeOff}
                     alt="toggle password"
                     className="object-contain"
                   />
@@ -151,7 +155,7 @@ const SignUpPage: React.FC = () => {
             className={`w-full py-3 font-bold rounded-md transition-all mt-6 ${isFormValid
               ? "bg-[#3B82F6] hover:bg-[#0040CD] text-white cursor-pointer"
               : "bg-[#8F8E8E] cursor-not-allowed"
-            }`}
+              }`}
           >
             Sign up
           </button>
