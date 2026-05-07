@@ -22,25 +22,25 @@ async function seedData() {
     console.log("🚀 Bắt đầu quét file .md...");
 
     // --- ĐOẠN CODE TỰ ĐỘNG TẠO LESSON ---
-    // const lessonApiUrl = API_URL.replace('/terms', '/lessons'); // Đổi link terms thành lessons
-    // const lessonNames = ["Internet Terms", "Hardware Terms", "Software Terms", "Technical Terms"];
+    const lessonApiUrl = API_URL.replace('/terms', '/lessons'); // Đổi link terms thành lessons
+    const lessonNames = ["Internet Terms", "Hardware Terms", "Software Terms", "Technical Terms"];
     
-    // console.log("📦 Đang kiểm tra và khởi tạo các Bài học (Lessons)...");
-    // for (const name of lessonNames) {
-    //     try {
-    //         await axios.post(lessonApiUrl, {
-    //             title: name,
-    //             description: `Học từ vựng chủ đề ${name}`
-    //         }, {
-    //             headers: { 'Authorization': ADMIN_TOKEN }
-    //         });
-    //         console.log(`✅ Đã tạo bài học: ${name}`);
-    //         await delay(300); // Nghỉ 1 xíu
-    //     } catch (err) {
-    //         console.log(`⚠️ Bài học [${name}] có thể đã tồn tại hoặc lỗi:`, err.response?.data?.message || err.message);
-    //     }
-    // }
-    // console.log("-----------------------------------------");
+    console.log("📦 Đang kiểm tra và khởi tạo các Bài học (Lessons)...");
+    for (const name of lessonNames) {
+        try {
+            await axios.post(lessonApiUrl, {
+                title: name,
+                description: `Học từ vựng chủ đề ${name}`
+            }, {
+                headers: { 'Authorization': ADMIN_TOKEN }
+            });
+            console.log(`✅ Đã tạo bài học: ${name}`);
+            await delay(300); // Nghỉ 1 xíu
+        } catch (err) {
+            console.log(`⚠️ Bài học [${name}] có thể đã tồn tại hoặc lỗi:`, err.response?.data?.message || err.message);
+        }
+    }
+    console.log("-----------------------------------------");
     // --- KẾT THÚC ĐOẠN TẠO LESSON ---
 
     const categories = fs.readdirSync(MOCK_DATA_DIR);
