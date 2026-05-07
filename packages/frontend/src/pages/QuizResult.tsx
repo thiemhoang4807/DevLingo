@@ -8,12 +8,13 @@ interface QuizResultProps {
   score: number;
   totalQuestions: number;
   history: UserAnswerHistory[];
+  earnedXP?: number;
   onTryAnother: (topic?: TopicData) => void;
 }
 
 const capitalize = (str: string) => str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : 'Easy';
 
-const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, history = [], onTryAnother }) => {
+const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, history = [], earnedXP = 0, onTryAnother }) => {
   const [topicsList, setTopicsList] = useState<any[]>([]);
 
   useEffect(() => {
@@ -51,7 +52,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
   const percentage = Math.round((score / totalQuestions) * 100) || 0;
   const incorrectCount = totalQuestions - score;
 
-  const radius = 72; 
+  const radius = 72;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
@@ -62,7 +63,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
   return (
     <div className="w-full flex flex-col items-center pt-[40px] pb-[100px] bg-[#212121] text-white font-['Inter']">
       <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-center gap-[40px]">
-        
+
         {/* --- 1. BADGE TOPIC --- */}
         {(() => {
           const diff = (topic.difficulty || 'easy').toLowerCase();
@@ -91,16 +92,16 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
           <h2 className="text-[24px] font-[700] leading-[32px] text-[#E5E7EB] text-center mb-[24px]">
             Statistic
           </h2>
-          
+
           <div className="relative w-[160px] h-[160px] flex items-center justify-center mb-[24px]">
             <svg className="transform -rotate-90 w-full h-full">
-              <circle 
-                cx="80" cy="80" r={radius} 
-                fill="rgba(0, 20, 72, 0.25)" 
+              <circle
+                cx="80" cy="80" r={radius}
+                fill="rgba(0, 20, 72, 0.25)"
                 stroke="transparent"
               />
-              <circle 
-                cx="80" cy="80" r={radius} 
+              <circle
+                cx="80" cy="80" r={radius}
                 stroke="#1D4ED8" strokeWidth="16" fill="transparent"
                 strokeDasharray={circumference}
                 strokeDashoffset={strokeDashoffset}
@@ -110,6 +111,12 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
               {percentage}%
             </span>
           </div>
+
+          {earnedXP > 0 && (
+            <div className="flex items-center gap-2 mb-[16px] text-[#FCD34D] font-bold text-[18px] bg-[#FCD34D]/10 px-4 py-2 rounded-lg border border-[#FCD34D]/30 shadow-[0_0_10px_rgba(252,211,77,0.2)] animate-pulse">
+              <span>🎉 +{earnedXP} XP</span>
+            </div>
+          )}
 
           <div className="flex gap-[16px] mb-[12px]">
             <div className="flex items-center gap-[8px] border border-[#0ABD5A] bg-[#0ABD5A]/10 px-[16px] py-[8px] rounded-[6px]">
@@ -161,18 +168,18 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
             </div>
           </div>
         )}
-        
+
         {/* --- 5. TRY ANOTHER QUIZ --- */}
         <div className="w-full flex flex-col items-center gap-[24px] mt-[8px]">
           <h2 className="text-[20px] font-[700] text-[#E5E7EB] w-full text-center">Try another quiz</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px] w-full">
             {topicsList.map((t: any) => (
-              <div 
-                key={t.id} 
-                onClick={() => onTryAnother(t)} 
+              <div
+                key={t.id}
+                onClick={() => onTryAnother(t)}
                 className="cursor-pointer transition-transform hover:scale-[1.02]"
               >
-                <TopicCard 
+                <TopicCard
                   name={t.title}
                   difficulty={capitalize(t.difficulty)}
                   description="Test your knowledge with these specialized questions."

@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { AppDataSource } from "../db/dataSource";
 import { User } from "../entities/User";
 import { UserProgress } from "../entities/UserProgress";
+import { checkLevelUp } from "../utils/gamificationLogic";
 
 const userRepo = AppDataSource.getRepository(User);
 const progressRepo = AppDataSource.getRepository(UserProgress);
@@ -9,10 +10,13 @@ const progressRepo = AppDataSource.getRepository(UserProgress);
 export class UserService {
 
   static async getMe(userId: string) {
-    return userRepo.findOne({
+    const user = await userRepo.findOne({
       where: { id: userId },
       select: ["id", "username", "fullName", "role", "avatar", "xp", "level", "peakXp", "peakLevel", "createdAt"]
     });
+    if (!user) return null;
+    const levelInfo = checkLevelUp(user.xp);
+    return { ...user, rankName: levelInfo.name };
   }
 
   static async updateProfile(userId: string, fullName: string) {

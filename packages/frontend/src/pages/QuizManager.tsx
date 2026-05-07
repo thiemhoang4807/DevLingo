@@ -8,11 +8,12 @@ const QuizManager: React.FC = () => {
   // State variables to control the flow and data
   const [step, setStep] = useState<'SELECT' | 'QUIZ' | 'RESULT'>('SELECT');
   const [selectedTopic, setSelectedTopic] = useState<TopicData | null>(null);
-  
+
   // States for quiz results
   const [score, setScore] = useState<number>(0);
   const [totalQuestions, setTotalQuestions] = useState<number>(0);
   const [answerHistory, setAnswerHistory] = useState<UserAnswerHistory[]>([]);
+  const [earnedXP, setEarnedXP] = useState<number>(0);
 
   // Handler for starting a quiz from QuizPage
   const handleStart = (topic: TopicData) => {
@@ -21,10 +22,11 @@ const QuizManager: React.FC = () => {
   };
 
   // Handler for finishing the quiz in ActiveQuiz
-  const handleFinish = (finalScore: number, total: number, history: UserAnswerHistory[]) => {
+  const handleFinish = (finalScore: number, total: number, history: UserAnswerHistory[], earned: number = 0) => {
     setScore(finalScore);
     setTotalQuestions(total);
     setAnswerHistory(history);
+    setEarnedXP(earned);
     setStep('RESULT');
   };
 
@@ -41,22 +43,23 @@ const QuizManager: React.FC = () => {
   // Render components based on the current step
   if (step === 'QUIZ') {
     return (
-      <ActiveQuiz 
-        onBack={() => setStep('SELECT')} 
-        topic={selectedTopic} 
-        onFinish={handleFinish} 
+      <ActiveQuiz
+        onBack={() => setStep('SELECT')}
+        topic={selectedTopic}
+        onFinish={handleFinish}
       />
     );
   }
 
   if (step === 'RESULT' && selectedTopic) {
     return (
-      <QuizResult 
-        topic={selectedTopic} 
-        score={score} 
-        totalQuestions={totalQuestions} 
+      <QuizResult
+        topic={selectedTopic}
+        score={score}
+        totalQuestions={totalQuestions}
         history={answerHistory} // Successfully passing the history here!
-        onTryAnother={handleTryAnother} 
+        earnedXP={earnedXP}
+        onTryAnother={handleTryAnother}
       />
     );
   }

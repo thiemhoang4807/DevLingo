@@ -41,7 +41,14 @@ export default function Header() {
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        
+        // Listen to custom event to update profile automatically (e.g. after a quiz)
+        window.addEventListener('user-profile-updated', fetchProfile);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener('user-profile-updated', fetchProfile);
+        };
     }, []);
 
     const getAvatarUrl = (avatarPath: string) => {
@@ -107,7 +114,7 @@ export default function Header() {
                             : 'border-gray-300 bg-gray-100 text-gray-800'
                             }`}
                     />
-                    <div 
+                    <div
                         className="absolute right-[12px] flex items-center justify-center cursor-pointer"
                         onClick={() => {
                             if (searchQuery.trim()) {
@@ -156,7 +163,7 @@ export default function Header() {
                                     {currentUser.username || currentUser.fullName || "User"}
                                 </p>
                                 <p className="text-[12px] text-[#3B82F6] font-semibold">
-                                    Level {currentUser.level || 1} • {currentUser.xp || 0} XP
+                                    {currentUser.rankName || "Bronze"} • Level {currentUser.level || 1} • {currentUser.xp || 0} XP
                                 </p>
                             </div>
 
