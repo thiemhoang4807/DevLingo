@@ -29,7 +29,7 @@ ARG VITE_API_URL=https://devlingo-backend-1075077880290.europe-west1.run.app
 ENV VITE_API_URL=${VITE_API_URL}
 
 # Build production bundle
-RUN cd packages/frontend && npm run build
+RUN cd packages/frontend && VITE_API_URL=https://devlingo-backend-1075077880290.europe-west1.run.app npm run build
 
 # --- Stage 2: Serve với Nginx ---
 FROM nginx:alpine AS production
