@@ -34,6 +34,7 @@ export async function runSeeder() {
             { title: "Software Terms", difficulty: "Easy", category: "Software Terms" },
             { title: "Software Terms", difficulty: "Medium", category: "Software Terms" },
             { title: "Software Terms", difficulty: "Hard", category: "Software Terms" },
+            { title: "Technical Terms", difficulty: "Easy", category: "Technical Terms" }
         ];
 
         for (const l of lessonsToCreate) {
