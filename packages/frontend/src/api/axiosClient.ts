@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
-  // baseURL: 'https://devlingo-backend-1075077880290.europe-west1.run.app',
+  // baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+  baseURL: 'https://devlingo-backend-1075077880290.europe-west1.run.app',
   headers: {
     'Content-Type': 'application/json',
   },
