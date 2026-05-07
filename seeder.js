@@ -21,7 +21,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 async function seedData() {
     console.log("🚀 Bắt đầu quét file .md...");
 
-    // // --- ĐOẠN CODE TỰ ĐỘNG TẠO LESSON ---
+    // --- ĐOẠN CODE TỰ ĐỘNG TẠO LESSON ---
     // const lessonApiUrl = API_URL.replace('/terms', '/lessons'); // Đổi link terms thành lessons
     // const lessonNames = ["Internet Terms", "Hardware Terms", "Software Terms", "Technical Terms"];
     
@@ -41,7 +41,7 @@ async function seedData() {
     //     }
     // }
     // console.log("-----------------------------------------");
-    // // --- KẾT THÚC ĐOẠN TẠO LESSON ---
+    // --- KẾT THÚC ĐOẠN TẠO LESSON ---
 
     const categories = fs.readdirSync(MOCK_DATA_DIR);
 

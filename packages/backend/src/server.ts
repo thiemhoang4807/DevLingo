@@ -84,7 +84,7 @@ AppDataSource.initialize()
   .then(() => {
     console.log("🚀 Data Source has been initialized!");
     logger.info("Data Source has been initialized!");
-  }) 
+  })
   .catch((error: unknown) => {
     if (error instanceof Error) {
       console.error("❌ Error during Data Source initialization:", error.message);
