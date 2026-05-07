@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 // Absolute path to avoid Port mismatch between Vite (5173) and Express (5000)
-const API_URL = 'https://devlingo-backend-vercel-1075077880290.europe-west1.run.app';
+const API_URL = 'https://devlingo-backend-vercel-1075077880290.europe-west1.run.app/api/auth';
 
 export const loginUser = async (username: string, password: string) => {
   try {
