@@ -33,17 +33,17 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex w-full min-h-screen overflow-hidden font-sans">
+    <div className="flex w-full min-h-screen flex-col overflow-hidden font-sans md:flex-row">
       {/* Left Side - Logo Section */}
-      <div className="w-3/5 bg-[#000A26] flex flex-col items-center justify-center text-white">
-        <img src={logo} alt="DevLingo Logo" className="w-[177px] h-[143px] mb-4" />
-        <h1 className="text-5xl font-bold tracking-tight">DevLingo</h1>
+      <div className="w-full bg-[#000A26] flex flex-col items-center justify-center text-white py-10 md:w-3/5 md:py-0">
+        <img src={logo} alt="DevLingo Logo" className="w-[110px] h-auto mb-4 md:w-[177px]" />
+        <h1 className="text-4xl font-bold tracking-tight md:text-5xl">DevLingo</h1>
       </div>
 
       {/* Right Side - Form Section */}
-      <div className="w-2/5 bg-white flex flex-col items-center justify-center relative">
-        <div className="w-[400px]">
-          <h2 className="text-[#3B82F6] text-4xl font-bold text-center mb-8">Log in</h2>
+      <div className="w-full bg-white flex flex-1 flex-col items-center justify-center relative px-5 py-10 md:w-2/5">
+        <div className="w-full max-w-[400px]">
+          <h2 className="text-[#3B82F6] text-3xl md:text-4xl font-bold text-center mb-8">Log in</h2>
 
           {/* Error Message Banner */}
           {error && (

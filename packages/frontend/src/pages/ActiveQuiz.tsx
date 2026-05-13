@@ -140,10 +140,10 @@ export default function ActiveQuiz({ onBack, topic, onFinish }: any) {
 
     return (
         <div className={`min-h-screen pt-[40px] pb-12 flex flex-col items-center font-['Inter'] transition-colors duration-300 ${theme === 'dark' ? 'bg-[#121212] text-white' : 'bg-white text-black'}`}>
-            <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-start gap-[40px]">
+            <div className="w-full max-w-[1002px] px-4 sm:px-[32px] flex flex-col items-start gap-8 sm:gap-[40px]">
 
-                <div className="flex w-full gap-[21px] h-[33px] items-start">
-                    <div className={`flex border-[1.5px] border-[#3B82F6] bg-[#3B82F6] rounded-[100px] h-full w-[277px] shrink-0 overflow-hidden`}>
+                <div className="flex w-full flex-col sm:flex-row gap-4 sm:gap-[21px] sm:h-[33px] items-stretch sm:items-start">
+                    <div className={`flex border-[1.5px] border-[#3B82F6] bg-[#3B82F6] rounded-[100px] h-[33px] w-full sm:w-[277px] shrink-0 overflow-hidden`}>
                         <div className="bg-white text-blue-700 pl-5 flex items-center font-bold text-[16px] w-[65%] h-full">
                             {topic?.title || topic?.name}
                         </div>

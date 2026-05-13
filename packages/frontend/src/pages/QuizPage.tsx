@@ -20,7 +20,7 @@ export default function QuizPage({ onStart }: QuizPageProps) {
                 const response: any = await axiosClient.get('/api/lessons');
                 const data = response.data?.data || response.data || response;
 
-                let filtered = data.filter((lesson: any) => {
+                const filtered = data.filter((lesson: any) => {
                     if (!lesson.title) {
                         return false;
                     }
@@ -69,7 +69,7 @@ export default function QuizPage({ onStart }: QuizPageProps) {
 
     return (
         <div className={`min-h-screen pt-10 pb-20 flex flex-col items-center font-['Inter'] transition-colors duration-300 ${theme === 'dark' ? 'bg-[#121212] text-white' : 'bg-gray-50 text-black'}`}>
-            <div className="w-full max-w-5xl px-8 flex flex-col items-start">
+            <div className="w-full max-w-5xl px-4 sm:px-8 flex flex-col items-start">
 
                 <section className="w-full mb-12 flex flex-col gap-6">
                     <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>
@@ -92,7 +92,7 @@ export default function QuizPage({ onStart }: QuizPageProps) {
 
                 <section className="w-full">
                     <div className="mb-6">
-                        <h2 className={`text-[32px] font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
+                        <h2 className={`text-[28px] sm:text-[32px] font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
                             More Quizzes
                         </h2>
                         <p className={`${theme === 'dark' ? 'text-[#A0AEC0]' : 'text-gray-600'} text-[16px]`}>

@@ -53,7 +53,7 @@ export default function LearningHistoryPage() {
 
   return (
     <div className={`w-full min-h-screen font-['Inter'] transition-colors duration-300 py-12 ${isDark ? "bg-[#0F141A]" : "bg-gray-50"}`}>
-      <div className="container mx-auto px-6 max-w-6xl">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
         
         {/* --- 1. HEADER SECTION --- */}
         <div className="mb-[48px]">
@@ -63,7 +63,7 @@ export default function LearningHistoryPage() {
             </span>
           </div>
           
-          <h1 className="text-[60px] font-bold leading-[60px] tracking-[-3px] font-['Space_Grotesk']">
+          <h1 className="text-[40px] sm:text-[60px] font-bold leading-tight font-['Space_Grotesk']">
             <span className={isDark ? "text-[#F1F3FC]" : "text-gray-900"}>
               Learning{' '}
             </span>
@@ -102,7 +102,7 @@ export default function LearningHistoryPage() {
           {/* CỘT TRÁI: Mastered Words */}
           <div className="flex flex-col gap-[32px]">
             {/* Header row: Cập nhật py-[16px] chuẩn Figma thay vì h cố định */}
-            <div className="flex justify-between items-center py-[16px]">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 py-[16px]">
               <h2 className={`text-[24px] font-bold font-['Space_Grotesk'] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
                 Mastered Words
               </h2>
@@ -133,7 +133,7 @@ export default function LearningHistoryPage() {
           </div>
 
           {/* CỘT PHẢI: Weak Words Section */}
-          <div className={`p-[32px] rounded-[12px] flex flex-col gap-[32px] ${isDark ? "bg-[#20262F] border-l-[4px] border-[#FF6F7E]" : "bg-white border border-gray-200 border-l-[4px] border-l-[#FF6F7E] shadow-sm"}`}>
+          <div className={`p-5 sm:p-[32px] rounded-[12px] flex flex-col gap-[32px] ${isDark ? "bg-[#20262F] border-l-[4px] border-[#FF6F7E]" : "bg-white border border-gray-200 border-l-[4px] border-l-[#FF6F7E] shadow-sm"}`}>
             
             {/* Header Weak Words */}
             <div className="flex items-center gap-[12px]">
@@ -150,7 +150,7 @@ export default function LearningHistoryPage() {
                   <div key={index} className="flex flex-col gap-[16px]">
                     
                     {/* Word Title & Failed Badge */}
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                       <h3 className={`text-[16px] font-bold font-['Space_Grotesk'] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
                         {item.word}
                       </h3>

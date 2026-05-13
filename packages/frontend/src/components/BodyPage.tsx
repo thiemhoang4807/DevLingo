@@ -4,8 +4,8 @@ import axiosClient from "../api/axiosClient";
 
 function load_menu(title: string, list_menu: any[], isLoading: boolean) {
     return (
-        <div className="inter h-[265px] p-[20px]">
-            <h3 className="border-b border-[#374151] dark:border-gray-600 pb-[12px] w-[344px] font-[700] font-bold text-[18px] leading-[28px] text-[#000000] dark:text-[#FFFFFF] text-left cursor-default"> 
+        <div className="inter h-auto p-5">
+            <h3 className="border-b border-[#374151] dark:border-gray-600 pb-[12px] w-full font-[700] font-bold text-[18px] leading-[28px] text-[#000000] dark:text-[#FFFFFF] text-left cursor-default"> 
                 {title}
             </h3>
             <div className="text-left">
@@ -54,16 +54,16 @@ export default function Body() {
     }, []);
 
     return (
-        <div className="skeleton-body py-[40px] px-[32px] bg-[#FFFFFF] dark:bg-[#212121]">
-            <div className="body flex flex-row justify-between gap-[32px]">
+        <div className="skeleton-body py-6 sm:py-[40px] px-4 sm:px-[32px] bg-[#FFFFFF] dark:bg-[#212121]">
+            <div className="body flex flex-col lg:flex-row justify-between gap-8">
 
                 {/* KHU VỰC BÊN TRÁI: Dùng Outlet để React Router tự động nhét trang con vào */}
-                <div className="flex flex-1">
+                <div className="flex flex-1 min-w-0">
                     <Outlet />
                 </div>
 
                 {/* KHU VỰC BÊN PHẢI: Thanh Menu */}
-                <div className="menu w-[384px] h-[562px] flex flex-col gap-[32px]">
+                <div className="menu w-full lg:w-[384px] lg:shrink-0 h-auto flex flex-col gap-6 lg:gap-[32px]">
                     {load_menu("Recently Added Terms", recentTerms, isLoading)}
                     {load_menu("Trending Terms", trendingTerms, isLoading)}
                 </div>

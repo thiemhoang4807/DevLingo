@@ -45,7 +45,7 @@ export default function TermPageCategory()
         <li 
             key={letter} 
             onClick={() => navigate(`/term/letter/${letter === '#' ? '%23' : letter}`)}
-            className="cursor-pointer list-none w-full h-[62px] rounded-[6px] border border-[#597DFF] flex items-center justify-center bg-[#3B82F6] hover:bg-[#2563EB] transition-colors font-[600] text-[17px] leading-[32px] text-[#FFFFFF]"
+            className="cursor-pointer list-none w-full min-h-[52px] sm:h-[62px] rounded-[6px] border border-[#597DFF] flex items-center justify-center bg-[#3B82F6] hover:bg-[#2563EB] transition-colors font-[600] text-[15px] sm:text-[17px] leading-tight text-[#FFFFFF]"
         >
             {letter}
         </li>
@@ -55,12 +55,12 @@ export default function TermPageCategory()
     const formatTitle = (title: string) => title ? title.replace(/ Term$/i, '').trim() : '';
 
     return (
-        <div className="inter container flex flex-col items-center justify-start gap-[50px] w-full">
+        <div className="inter container flex flex-col items-center justify-start gap-10 sm:gap-[50px] w-full min-w-0">
             <div className="flex flex-col gap-[16px] w-full">
                 <h2 className="font-[700] text-[24px] leading-[24px] text-[#3B82F6] dark:text-[#E5E7EB] text-left">
                     Categories
                 </h2>
-                <div className="w-full grid grid-cols-4 gap-[16px]">
+                <div className="w-full grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-[16px]">
                     {isLoading ? 
                     (
                         [1, 2, 3, 4].map(skeleton => 
@@ -74,7 +74,7 @@ export default function TermPageCategory()
                             <button
                                 key={category.id}
                                 onClick={() => navigate(`/term/category/${category.id}`)}
-                                className="cursor-pointer list-none w-full h-[62px] rounded-[6px] border border-[#597DFF] flex items-center justify-center bg-[#3B82F6] hover:bg-[#2563EB] transition-colors font-[600] text-[17px] leading-[32px] text-[#FFFFFF]"
+                                className="cursor-pointer list-none w-full min-h-[56px] sm:h-[62px] rounded-[6px] border border-[#597DFF] flex items-center justify-center bg-[#3B82F6] hover:bg-[#2563EB] transition-colors font-[600] text-[15px] sm:text-[17px] leading-tight text-center px-3 text-[#FFFFFF]"
                             >
                                 {formatTitle(category.title)}
                             </button>
@@ -87,7 +87,7 @@ export default function TermPageCategory()
                 <h2 className="font-[700] text-[24px] leading-[24px] text-[#3B82F6] dark:text-[#E5E7EB] text-left">
                     Alphabet
                 </h2>
-                <div className="w-full grid grid-cols-9 gap-[12px]">
+                <div className="w-full grid grid-cols-4 sm:grid-cols-6 xl:grid-cols-9 gap-2 sm:gap-[12px]">
                     {alphabetListElements}
                 </div>
             </div>

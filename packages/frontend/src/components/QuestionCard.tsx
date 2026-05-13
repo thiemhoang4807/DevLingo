@@ -58,16 +58,16 @@ export default function QuestionCard({ question, options, selectedOption, correc
                         <div
                             key={idx}
                             onClick={() => onSelect(idx)}
-                            className={`flex items-center gap-4 p-4 rounded-xl border-[1.5px] cursor-pointer transition-all ${borderClass} ${bgClass} ${!isAnswered && 'hover:border-[#3B82F6]'}`}
+                            className={`flex items-start sm:items-center gap-3 sm:gap-4 p-4 rounded-xl border-[1.5px] cursor-pointer transition-all ${borderClass} ${bgClass} ${!isAnswered && 'hover:border-[#3B82F6]'}`}
                         >
-                            <div className={`flex items-center justify-center w-8 h-8 rounded text-sm font-bold ${
+                            <div className={`flex shrink-0 items-center justify-center w-8 h-8 rounded text-sm font-bold ${
                                 isCorrect ? 'bg-[#0ABD5A] text-white' :
                                 isWrong ? 'bg-[#EF4444] text-white' :
                                 theme === 'dark' ? 'bg-[#2D3748] text-white' : 'bg-[#1E3A8A] text-white'
                             }`}>
                                 {letters[idx]}
                             </div>
-                            <span className={`text-[16px] font-medium ${textClass}`}>
+                            <span className={`text-[15px] sm:text-[16px] font-medium break-words min-w-0 ${textClass}`}>
                                 {option}
                             </span>
                         </div>

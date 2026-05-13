@@ -37,9 +37,9 @@ export default function SearchResultsPage() {
 
   return (
     <div className={`w-full min-h-screen font-['Inter'] transition-colors duration-300 py-12 ${isDark ? "bg-[#0F141A]" : "bg-gray-50"}`}>
-      <div className="container mx-auto px-6 max-w-5xl">
+      <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
         <div className="mb-10">
-          <h1 className={`text-[40px] font-bold font-['Space_Grotesk'] mb-2 ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
+          <h1 className={`text-[32px] sm:text-[40px] font-bold font-['Space_Grotesk'] mb-2 ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
             Search Results
           </h1>
           <p className={`text-[16px] ${isDark ? "text-gray-400" : "text-gray-500"}`}>
@@ -61,17 +61,17 @@ export default function SearchResultsPage() {
               <div 
                 key={term.id}
                 onClick={() => navigate(`/term/detail/${term.id}`)}
-                className={`p-6 rounded-xl border flex items-start justify-between cursor-pointer transition-all hover:-translate-y-1 ${
+                className={`p-5 sm:p-6 rounded-xl border flex items-start justify-between gap-4 cursor-pointer transition-all hover:-translate-y-1 ${
                   isDark 
                     ? "bg-[#1A1E24] border-[#2A2E36] hover:bg-[#1E2530]" 
                     : "bg-white border-gray-200 shadow-sm hover:shadow-md"
                 }`}
               >
-                <div className="flex items-start gap-4">
+                <div className="flex min-w-0 items-start gap-4">
                   <div className={`mt-1 p-3 rounded-lg ${isDark ? "bg-blue-500/10 text-blue-400" : "bg-blue-50 text-blue-600"}`}>
                     <Book size={20} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h3 className={`text-[20px] font-bold mb-2 font-['Space_Grotesk'] ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
                       {term.termName}
                     </h3>
@@ -89,7 +89,7 @@ export default function SearchResultsPage() {
             ))}
           </div>
         ) : (
-          <div className={`p-16 rounded-xl border text-center ${isDark ? "bg-[#1A1E24] border-[#2A2E36]" : "bg-white border-gray-200 shadow-sm"}`}>
+          <div className={`p-8 sm:p-16 rounded-xl border text-center ${isDark ? "bg-[#1A1E24] border-[#2A2E36]" : "bg-white border-gray-200 shadow-sm"}`}>
             <Search size={48} className={`mx-auto mb-4 ${isDark ? "text-gray-600" : "text-gray-300"}`} />
             <h3 className={`text-[20px] font-bold font-['Space_Grotesk'] mb-2 ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
               No terms found

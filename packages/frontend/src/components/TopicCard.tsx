@@ -64,13 +64,13 @@ export default function TopicCard({ name, difficulty, description }: TopicCardPr
     const arrowHover = theme === 'dark' ? 'group-hover:text-white' : 'group-hover:text-gray-900';
 
     return (
-        <div className={`flex flex-col justify-between p-[20px] rounded-xl border-[1.5px] ${bgColor} ${borderColor} transition-all duration-300 h-[170px] group`}>
-            <div className="flex justify-between items-center w-full">
-                <div className={`flex items-center gap-2 ${textColor}`}>
+        <div className={`flex flex-col justify-between p-4 sm:p-[20px] rounded-xl border-[1.5px] ${bgColor} ${borderColor} transition-all duration-300 min-h-[170px] group`}>
+            <div className="flex justify-between items-start gap-3 w-full">
+                <div className={`flex items-center gap-2 min-w-0 ${textColor}`}>
                     {getIcon()}
-                    <h3 className="font-bold text-[18px]">{cleanName}</h3>
+                    <h3 className="font-bold text-[17px] sm:text-[18px] break-words">{cleanName}</h3>
                 </div>
-                <span className={`${badgeColor} text-white text-[12px] font-bold px-3 py-1 rounded-full capitalize`}>
+                <span className={`${badgeColor} shrink-0 text-white text-[12px] font-bold px-3 py-1 rounded-full capitalize`}>
                     {difficulty}
                 </span>
             </div>

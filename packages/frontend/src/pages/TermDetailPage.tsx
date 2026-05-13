@@ -33,7 +33,7 @@ export default function TermDetailPage() {
     }, [id]);
 
     return (
-        <div className={`inter container flex flex-col items-center justify-start gap-[30px] w-full max-w-4xl mx-auto py-8 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
+        <div className={`inter container flex flex-col items-center justify-start gap-[30px] w-full max-w-4xl mx-auto py-6 sm:py-8 px-4 sm:px-6 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
             {/* Header: Nút Back và Tên từ vựng */}
             <div className="flex items-center justify-start w-full gap-4">
                 <button
@@ -45,7 +45,7 @@ export default function TermDetailPage() {
                 {bIsLoading ? (
                     <div className="h-8 w-48 bg-blue-400/30 animate-pulse rounded"></div>
                 ) : (
-                    <h2 className="text-[28px] font-[700] text-[#3B82F6]">
+                    <h2 className="text-[24px] sm:text-[28px] font-[700] text-[#3B82F6] break-words">
                         {objTerm?.termName || "Chi tiết từ vựng"}
                     </h2>
                 )}
@@ -65,7 +65,7 @@ export default function TermDetailPage() {
                     <p className="text-[18px]">Oups! Không tìm thấy từ vựng này.</p>
                 </div>
             ) : (
-                <div className={`w-full p-8 rounded-[12px] shadow-sm border-2 ${theme === 'dark' ? 'bg-[#1E1E1E] border-[#374151]' : 'bg-white border-gray-200'}`}>
+                <div className={`w-full p-5 sm:p-8 rounded-[12px] shadow-sm border-2 ${theme === 'dark' ? 'bg-[#1E1E1E] border-[#374151]' : 'bg-white border-gray-200'}`}>
                     
                     {/* Xử lý Ảnh xịn xò (không bị lỗi URL) */}
                     {objTerm.imageUrl && (
@@ -78,7 +78,7 @@ export default function TermDetailPage() {
                     )}
                     
                     {/* Render Markdown để có chữ in đậm, xuống dòng chuẩn chỉnh */}
-                    <div className={`text-[17px] leading-relaxed markdown-body ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                    <div className={`text-[16px] sm:text-[17px] leading-relaxed markdown-body break-words ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
                         <ReactMarkdown>
                             {objTerm.definition}
                         </ReactMarkdown>

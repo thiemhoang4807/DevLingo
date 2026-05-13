@@ -55,16 +55,16 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <div className="flex w-full min-h-screen flex-col items-center justify-center bg-[#000A26] font-sans">
+    <div className="flex w-full min-h-screen flex-col items-center justify-center bg-[#000A26] font-sans px-5 py-8">
       {/* Logo Section */}
       <div className="flex items-center py-[25px]">
-        <img src={logo} alt="DevLingo" className="w-[87px] h-[71px]" />
-        <h1 className="text-5xl font-bold text-[#E5E7EB] tracking-wide pl-[34px]">DevLingo</h1>
+        <img src={logo} alt="DevLingo" className="w-[64px] h-auto sm:w-[87px]" />
+        <h1 className="text-4xl sm:text-5xl font-bold text-[#E5E7EB] tracking-wide pl-4 sm:pl-[34px]">DevLingo</h1>
       </div>
 
       {/* Form Container */}
-      <div className="bg-white p-12 rounded-lg shadow-2xl w-[460px] flex flex-col items-center">
-        <h2 className="text-[#3B82F6] text-5xl font-bold text-center pb-[20px]">Sign up</h2>
+      <div className="bg-white p-6 sm:p-12 rounded-lg shadow-2xl w-full max-w-[460px] flex flex-col items-center">
+        <h2 className="text-[#3B82F6] text-4xl sm:text-5xl font-bold text-center pb-[20px]">Sign up</h2>
 
         {error && (
           <div className="bg-[#FFB3B3] text-[#D00000] p-3 rounded-md mb-6 w-full flex items-center text-sm">

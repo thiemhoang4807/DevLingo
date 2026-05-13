@@ -5,10 +5,10 @@ function AdminLayout() {
   const isActive = (path: string) => location.pathname.includes(path);
 
   return (
-    <div className="flex min-h-screen bg-black text-white font-sans">
+    <div className="flex min-h-screen flex-col bg-black text-white font-sans md:flex-row">
       
       {/* 1. Sidebar (Cập nhật chuẩn Figma mới) */}
-      <aside className="w-64 bg-black border-r border-gray-900 flex flex-col pt-6">
+      <aside className="w-full bg-black border-b border-gray-900 flex flex-col pt-6 md:w-64 md:border-b-0 md:border-r">
         <div className="px-6 mb-6">
           {/* Chữ Admin góc trái */}
           <p className="text-gray-300 text-sm mb-4">Admin</p>
@@ -19,10 +19,10 @@ function AdminLayout() {
         </div>
 
         {/* Menu Navigation */}
-        <nav className="flex flex-col gap-4 px-8 mt-2">
+        <nav className="flex flex-row gap-3 overflow-x-auto px-4 pb-4 mt-2 md:flex-col md:gap-4 md:px-8 md:pb-0">
           <Link
             to="/admin/terms"
-            className={`block w-full rounded-full border border-[#0096FF] py-1.5 text-center text-[13px] font-bold transition-all ${
+            className={`block min-w-[96px] w-full rounded-full border border-[#0096FF] py-1.5 text-center text-[13px] font-bold transition-all ${
               isActive('/admin/terms') 
                 ? "bg-[#0096FF]/20 text-white shadow-[0_0_10px_rgba(0,150,255,0.3)]" 
                 : "text-white hover:bg-[#0096FF]/10"
@@ -33,7 +33,7 @@ function AdminLayout() {
 
           <Link
             to="/admin/quizzes"
-            className={`block w-full rounded-full border border-[#0096FF] py-1.5 text-center text-[13px] font-bold transition-all ${
+            className={`block min-w-[96px] w-full rounded-full border border-[#0096FF] py-1.5 text-center text-[13px] font-bold transition-all ${
               isActive('/admin/quizzes') 
                 ? "bg-[#0096FF]/20 text-white shadow-[0_0_10px_rgba(0,150,255,0.3)]" 
                 : "text-white hover:bg-[#0096FF]/10"
@@ -44,7 +44,7 @@ function AdminLayout() {
 
           <Link
             to="/admin/users"
-            className={`block w-full rounded-full border border-[#0096FF] py-1.5 text-center text-[13px] font-bold transition-all ${
+            className={`block min-w-[96px] w-full rounded-full border border-[#0096FF] py-1.5 text-center text-[13px] font-bold transition-all ${
               isActive('/admin/users') 
                 ? "bg-[#0096FF]/20 text-white shadow-[0_0_10px_rgba(0,150,255,0.3)]" 
                 : "text-white hover:bg-[#0096FF]/10"
@@ -57,7 +57,7 @@ function AdminLayout() {
 
       {/* 2. Main Content (Khu vực hiển thị các bảng bên phải) */}
       <main className="flex-1 flex flex-col bg-black min-h-screen">
-         <div className="flex-1 p-8 overflow-y-auto">
+         <div className="flex-1 p-4 sm:p-8 overflow-y-auto">
             <Outlet /> 
          </div>
       </main>

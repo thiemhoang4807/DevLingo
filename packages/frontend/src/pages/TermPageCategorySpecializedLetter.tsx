@@ -57,15 +57,15 @@ export default function TermPageCategorySpecializedLetter()
     }, [letter]);
 
     return (
-        <div className="inter container flex flex-col gap-[30px] w-full p-8">
-            <div className="flex items-center gap-4">
+        <div className="inter container flex flex-col gap-[30px] w-full min-w-0 p-4 sm:p-8">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4">
                 <button
                     onClick={() => navigate('/term')}
                     className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors dark:text-white"
                 >
                     <ArrowLeft size={24} />
                 </button>
-                <h2 className="font-bold text-[30px] text-[#000000] dark:text-[#E5E7EB] text-left leading-[32px]">
+                <h2 className="font-bold text-[24px] sm:text-[30px] text-[#000000] dark:text-[#E5E7EB] text-left leading-tight break-words">
                     Terms that start with '{letter}'
                 </h2>
             </div>

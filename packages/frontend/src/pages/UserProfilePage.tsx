@@ -154,9 +154,9 @@ export default function UserProfilePage() {
 
   return (
     <div className={`w-full min-h-screen pb-20 transition-colors ${isDark ? "bg-[#1A1D21]" : "bg-gray-50"}`}>
-      <div className="container mx-auto max-w-[1184px] pt-10 px-8">
+      <div className="container mx-auto max-w-[1184px] pt-8 sm:pt-10 px-4 sm:px-8">
         
-        <h1 className={`text-[40px] font-bold font-['Space_Grotesk'] mb-10 ${isDark ? "text-white" : "text-gray-900"}`}>
+        <h1 className={`text-[32px] sm:text-[40px] font-bold font-['Space_Grotesk'] mb-8 sm:mb-10 ${isDark ? "text-white" : "text-gray-900"}`}>
           Learning <span className="text-[#3B82F6]">Profile</span>
         </h1>
 
@@ -173,7 +173,7 @@ export default function UserProfilePage() {
             <img 
               src={displayAvatar} 
               alt="Avatar" 
-              className={`w-[273px] h-[273px] rounded-full object-cover shadow-2xl border-[6px] border-[#3B82F6]/20 bg-white transition-all duration-300 ${
+              className={`w-[184px] h-[184px] sm:w-[273px] sm:h-[273px] rounded-full object-cover shadow-2xl border-[6px] border-[#3B82F6]/20 bg-white transition-all duration-300 ${
                 avatarHover ? "brightness-75 scale-[1.02]" : ""
               }`}
             />
@@ -214,31 +214,31 @@ export default function UserProfilePage() {
           </div>
 
           <div className="flex flex-col flex-1 w-full justify-center mt-4">
-            <h2 className={`text-[60px] leading-[60px] tracking-[-3px] font-bold font-['Inter'] mb-4 ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
+            <h2 className={`text-[36px] leading-[40px] sm:text-[60px] sm:leading-[60px] font-bold font-['Inter'] mb-4 break-words text-center lg:text-left ${isDark ? "text-[#F1F3FC]" : "text-gray-900"}`}>
               User <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6]">{displayName}</span>
             </h2>
 
             {/* Rank + XP Progress Card */}
-            <div className={`rounded-[20px] w-full max-w-[841px] p-8 shadow-xl ${isDark ? "bg-[#424141]" : "bg-gray-200"}`}>
-              <div className="flex items-center gap-6 mb-6">
+            <div className={`rounded-[20px] w-full max-w-[841px] p-5 sm:p-8 shadow-xl ${isDark ? "bg-[#424141]" : "bg-gray-200"}`}>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-6 mb-6">
                 <img 
                   src={getBadgeUrl(levelInfo.current.badgeRank, 1)} 
                   alt={levelInfo.current.name} 
-                  className="w-[100px] h-[100px] object-contain drop-shadow-xl" 
+                  className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] object-contain drop-shadow-xl" 
                 />
                 <div className="flex-1">
                   <p className={`text-[14px] font-semibold uppercase tracking-wider mb-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>Current Rank</p>
-                  <p className="text-[36px] font-bold text-white leading-tight">{levelInfo.current.name}</p>
+                  <p className="text-[30px] sm:text-[36px] font-bold text-white leading-tight">{levelInfo.current.name}</p>
                   <p className="text-[16px] text-[#3B82F6] font-semibold">Level {userLevel}</p>
                 </div>
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   <p className={`text-[14px] font-semibold uppercase tracking-wider mb-1 ${isDark ? "text-gray-400" : "text-gray-500"}`}>Total XP</p>
-                  <p className="text-[36px] font-bold text-[#3B82F6] leading-tight">{userXP.toLocaleString()}</p>
+                  <p className="text-[30px] sm:text-[36px] font-bold text-[#3B82F6] leading-tight">{userXP.toLocaleString()}</p>
                 </div>
               </div>
 
               {/* Peak Rank */}
-              <div className={`flex items-center gap-4 mb-6 rounded-[12px] px-5 py-4 ${isDark ? "bg-[#2A2A2A]/60" : "bg-gray-300/60"}`}>
+              <div className={`flex flex-col sm:flex-row sm:items-center gap-4 mb-6 rounded-[12px] px-5 py-4 ${isDark ? "bg-[#2A2A2A]/60" : "bg-gray-300/60"}`}>
                 <img 
                   src={getBadgeUrl(peakLevelInfo.current.badgeRank, 1)} 
                   alt={peakLevelInfo.current.name} 
@@ -248,7 +248,7 @@ export default function UserProfilePage() {
                   <p className={`text-[12px] font-semibold uppercase tracking-wider mb-0.5 ${isDark ? "text-gray-500" : "text-gray-400"}`}>⭐ Peak Rank</p>
                   <p className="text-[22px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#F59E0B] to-[#EF4444] leading-tight">{peakLevelInfo.current.name}</p>
                 </div>
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   <p className={`text-[12px] font-semibold uppercase tracking-wider mb-0.5 ${isDark ? "text-gray-500" : "text-gray-400"}`}>Peak XP</p>
                   <p className="text-[22px] font-bold text-[#F59E0B] leading-tight">{peakXp.toLocaleString()}</p>
                 </div>
@@ -281,58 +281,58 @@ export default function UserProfilePage() {
         <div className="flex flex-col gap-6 w-full">
           {/* Row 1: JOINED SINCE */}
           <div className="flex items-center justify-between w-full hover:-translate-y-1 transition-transform cursor-pointer group">
-            <div className="w-[666px] h-[140px] rounded-[8px] p-8 flex flex-col justify-center bg-gradient-to-r from-[#2563EB] to-[#60A5FA] text-white shadow-lg">
+            <div className="w-full sm:max-w-[666px] min-h-[124px] sm:h-[140px] rounded-[8px] p-6 sm:p-8 flex flex-col justify-center bg-gradient-to-r from-[#2563EB] to-[#60A5FA] text-white shadow-lg">
                 <p className="text-[15px] font-bold opacity-90 uppercase tracking-[2px] font-['Inter'] mb-2">JOINED SINCE</p>
-                <p className="text-[36px] font-bold font-['Inter'] leading-[40px]">{joinDate}</p>
+                <p className="text-[28px] sm:text-[36px] font-bold font-['Inter'] leading-tight">{joinDate}</p>
             </div>
-            <CalendarDays size={72} strokeWidth={1.5} className="text-white mr-12 opacity-80 group-hover:scale-110 transition-transform" />
+            <CalendarDays size={72} strokeWidth={1.5} className="hidden text-white mr-12 opacity-80 group-hover:scale-110 transition-transform md:block" />
           </div>
 
           {/* Row 2: LEVEL */}
           <div className="flex items-center justify-between w-full hover:-translate-y-1 transition-transform cursor-pointer group">
-            <Star size={72} strokeWidth={1.5} className="text-white ml-12 opacity-80 group-hover:scale-110 transition-transform" />
-            <div className="w-[666px] h-[140px] rounded-[8px] p-8 flex flex-col justify-center items-end bg-gradient-to-r from-[#059669] to-[#34D399] text-white shadow-lg text-right">
+            <Star size={72} strokeWidth={1.5} className="hidden text-white ml-12 opacity-80 group-hover:scale-110 transition-transform md:block" />
+            <div className="w-full sm:max-w-[666px] min-h-[124px] sm:h-[140px] rounded-[8px] p-6 sm:p-8 flex flex-col justify-center sm:items-end bg-gradient-to-r from-[#059669] to-[#34D399] text-white shadow-lg sm:text-right">
                 <p className="text-[15px] font-bold opacity-90 uppercase tracking-[2px] font-['Inter'] mb-2">LEVEL & RANK</p>
-                <p className="text-[36px] font-bold font-['Inter'] leading-[40px]">Level {userLevel} — {levelInfo.current.name}</p>
+                <p className="text-[28px] sm:text-[36px] font-bold font-['Inter'] leading-tight">Level {userLevel} - {levelInfo.current.name}</p>
             </div>
           </div>
 
           {/* Row 3: TOTAL XP */}
           <div className="flex items-center justify-between w-full hover:-translate-y-1 transition-transform cursor-pointer group">
-            <div className="w-[666px] h-[140px] rounded-[8px] p-8 flex flex-col justify-center bg-gradient-to-r from-[#E11D48] to-[#F59E0B] text-white shadow-lg">
+            <div className="w-full sm:max-w-[666px] min-h-[124px] sm:h-[140px] rounded-[8px] p-6 sm:p-8 flex flex-col justify-center bg-gradient-to-r from-[#E11D48] to-[#F59E0B] text-white shadow-lg">
                 <p className="text-[15px] font-bold opacity-90 uppercase tracking-[2px] font-['Inter'] mb-2">TOTAL XP</p>
-                <p className="text-[36px] font-bold font-['Inter'] leading-[40px]">{userXP.toLocaleString()} XP</p>
+                <p className="text-[28px] sm:text-[36px] font-bold font-['Inter'] leading-tight">{userXP.toLocaleString()} XP</p>
             </div>
-            <Zap size={72} strokeWidth={1.5} className="text-white mr-12 opacity-80 group-hover:scale-110 transition-transform" />
+            <Zap size={72} strokeWidth={1.5} className="hidden text-white mr-12 opacity-80 group-hover:scale-110 transition-transform md:block" />
           </div>
 
           {/* Row 4: QUIZZES COMPLETED */}
           <div className="flex items-center justify-between w-full hover:-translate-y-1 transition-transform cursor-pointer group">
-            <Trophy size={72} strokeWidth={1.5} className="text-white ml-12 opacity-80 group-hover:scale-110 transition-transform" />
-            <div className="w-[666px] h-[140px] rounded-[8px] p-8 flex flex-col justify-center items-end bg-gradient-to-r from-[#7DD3FC] to-[#D8B4FE] text-white shadow-lg text-right">
+            <Trophy size={72} strokeWidth={1.5} className="hidden text-white ml-12 opacity-80 group-hover:scale-110 transition-transform md:block" />
+            <div className="w-full sm:max-w-[666px] min-h-[124px] sm:h-[140px] rounded-[8px] p-6 sm:p-8 flex flex-col justify-center sm:items-end bg-gradient-to-r from-[#7DD3FC] to-[#D8B4FE] text-white shadow-lg sm:text-right">
                 <p className="text-[15px] font-bold opacity-90 uppercase tracking-[2px] font-['Inter'] mb-2">QUIZZES COMPLETED</p>
-                <p className="text-[36px] font-bold font-['Inter'] leading-[40px]">{completedQuizzes}</p>
+                <p className="text-[28px] sm:text-[36px] font-bold font-['Inter'] leading-tight">{completedQuizzes}</p>
             </div>
           </div>
 
           {/* Row 5: NEXT MILESTONE */}
           {levelInfo.next && (
           <div className="flex items-center justify-between w-full hover:-translate-y-1 transition-transform cursor-pointer group">
-            <div className="w-[666px] h-[140px] rounded-[8px] p-8 flex flex-col justify-center bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white shadow-lg">
+            <div className="w-full sm:max-w-[666px] min-h-[124px] sm:h-[140px] rounded-[8px] p-6 sm:p-8 flex flex-col justify-center bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white shadow-lg">
                 <p className="text-[15px] font-bold opacity-90 uppercase tracking-[2px] font-['Inter'] mb-2">NEXT MILESTONE</p>
-                <p className="text-[36px] font-bold font-['Inter'] leading-[40px]">{levelInfo.next.name} — {levelInfo.next.minXp.toLocaleString()} XP</p>
+                <p className="text-[28px] sm:text-[36px] font-bold font-['Inter'] leading-tight">{levelInfo.next.name} - {levelInfo.next.minXp.toLocaleString()} XP</p>
             </div>
-            <TrendingUp size={72} strokeWidth={1.5} className="text-white mr-12 opacity-80 group-hover:scale-110 transition-transform" />
+            <TrendingUp size={72} strokeWidth={1.5} className="hidden text-white mr-12 opacity-80 group-hover:scale-110 transition-transform md:block" />
           </div>
           )}
 
           {/* Row 6: ACCURACY */}
           {progressData.length > 0 && (
           <div className="flex items-center justify-between w-full hover:-translate-y-1 transition-transform cursor-pointer group">
-            <Target size={72} strokeWidth={1.5} className="text-white ml-12 opacity-80 group-hover:scale-110 transition-transform" />
-            <div className="w-[666px] h-[140px] rounded-[8px] p-8 flex flex-col justify-center items-end bg-gradient-to-r from-[#0EA5E9] to-[#22D3EE] text-white shadow-lg text-right">
+            <Target size={72} strokeWidth={1.5} className="hidden text-white ml-12 opacity-80 group-hover:scale-110 transition-transform md:block" />
+            <div className="w-full sm:max-w-[666px] min-h-[124px] sm:h-[140px] rounded-[8px] p-6 sm:p-8 flex flex-col justify-center sm:items-end bg-gradient-to-r from-[#0EA5E9] to-[#22D3EE] text-white shadow-lg sm:text-right">
                 <p className="text-[15px] font-bold opacity-90 uppercase tracking-[2px] font-['Inter'] mb-2">BEST QUIZ SCORE</p>
-                <p className="text-[36px] font-bold font-['Inter'] leading-[40px]">
+                <p className="text-[28px] sm:text-[36px] font-bold font-['Inter'] leading-tight">
                   {Math.max(...progressData.map((p: any) => p.highestScore || 0))} correct answers
                 </p>
             </div>

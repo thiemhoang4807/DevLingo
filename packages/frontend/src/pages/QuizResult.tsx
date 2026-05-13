@@ -25,7 +25,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
         const response: any = await axiosClient.get('/api/lessons');
         const data = response.data?.data || response.data || response;
 
-        let filtered = data.filter((lesson: any) => {
+        const filtered = data.filter((lesson: any) => {
           if (!lesson.title) return false;
           return ['Internet', 'Hardware', 'Software'].some(keyword =>
             lesson.title.toLowerCase().includes(keyword.toLowerCase())
@@ -64,7 +64,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
 
   return (
     <div className={`w-full flex flex-col items-center pt-[40px] pb-[100px] transition-colors duration-300 font-['Inter'] ${theme === 'dark' ? 'bg-[#212121] text-white' : 'bg-white text-black'}`}>
-      <div className="w-full max-w-[1002px] px-[32px] flex flex-col items-center gap-[40px]">
+      <div className="w-full max-w-[1002px] px-4 sm:px-[32px] flex flex-col items-center gap-8 sm:gap-[40px]">
 
         {/* --- 1. BADGE TOPIC --- */}
         {(() => {
@@ -78,7 +78,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
           const colors = colorMap[diff] || colorMap['easy'];
           const topicName = (topic as any).title || topic.name;
           return (
-            <div className={`flex items-center w-[378px] h-[44px] border-[1.5px] ${colors} rounded-[100px] shrink-0 overflow-hidden`}>
+            <div className={`flex items-center w-full max-w-[378px] h-[44px] border-[1.5px] ${colors} rounded-[100px] shrink-0 overflow-hidden`}>
               <div className="bg-[#FFFFFF] text-[#1D4ED8] pl-[20px] flex items-center justify-start font-[700] text-[16px] w-[65%] h-full">
                 {topicName}
               </div>
@@ -120,7 +120,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
             </div>
           )}
 
-          <div className="flex gap-[16px] mb-[12px]">
+          <div className="flex flex-wrap justify-center gap-[16px] mb-[12px]">
             <div className="flex items-center gap-[8px] border border-[#0ABD5A] bg-[#0ABD5A]/10 px-[16px] py-[8px] rounded-[6px]">
               <span className="text-[#0ABD5A] font-bold text-lg">✓</span>
               <span className="text-white font-[600]">{score} <span className="text-[#9CA3AF] font-normal">/ {totalQuestions}</span></span>
@@ -143,7 +143,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
             <h3 className={`text-[18px] font-[700] ${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-800'}`}>Incorrect Terms</h3>
             <div className="flex flex-col gap-[12px] w-full">
               {incorrectTerms.map((term, i) => (
-                <div key={`inc-${i}`} className={`flex justify-between items-center w-full rounded-[8px] p-[16px] transition-colors ${theme === 'dark' ? 'bg-[#3F0500] border-[1.5px] border-[#9B0000]' : 'bg-red-50 border-[1.5px] border-red-200'}`}>
+                <div key={`inc-${i}`} className={`flex flex-col sm:flex-row justify-between sm:items-center gap-3 w-full rounded-[8px] p-[16px] transition-colors ${theme === 'dark' ? 'bg-[#3F0500] border-[1.5px] border-[#9B0000]' : 'bg-red-50 border-[1.5px] border-red-200'}`}>
                   <span className={`${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-700'} text-[14px] font-[500] truncate pr-4`}>{term.questionText}</span>
                   <button className="bg-[#3B82F6] hover:bg-blue-600 text-white text-[14px] font-[500] px-[16px] py-[8px] rounded-[6px] transition-all whitespace-nowrap cursor-pointer">
                     View more...
@@ -160,7 +160,7 @@ const QuizResult: React.FC<QuizResultProps> = ({ topic, score, totalQuestions, h
             <h3 className={`text-[18px] font-[700] ${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-800'}`}>Correct Terms</h3>
             <div className="flex flex-col gap-[12px] w-full">
               {correctTerms.map((term, i) => (
-                <div key={`cor-${i}`} className={`flex justify-between items-center w-full rounded-[8px] p-[16px] transition-colors ${theme === 'dark' ? 'bg-[#0ABD5A]/10 border-[1.5px] border-[#0ABD5A]' : 'bg-green-50 border-[1.5px] border-green-200'}`}>
+                <div key={`cor-${i}`} className={`flex flex-col sm:flex-row justify-between sm:items-center gap-3 w-full rounded-[8px] p-[16px] transition-colors ${theme === 'dark' ? 'bg-[#0ABD5A]/10 border-[1.5px] border-[#0ABD5A]' : 'bg-green-50 border-[1.5px] border-green-200'}`}>
                   <span className={`${theme === 'dark' ? 'text-[#E5E7EB]' : 'text-gray-700'} text-[14px] font-[500] truncate pr-4`}>{term.questionText}</span>
                   <button className="bg-[#3B82F6] hover:bg-blue-600 text-white text-[14px] font-[500] px-[16px] py-[8px] rounded-[6px] transition-all whitespace-nowrap cursor-pointer">
                     View more...

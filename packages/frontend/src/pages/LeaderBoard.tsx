@@ -1,7 +1,7 @@
 import { useTheme } from "../context/ThemeContext";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trophy, Crown, Medal, Award } from "lucide-react";
+import { Trophy } from "lucide-react";
 import top1 from "../assets/profile-page/top1.png"
 import top2 from "../assets/profile-page/top2.png"
 import top3 from "../assets/profile-page/top3.png"
@@ -83,17 +83,17 @@ export default function LeaderBoard() {
 
     return (
         <div className={`w-full min-h-screen font-['Inter'] transition-colors duration-300 pb-20 ${isDark ? "bg-[#0A0A0A]" : "bg-[#F9FAFB]"}`}>
-            <div className={`w-full max-w-[1002px] mx-auto pt-12 px-6`}>
+            <div className={`w-full max-w-[1002px] mx-auto pt-8 sm:pt-12 px-4 sm:px-6`}>
 
                 {/* Title */}
                 <div className="text-center mb-12">
                     <div className="flex items-center justify-center gap-3 mb-2">
-                        <Trophy size={32} className="text-[#FFD700]" />
-                        <h1 className={`text-[36px] font-bold ${isDark ? "text-white" : "text-gray-900"}`}>
+                        <Trophy size={30} className="text-[#FFD700]" />
+                        <h1 className={`text-[30px] sm:text-[36px] font-bold ${isDark ? "text-white" : "text-gray-900"}`}>
                             Leaderboard
                         </h1>
                     </div>
-                    <p className={`text-[15px] ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                    <p className={`text-[14px] sm:text-[15px] ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                         Top learners ranked by XP — compete and climb the ranks!
                     </p>
                     <br />
@@ -102,7 +102,7 @@ export default function LeaderBoard() {
 
                 {/* --- PODIUM TOP 3 --- */}
                 {topThree.length >= 3 && (
-                    <div className={`w-full flex flex-row items-end justify-center gap-4 sm:gap-6 h-[420px] mb-12`}>
+                    <div className={`w-full flex flex-row items-end justify-center gap-2 sm:gap-6 h-auto sm:h-[420px] mb-12 overflow-x-auto pb-2 sm:overflow-visible`}>
                         {podiumOrder.map((user: any, idx: number) => {
                             const isTop1 = idx === 1;
                             const podiumHeight = isTop1 ? "h-[260px]" : idx === 0 ? "h-[200px]" : "h-[160px]";
@@ -110,7 +110,7 @@ export default function LeaderBoard() {
                             const glowEffect = isTop1 && isDark ? "drop-shadow-[0_0_25px_rgba(255,211,101,0.15)]" : "";
 
                             return (
-                                <div key={user.rank} onClick={() => navigate(`/profile/${user.id}`)} className={`w-[220px] sm:w-[280px] flex flex-col items-center cursor-pointer ${glowEffect}`}>
+                                <div key={user.rank} onClick={() => navigate(`/profile/${user.id}`)} className={`min-w-[105px] flex-1 sm:w-[280px] sm:flex-none flex flex-col items-center cursor-pointer ${glowEffect}`}>
 
                                     {/* Avatar & Info */}
                                     <div className={`flex flex-col items-center justify-center gap-3 mb-6 ${isTop1 ? "-translate-y-4" : ""}`}>
@@ -175,7 +175,7 @@ export default function LeaderBoard() {
                     <div className={`w-full mt-4`}>
                         <div className={`w-full flex flex-col gap-3`}>
                             {/* Table Header */}
-                            <div className={`w-full grid grid-cols-[60px_1fr_120px_100px_120px] font-semibold text-[12px] uppercase tracking-wider px-6 mb-2 
+                            <div className={`hidden w-full sm:grid grid-cols-[60px_1fr_120px_100px_120px] font-semibold text-[12px] uppercase tracking-wider px-6 mb-2 
                             ${isDark ? "text-gray-500" : "text-gray-400"}`}>
                                 <p className="text-center">#</p>
                                 <p>Player</p>
@@ -187,7 +187,7 @@ export default function LeaderBoard() {
                             {/* Player Rows */}
                             <div className={`flex flex-col gap-3`}>
                                 {restPlayers.map((user: any) => (
-                                    <div key={user.rank} onClick={() => navigate(`/profile/${user.id}`)} className={`w-full h-[72px] grid grid-cols-[60px_1fr_120px_100px_120px] items-center rounded-2xl px-6 transition-all hover:-translate-y-0.5 cursor-pointer
+                                    <div key={user.rank} onClick={() => navigate(`/profile/${user.id}`)} className={`w-full min-h-[72px] grid grid-cols-[48px_1fr] gap-y-3 sm:h-[72px] sm:grid-cols-[60px_1fr_120px_100px_120px] items-center rounded-2xl px-4 py-4 sm:px-6 sm:py-0 transition-all hover:-translate-y-0.5 cursor-pointer
                                     ${isDark ? "bg-[#171C29] hover:bg-[#1E2536]" : "bg-white border border-gray-100 shadow-sm hover:shadow-md"}`}>
 
                                         <div className={`flex items-center justify-center text-[16px] font-bold ${isDark ? "text-gray-400" : "text-gray-500"}`}>
@@ -205,18 +205,18 @@ export default function LeaderBoard() {
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center justify-center">
+                                        <div className="flex items-center justify-start sm:justify-center col-start-2 sm:col-start-auto">
                                             <span className={`text-[12px] font-bold px-3 py-1 rounded-full ${isDark ? "bg-[#252830] text-[#60A5FA]" : "bg-blue-50 text-[#2563EB]"
                                                 }`}>
                                                 {getRankName(user.xp)}
                                             </span>
                                         </div>
 
-                                        <div className={`flex items-center justify-center text-[15px] font-semibold ${isDark ? "text-white" : "text-gray-700"}`}>
+                                        <div className={`flex items-center justify-start sm:justify-center text-[15px] font-semibold ${isDark ? "text-white" : "text-gray-700"}`}>
                                             {user.level}
                                         </div>
 
-                                        <div className={`flex items-center justify-center text-[15px] font-bold ${isDark ? "text-[#60A5FA]" : "text-blue-600"}`}>
+                                        <div className={`flex items-center justify-end sm:justify-center text-[15px] font-bold ${isDark ? "text-[#60A5FA]" : "text-blue-600"}`}>
                                             {user.xp.toLocaleString()}
                                         </div>
                                     </div>

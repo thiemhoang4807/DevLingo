@@ -48,9 +48,9 @@ export default function TermPageCategoryDetail()
     }, [categoryId]);
 
     return (
-        <div className={`inter container flex flex-col items-center justify-start gap-[30px] w-full ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-            <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-4">
+        <div className={`inter container flex flex-col items-center justify-start gap-[30px] w-full min-w-0 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-4">
+                <div className="flex items-center gap-4 min-w-0">
                     <button
                         onClick={() => navigate('/term')}
                         className={`p-2 rounded-full transition-colors ${theme === 'dark' ? 'hover:bg-gray-800' : 'hover:bg-gray-200'}`}
@@ -62,7 +62,7 @@ export default function TermPageCategoryDetail()
                         <div className="h-8 w-48 bg-blue-400/30 animate-pulse rounded"></div>
                     ) :
                     (
-                        <h2 className="text-[24px] font-[700] text-[#3B82F6]">
+                        <h2 className="text-[22px] sm:text-[24px] font-[700] text-[#3B82F6] break-words">
                             {objLesson?.title || "Vocabulary List"}
                         </h2>
                     )}
@@ -71,7 +71,7 @@ export default function TermPageCategoryDetail()
                 <button
                     onClick={() => navigate(`/quiz/${categoryId}`)}
                     disabled={arrTerms.length === 0}
-                    className="flex items-center gap-2 bg-[#10B981] hover:bg-[#059669] disabled:bg-gray-500 text-white font-[600] py-2 px-4 rounded-[6px] transition-colors"
+                    className="flex w-full sm:w-auto items-center justify-center gap-2 bg-[#10B981] hover:bg-[#059669] disabled:bg-gray-500 text-white font-[600] py-2 px-4 rounded-[6px] transition-colors"
                 >
                     <PlayCircle size={20} />
                     Luyện tập (Quiz)
